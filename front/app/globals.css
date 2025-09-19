@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+input {
+  @apply focus:outline-none;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+input[type]::-webkit-calendar-picker-indicator {
+  @apply hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+input[type] {
+  @apply flex justify-start;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background-color: #00598a;
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background-color: #00598a;
+  border-bottom-right-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0;
+}
+
+@keyframes shkeit {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.shkeit {
+  animation: shkeit 0.4s ease-in-out;
+}
+
+.afull {
+  @apply w-full h-full;
+}
+
+.flexctr {
+  @apply flex justify-center items-center place-content-center;
+}
+
+.flexbtw {
+  @apply flex justify-between items-center place-content-center;
+}
+
+.flexstr {
+  @apply flex justify-start items-center place-content-center;
+}
+
+.flexend {
+  @apply flex justify-end items-center place-content-center;
+}
+
+.flexend {
+  @apply flex justify-end items-center place-content-center;
+}
+
+.tdbody {
+  @apply border-r-2 last:border-r-0 border-b group-last:border-b-0 border-sky-800 border-b-white px-1.5 whitespace-nowrap;
+}
+
+.thhead {
+  @apply bg-sky-800 px-2 py-1 ring-4 ring-sky-800 whitespace-nowrap;
+}
+
+.btnsbm {
+  @apply bg-sky-800 hover:bg-sky-600 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
+}
+
+.btnwrn {
+  @apply bg-cyan-600 hover:bg-cyan-400 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
+}
+
+.btnoff {
+  @apply bg-slate-300 shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
+}
+
+.btncxl {
+  @apply bg-red-800 hover:bg-red-600 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
 }
