@@ -8,6 +8,8 @@ export async function ApiGlobalLoginAllusr(
   prvstt: object | null | void,
   formdt: FormData
 ) {
+  const secretKey = process.env.PRT_GOLANG; // ✅ bisa diakses
+  console.log(secretKey);
   const usrnme = formdt.get("usrnme") as string;
   const psswrd = formdt.get("psswrd") as string;
   const dataInput = { usrnme: usrnme, psswrd: psswrd };

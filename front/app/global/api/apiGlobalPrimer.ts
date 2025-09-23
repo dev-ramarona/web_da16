@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Global Axios
 export const ApiGlobalAxiospParams = axios.create({
-  baseURL: "http://192.168.198.221:8083",
+  baseURL: `${process.env.NEXT_PUBLIC_IPV_ADRESS}:${process.env.NEXT_PUBLIC_PRT_GOLANG}`,
   timeout: 1000000,
   headers: { "Content-Type": "application/json" },
 });

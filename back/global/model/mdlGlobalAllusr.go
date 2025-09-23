@@ -1,4 +1,4 @@
-package mdl_global
+package mdlGlobal
 
 import "github.com/golang-jwt/jwt/v5"
 

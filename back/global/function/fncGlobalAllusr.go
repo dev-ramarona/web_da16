@@ -1,7 +1,7 @@
-package fnc_global
+package fncGlobal
 
 import (
-	mdl_global "back/global/model"
+	mdlGlobal "back/global/model"
 	"context"
 	"encoding/json"
 	"time"
@@ -16,8 +16,8 @@ import (
 func FncGlobalAllusrLoginx(c *gin.Context) {
 
 	// Variable login
-	var usript mdl_global.MdlGlobalAllusrParams
-	var usrdbs mdl_global.MdlGlobalAllusrDtbase
+	var usript mdlGlobal.MdlGlobalAllusrParams
+	var usrdbs mdlGlobal.MdlGlobalAllusrDtbase
 
 	// Bind JSON body input to var usript
 	if err := c.BindJSON(&usript); err != nil {
@@ -45,7 +45,7 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 	}
 
 	// Generate JWT Token
-	claimp := &mdl_global.MdlGlobalAllusrInputs{
+	claimp := &mdlGlobal.MdlGlobalAllusrInputs{
 		Usrnme: usript.Usrnme,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(3 * time.Hour)),
@@ -61,7 +61,7 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 	}
 
 	// Konversi array mdlAllusrLoginxParams
-	tknobj := &mdl_global.MdlGlobalAllusrTokens{
+	tknobj := &mdlGlobal.MdlGlobalAllusrTokens{
 		Stfnme: usrdbs.Stfnme,
 		Usrnme: usrdbs.Usrnme,
 		Access: usrdbs.Access,
@@ -76,8 +76,6 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 	// Set the JWT token in the cookie
 	c.SetCookie("tokenx", tknstr, 10800, "/", Ipadrs, false, true)
 	c.SetCookie("nowusr", string(tknfnl), 10800, "/", Ipadrs, false, true)
-	c.SetCookie("tokenx_dev", tknstr, 10800, "/", Ipdevt, true, true)
-	c.SetCookie("nowusr_dev", string(tknfnl), 10800, "/", Ipdevt, true, true)
 	c.JSON(200, "Login Successfull")
 }
 
@@ -87,8 +85,6 @@ func FncGlobalAllusrLogout(c *gin.Context) {
 	// Delete Cookie
 	c.SetCookie("tokenx", "", -1, "/", Ipadrs, false, true)
 	c.SetCookie("nowusr", "", -1, "/", Ipadrs, false, true)
-	c.SetCookie("tokenx_dev", "", -1, "/", Ipdevt, true, true)
-	c.SetCookie("nowusr_dev", "", -1, "/", Ipdevt, true, true)
 	c.JSON(200, "Logout")
 }
 
@@ -103,7 +99,7 @@ func FncGlobalAllusrTokenx(c *gin.Context) {
 	}
 
 	// Convert JWT to claims
-	tokenx, err := jwt.ParseWithClaims(cookie, &mdl_global.MdlGlobalAllusrInputs{},
+	tokenx, err := jwt.ParseWithClaims(cookie, &mdlGlobal.MdlGlobalAllusrInputs{},
 		func(token *jwt.Token) (interface{}, error) {
 			return jwtkey, nil
 		})
@@ -111,7 +107,7 @@ func FncGlobalAllusrTokenx(c *gin.Context) {
 	// Final Result
 	if err != nil {
 		c.JSON(500, "Loggin First")
-	} else if _, ok := tokenx.Claims.(*mdl_global.MdlGlobalAllusrInputs); ok {
+	} else if _, ok := tokenx.Claims.(*mdlGlobal.MdlGlobalAllusrInputs); ok {
 		c.JSON(200, "Access Accepted")
 	} else {
 		c.JSON(500, "Loggin First")
@@ -133,9 +129,9 @@ func FncGlobalAllusrApplst(c *gin.Context) {
 	defer datarw.Close(contxt)
 
 	// Append to slice
-	var slices = []mdl_global.MdlGlobalAllusrApplst{}
+	var slices = []mdlGlobal.MdlGlobalAllusrApplst{}
 	for datarw.Next(contxt) {
-		var object mdl_global.MdlGlobalAllusrApplst
+		var object mdlGlobal.MdlGlobalAllusrApplst
 		if err := datarw.Decode(&object); err == nil {
 			slices = append(slices, object)
 		}

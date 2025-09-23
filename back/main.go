@@ -1,10 +1,9 @@
 package main
 
 import (
-	fncGlobal "back/global"
+	fncGlobal "back/global/function"
 	"context"
-	"os"
-	"strings"
+	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -17,18 +16,20 @@ func main() {
 
 	// Initialize MongoDB connection
 	contxt, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	fncGlobal.FncGlobalMainprLoadnv("../.env")
 	defer cancel()
-	portdb := options.Client().ApplyURI(os.Getenv("URI_MONGOS"))
+	portdb := options.Client().ApplyURI(fncGlobal.Urlmgo)
 	fncGlobal.Client, _ = mongo.Connect(contxt, portdb)
 
 	// Framework Gin
 	r := gin.Default()
 
 	// Middleware CORS
+	fmt.Println("fncGlobal.Ipalow")
+	fmt.Println(fncGlobal.Ipalow)
+	fmt.Println("fncGlobal.Ipalow")
 	r.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowOrigins:     strings.Split(os.Getenv("IPV_ALLOWD"), "|"),
+		AllowOrigins:     fncGlobal.Ipalow,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "HEAD"},
 		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type",
 			"Authorization", "Cookie", "Content-Disposition"},
@@ -37,11 +38,11 @@ func main() {
 	// // Handle global
 	// r.GET("/global/status", fncGlobal.FncGlobalApisbrStatus)
 
-	// // Handle web link API all user
-	// r.POST("/allusr/loginx", fncGlobal.FncGlobalAllusrLoginx)
-	// r.GET("/allusr/tokenx", fncGlobal.FncGlobalAllusrTokenx)
-	// r.GET("/allusr/logout", fncGlobal.FncGlobalAllusrLogout)
-	// r.GET("/allusr/applst", fncGlobal.FncGlobalAllusrApplst)
+	// Handle web link API all user
+	r.POST("/allusr/loginx", fncGlobal.FncGlobalAllusrLoginx)
+	r.GET("/allusr/tokenx", fncGlobal.FncGlobalAllusrTokenx)
+	r.GET("/allusr/logout", fncGlobal.FncGlobalAllusrLogout)
+	r.GET("/allusr/applst", fncGlobal.FncGlobalAllusrApplst)
 
 	// // Handle web link API jeddah
 	// // r.POST("/jeddah/addfln", fnc_jeddah.FncJeddahAddflnTodtbs)
@@ -64,5 +65,6 @@ func main() {
 	// r.POST("/ppnlkp/prcess", fnc_ppnlkp.FncPpnlkpPrcessMainpg)
 	// r.GET("/ppnlkp/agrgte", fnc_ppnlkp.FncPpnlkpPrcessAgrgte)
 
-	r.Run(os.Getenv("IPV_GOLANG"))
+	// Run server
+	r.Run("0.0.0.0:" + fncGlobal.Ptgolg)
 }
