@@ -16,16 +16,12 @@ type MdlGlobalAllusrDtbase struct {
 	Keywrd []string `json:"keywrd,omitempty" bson:"keywrd,omitempty"`
 }
 
-type MdlGlobalAllusrInputs struct {
-	Usrnme string `json:"usrnme,omitempty" bson:"usrnme,omitempty"`
-	jwt.RegisteredClaims
-}
-
 type MdlGlobalAllusrTokens struct {
 	Stfnme string   `json:"stfnme"`
 	Usrnme string   `json:"usrnme"`
 	Access []string `json:"access"`
 	Keywrd []string `json:"keywrd"`
+	jwt.RegisteredClaims
 }
 
 type MdlGlobalAllusrApplst struct {

@@ -34,25 +34,21 @@ export default function UixGlobalInputxFormdt({
             onChange={(e) => (repprm ? repprm(e) : "")}
           />
           <label
-            className={`afull bg-white cursor-pointer rounded-md p-1.5 shadow-md ${
-              params != ""
+            className={`afull bg-white cursor-pointer rounded-md p-1.5 shadow-md ${params != ""
                 ? "text-slate-700 overflow-hidden whitespace-nowrap"
                 : "text-white peer-focus:text-slate-500"
-            } duration-300`}
+              } duration-300`}
             htmlFor={queryx}
           >
             {params}
           </label>
           <label
-            className={`absolute left-3 select-none cursor-pointer whitespace-nowrap ${
-              params != ""
-                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${
-                    labelx == "hidden" ? "opacity-0" : ""
-                  }`
-                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${
-                    labelx == "hidden" ? "peer-focus:opacity-0" : ""
-                  }`
-            } duration-300`}
+            className={`absolute left-3 select-none cursor-pointer whitespace-nowrap ${params != ""
+                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
+                }`
+                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
+                }`
+              } duration-300`}
             htmlFor={queryx}
           >
             {plchdr}
@@ -62,11 +58,10 @@ export default function UixGlobalInputxFormdt({
         // Input type All
         <>
           <input
-            className={`afull bg-white rounded-md p-1.5 peer shadow-md ${
-              params != ""
+            className={`afull bg-white rounded-md p-1.5 peer shadow-md ${params != ""
                 ? "text-slate-700"
                 : "text-white focus:text-slate-500"
-            } duration-300`}
+              } duration-300`}
             value={params}
             maxLength={length ? length : undefined}
             type={typipt}
@@ -78,15 +73,12 @@ export default function UixGlobalInputxFormdt({
             ref={typipt == "date" || typipt == "month" ? refdte : null}
           />
           <label
-            className={`absolute left-3 select-none cursor-text whitespace-nowrap ${
-              params != ""
-                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${
-                    labelx == "hidden" ? "opacity-0" : ""
-                  }`
-                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${
-                    labelx == "hidden" ? "peer-focus:opacity-0" : ""
-                  }`
-            } duration-300`}
+            className={`absolute left-3 select-none cursor-text whitespace-nowrap ${params != ""
+                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
+                }`
+                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
+                }`
+              } duration-300`}
             htmlFor={queryx}
           >
             {plchdr}

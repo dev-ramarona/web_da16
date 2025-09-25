@@ -2,6 +2,7 @@ package main
 
 import (
 	fncGlobal "back/global/function"
+	fncJeddah "back/jeddah/function/agtnme"
 	"context"
 	"fmt"
 	"time"
@@ -28,11 +29,11 @@ func main() {
 	fmt.Println(fncGlobal.Ipalow)
 	fmt.Println("fncGlobal.Ipalow")
 	r.Use(cors.New(cors.Config{
-		AllowCredentials: true,
-		AllowOrigins:     fncGlobal.Ipalow,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "HEAD"},
+		AllowOrigins: fncGlobal.Ipalow,
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD"},
 		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type",
 			"Authorization", "Cookie", "Content-Disposition"},
+		AllowCredentials: true,
 	}))
 
 	// // Handle global
@@ -47,16 +48,16 @@ func main() {
 	// // Handle web link API jeddah
 	// // r.POST("/jeddah/addfln", fnc_jeddah.FncJeddahAddflnTodtbs)
 	// r.POST("/jeddah/prcess", fnc_jeddah.FncJeddahPrcessMainpg)
-	// r.POST("/jeddah/agtnul", fnc_jeddah.FncJeddahAgtnmeNullnm)
+	r.POST("/jeddah/agtnme/nullvl", fncJeddah.FncJeddahAgtnmeNullnm)
+	r.GET("/jeddah/agtnme/search/:newidn/:newdtl", fncJeddah.FncJeddahAgtnmeSearch)
 	// r.GET("/jeddah/logact", fnc_jeddah.FncJeddahLogactGetall)
-	// r.POST("/jeddah/agtupd", fnc_jeddah.FncJeddahAgtnmeUpdate)
+	r.POST("/jeddah/agtnme/update", fncJeddah.FncJeddahAgtnmeUpdate)
 	// r.POST("/jeddah/pnrdtl", fnc_jeddah.FncJeddahDtlpnrFrntnd)
 	// r.POST("/jeddah/pnrdtl/:downld", fnc_jeddah.FncJeddahDtlpnrFrntnd)
 	// r.POST("/jeddah/pnrsmr", fnc_jeddah.FncJeddahSmrpnrFrntnd)
 	// r.POST("/jeddah/pnrsmr/:downld", fnc_jeddah.FncJeddahSmrpnrFrntnd)
 	// r.POST("/jeddah/flnsmr", fnc_jeddah.FncJeddahSmrflnFrntnd)
 	// r.POST("/jeddah/flnsmr/:downld", fnc_jeddah.FncJeddahSmrflnFrntnd)
-	// r.GET("/jeddah/agtsrc/:newidn/:newdtl", fnc_jeddah.FncJeddahAgtnmeAgtsrc)
 	// r.POST("/jeddah/rtlsrs/update", fnc_jeddah.FncJeddahRtlsrsUpdate)
 	// r.POST("/jeddah/rtlsrs/upload/:upldby", fnc_jeddah.FncJeddahRtlsrsUpload)
 	// r.GET("/jeddah/rtlsrs/status", fnc_jeddah.FncJeddahRtlsrsStatus)

@@ -3,7 +3,6 @@ package fncGlobal
 import (
 	mdlGlobal "back/global/model"
 	"context"
-	"encoding/json"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -45,8 +44,11 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 	}
 
 	// Generate JWT Token
-	claimp := &mdlGlobal.MdlGlobalAllusrInputs{
+	claimp := &mdlGlobal.MdlGlobalAllusrTokens{
 		Usrnme: usript.Usrnme,
+		Stfnme: usrdbs.Stfnme,
+		Access: usrdbs.Access,
+		Keywrd: usrdbs.Keywrd,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(3 * time.Hour)),
 		},
@@ -60,22 +62,8 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 		return
 	}
 
-	// Konversi array mdlAllusrLoginxParams
-	tknobj := &mdlGlobal.MdlGlobalAllusrTokens{
-		Stfnme: usrdbs.Stfnme,
-		Usrnme: usrdbs.Usrnme,
-		Access: usrdbs.Access,
-		Keywrd: usrdbs.Keywrd,
-	}
-	tknfnl, err := json.Marshal(tknobj)
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Unable to set cookie"})
-		return
-	}
-
 	// Set the JWT token in the cookie
-	c.SetCookie("tokenx", tknstr, 10800, "/", Ipadrs, false, true)
-	c.SetCookie("nowusr", string(tknfnl), 10800, "/", Ipadrs, false, true)
+	c.SetCookie(Tknnme, tknstr, 10800, "/", Ipadrs, false, true)
 	c.JSON(200, "Login Successfull")
 }
 
@@ -83,8 +71,7 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 func FncGlobalAllusrLogout(c *gin.Context) {
 
 	// Delete Cookie
-	c.SetCookie("tokenx", "", -1, "/", Ipadrs, false, true)
-	c.SetCookie("nowusr", "", -1, "/", Ipadrs, false, true)
+	c.SetCookie(Tknnme, "", -1, "/", Ipadrs, false, true)
 	c.JSON(200, "Logout")
 }
 
@@ -99,19 +86,17 @@ func FncGlobalAllusrTokenx(c *gin.Context) {
 	}
 
 	// Convert JWT to claims
-	tokenx, err := jwt.ParseWithClaims(cookie, &mdlGlobal.MdlGlobalAllusrInputs{},
+	tokenx, err := jwt.ParseWithClaims(cookie, &mdlGlobal.MdlGlobalAllusrTokens{},
 		func(token *jwt.Token) (interface{}, error) {
 			return jwtkey, nil
 		})
 
 	// Final Result
-	if err != nil {
-		c.JSON(500, "Loggin First")
-	} else if _, ok := tokenx.Claims.(*mdlGlobal.MdlGlobalAllusrInputs); ok {
-		c.JSON(200, "Access Accepted")
-	} else {
-		c.JSON(500, "Loggin First")
+	if val, ist := tokenx.Claims.(*mdlGlobal.MdlGlobalAllusrTokens); ist && err == nil {
+		c.JSON(200, val)
+		return
 	}
+	c.JSON(500, "Loggin First")
 }
 
 func FncGlobalAllusrApplst(c *gin.Context) {

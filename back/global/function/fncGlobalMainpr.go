@@ -38,7 +38,7 @@ var Client *mongo.Client
 var jwtkey []byte
 var Ipalow []string
 var Dbases, Urlmgo, Pcckey, Usrnme,
-	Psswrd, Ptgolg, Ipadrs string
+	Psswrd, Ptgolg, Ipadrs, Usrcok, Tknnme string
 
 // Initial load environment variables
 func init() {
@@ -51,5 +51,6 @@ func init() {
 	Psswrd = os.Getenv("NEXT_PUBLIC_SBR_PSSWRD")
 	Ptgolg = os.Getenv("NEXT_PUBLIC_PRT_GOLANG")
 	Ipadrs = os.Getenv("NEXT_PUBLIC_IPV_ADRESS")
+	Tknnme = os.Getenv("NEXT_PUBLIC_TKN_COOKIE")
 	Ipalow = strings.Split(os.Getenv("NEXT_PUBLIC_IPV_ALLOWD"), "|")
 }

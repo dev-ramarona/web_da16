@@ -10,15 +10,15 @@ import {
   UixGlobalIconvcPrevpg,
   UixGlobalIconvcUsrdtl,
 } from "../server/uixGlobalIconvc";
-import { mdlGlobalAlluserCookie } from "../../model/mdlGlobalAllusr";
 import { MdlGlobalApplstDtbase } from "../../model/mdlGlobalApplst";
 import { ApiGlobalAllusrLogout } from "../../api/apiGlobalLoginx";
+import { mdlGlobalAllusrCookie } from "../../model/mdlGlobalAllusr";
 
 export default function UixGlobalAppbarClient({
   cookie,
   applst,
 }: {
-  cookie: mdlGlobalAlluserCookie;
+  cookie: mdlGlobalAllusrCookie;
   applst: MdlGlobalApplstDtbase[];
 }) {
   const pthnme = usePathname();
@@ -33,9 +33,8 @@ export default function UixGlobalAppbarClient({
   return (
     <div className="fixed w-full h-12 bottom-4 flexctr px-3 z-30">
       <div
-        className={`absolute right-0 w-10 h-full bg-sky-800 rounded-l-lg flexctr group cursor-pointer ${
-          onhide ? "opacity-100" : "opacity-0"
-        } duration-300`}
+        className={`absolute right-0 w-10 h-full bg-sky-800 rounded-l-lg flexctr group cursor-pointer ${onhide ? "opacity-100" : "opacity-0"
+          } duration-300`}
         onClick={() => onhideSet(false)}
       >
         <div className="group-hover:scale-125 duration-300 group-hover:-translate-x-1.5">
@@ -43,26 +42,22 @@ export default function UixGlobalAppbarClient({
         </div>
       </div>
       <div
-        className={`afull max-w-fit flexctr shadow-md shadow-slate-400 rounded-xl ${
-          onhide ? "translate-x-[100rem]" : "translate-x-0"
-        } duration-500 ease-in-out`}
+        className={`afull max-w-fit flexctr shadow-md shadow-slate-400 rounded-xl ${onhide ? "translate-x-[100rem]" : "translate-x-0"
+          } duration-500 ease-in-out`}
       >
         <div
-          className={`w-20 h-full flexctr group cursor-pointer p-1 bg-sky-800 relative ${
-            cookie.usrnme == "" ? "rounded-xl" : "rounded-l-xl"
-          }`}
+          className={`w-20 h-full flexctr group cursor-pointer p-1 bg-sky-800 relative ${cookie.usrnme == "" ? "rounded-xl" : "rounded-l-xl"
+            }`}
         >
           <div
-            className={`absolute bg-gradient-to-b from-sky-300 to-sky-800 rounded-b-xl ${
-              onclik && cookie.usrnme != ""
-                ? "w-full h-full opacity-100"
-                : "w-full h-0 opacity-0"
-            } duration-300`}
+            className={`absolute bg-gradient-to-b from-sky-300 to-sky-800 rounded-b-xl ${onclik && cookie.usrnme != ""
+              ? "w-full h-full opacity-100"
+              : "w-full h-0 opacity-0"
+              } duration-300`}
           ></div>
           <div
-            className={`w-10 h-10 p-2 group-hover:bg-sky-500 rounded-full z-10 ${
-              onclik ? "ring-4 ring-white" : ""
-            } select-none duration-300`}
+            className={`w-10 h-10 p-2 group-hover:bg-sky-500 rounded-full z-10 ${onclik ? "ring-4 ring-white" : ""
+              } select-none duration-300`}
             onClick={() => onclikSet(!onclik)}
           >
             <Image
@@ -74,11 +69,10 @@ export default function UixGlobalAppbarClient({
             />
           </div>
           <div
-            className={`z-0 absolute left-0 bottom-12 bg-sky-300 rounded-t-xl p-1.5 ${
-              onclik && cookie.usrnme != ""
-                ? "w-[200%] h-[400%] opacity-100"
-                : "w-0 h-0 opacity-0"
-            } duration-300`}
+            className={`z-0 absolute left-0 bottom-12 bg-sky-300 rounded-t-xl p-1.5 ${onclik && cookie.usrnme != ""
+              ? "w-[200%] h-[400%] opacity-100"
+              : "w-0 h-0 opacity-0"
+              } duration-300`}
           >
             <div className="w-full h-1/3 p-0.5 text-white font-semibold group/action">
               <div className="afull flexbtw btnsbm">
@@ -128,11 +122,10 @@ export default function UixGlobalAppbarClient({
                     key={idx}
                   >
                     <div
-                      className={`afull group-hover:bg-sky-800 rounded-lg flexctr ${
-                        lstpth == item.prmkey
-                          ? "ring-2 ring-white shadow-lg shadow-slate-500"
-                          : ""
-                      } relative text-center duration-300`}
+                      className={`afull group-hover:bg-sky-800 rounded-lg flexctr ${lstpth == item.prmkey
+                        ? "ring-2 ring-white shadow-lg shadow-slate-500"
+                        : ""
+                        } relative text-center duration-300`}
                     >
                       <span className="absolute duration-300 group-hover:opacity-0">
                         {item.prmkey.toUpperCase()}

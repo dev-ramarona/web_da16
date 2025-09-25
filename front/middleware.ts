@@ -1,43 +1,41 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ApiGlobalAxiospParams } from "./app/global/api/apiGlobalPrimer";
+import { mdlGlobalAllusrCookie } from "./app/global/model/mdlGlobalAllusr";
 
 export async function middleware(req: NextRequest) {
-  const tokenx = req.cookies.get("tokenx")?.value || "";
-  const nowusr = req.cookies.get("nowusr")?.value || "";
+  const tknnme = process.env.NEXT_PUBLIC_TKN_COOKIE || "x"
+  const tokenx = req.cookies.get(tknnme)?.value || "";
+  const pathnm = req.nextUrl.pathname.split("/")[1];
 
   // Jika belum login, arahkan ke "/"
-  if (!tokenx || !nowusr) {
+  if (!tokenx) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+  // Try hit API
   try {
-    // Parse userx cookie
-    const Objusr: {
-      stfnme: string;
-      access: [string];
-      keywrd: [string];
-    } = JSON.parse(nowusr);
 
     // Validasi token ke backend
-    const response = await ApiGlobalAxiospParams.get("/allusr/tokenx", {
+    const rspnse = await ApiGlobalAxiospParams.get("/allusr/tokenx", {
       headers: {
         Authorization: tokenx,
       },
     });
 
     // Jika token tidak valid, kembalikan ke halaman login "/"
-    if (response.status !== 200)
+    if (rspnse.status !== 200)
       return NextResponse.redirect(new URL("/", req.url));
 
-    // Ambil segment pertama dari URL (misal: /opclss → "opclss")
-    const path = req.nextUrl.pathname.split("/")[1];
-
     // Jika user tidak memiliki akses ke path tsb, arahkan ke halaman default (misal /home atau /dashboard)
-    if (path && !Objusr.access.includes(path))
+    const fnlobj: mdlGlobalAllusrCookie = await rspnse.data;
+    if (pathnm && !fnlobj.access.includes(pathnm))
       return NextResponse.redirect(new URL("/global", req.url));
     return NextResponse.next();
-  } catch (error) {
+  }
+
+  // Cath error
+  catch (error) {
     console.log(error);
     return NextResponse.redirect(new URL("/", req.url));
   }

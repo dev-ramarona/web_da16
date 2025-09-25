@@ -54,11 +54,10 @@ export default function UixGlobalLoginxFormdt() {
             >
               <div className="opacity-0">Username</div>
               <div
-                className={`absolute opacity-100 cursor-text ${
-                  formdt.usrnme.length > 0
+                className={`absolute opacity-100 cursor-text ${formdt.usrnme.length > 0
                     ? "translate-y-0 pt-0 pb-1"
                     : "translate-y-full pt-1 pb-0"
-                } duration-300`}
+                  } duration-300`}
               >
                 Username
               </div>
@@ -82,11 +81,10 @@ export default function UixGlobalLoginxFormdt() {
             >
               <div className="opacity-0">Password</div>
               <div
-                className={`absolute opacity-100 cursor-text ${
-                  formdt.psswrd.length > 0
+                className={`absolute opacity-100 cursor-text ${formdt.psswrd.length > 0
                     ? "translate-y-0 pt-0 pb-1"
                     : "translate-y-full pt-1 pb-0"
-                } duration-300`}
+                  } duration-300`}
               >
                 Password
               </div>
