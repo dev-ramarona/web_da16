@@ -2,17 +2,14 @@
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { useEffect, useState } from "react";
 import {
-  ApiJeddahPnrsmrDownld,
-  ApiJeddahRtlsrsStatus,
-  ApiJeddahRtlsrsUpload,
-} from "../../api/apiJeddahDtbase";
-import {
   MdlJeddahInputxAllpnr,
-  MdlJeddahSearchPnrsmr,
-} from "../../model/mdlJeddahParams";
-import { ApiGlobalStatusIntrvl } from "@/app/global/api/apiGlobalPrimer";
-import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalAllusr";
+  MdlJeddahPnrsmrSearch,
+} from "../../model/mdlJeddahMainpr";
+import { ApiGlobalStatusIntrvl, ApiGlobalStatusPrcess } from "@/app/global/api/apiGlobalPrimer";
+import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
+import { ApiJeddahPnrsmrDownld } from "../../api/apiJeddahPnrsmr";
+import { ApiJeddahRtlsrsTmplte, ApiJeddahRtlsrsUpload } from "../../api/apiJeddahRtlsrs";
 
 export default function UixJeddahPnrsmrUpldwn({
   trtprm,
@@ -36,15 +33,14 @@ export default function UixJeddahPnrsmrUpldwn({
   };
 
   // File Upload csv Function
-  const apistt = ApiJeddahRtlsrsStatus;
   const [alrtup, alrtupSet] = useState<string>("Upload");
   const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
-      const status = await ApiJeddahRtlsrsStatus();
-      alrtupSet(status);
-      if (status != "Done") {
-        await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, apistt);
+      const status = await ApiGlobalStatusPrcess();
+      alrtupSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
+      if (status.sbrapi != 0) {
+        await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
       } else alrtupSet("Upload");
     };
     gtstat();
@@ -59,42 +55,23 @@ export default function UixJeddahPnrsmrUpldwn({
       else if (fileup[0].type != "text/csv")
         alrtupSet("Failed, please upload CSV file");
       else {
-        const status = await ApiJeddahRtlsrsStatus();
-        if (status == "Done") {
+        const status = await ApiGlobalStatusPrcess();
+        if (status.action == 0) {
           alrtupSet("Wait");
           await ApiJeddahRtlsrsUpload(fileup, cookie.stfnme);
           rplprm(["pnrclk_pnrdtl", "pnrclk_pnrsmr"], String(Math.random()));
-          return await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, apistt);
-        } else alrtupSet(status);
+          return await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
+        } else alrtupSet(`Wait ${status.action}%`);
       }
     setTimeout(() => alrtupSet("Upload"), 800);
   };
 
-  const getprm = (trtprm: MdlJeddahSearchPnrsmr) => {
-    return {
-      airlfl_pnrsmr: trtprm.airlfl_pnrsmr || "",
-      flnbfl_pnrsmr: trtprm.flnbfl_pnrsmr || "",
-      routfl_pnrsmr: trtprm.routfl_pnrsmr || "",
-      datefl_pnrsmr: trtprm.datefl_pnrsmr || "",
-      pnrcde_pnrsmr: trtprm.pnrcde_pnrsmr || "",
-      agtnme_pnrsmr: trtprm.agtnme_pnrsmr || "",
-      psdate_pnrsmr: trtprm.psdate_pnrsmr || "",
-      srtspl_pnrsmr: trtprm.srtspl_pnrsmr || "",
-      srtcxl_pnrsmr: trtprm.srtcxl_pnrsmr || "",
-      pagenw_pnrsmr: trtprm.pagenw_pnrsmr || 1,
-      limitp_pnrsmr: trtprm.limitp_pnrsmr || 15,
-    } as MdlJeddahSearchPnrsmr;
-  };
-  const [params, paramsSet] = useState(getprm(trtprm));
-  useEffect(() => {
-    paramsSet(getprm(trtprm));
-  }, [trtprm]);
 
   // Download csv summary pnr
   const [dwnrsp, dwnrspSet] = useState("Download PNR Null Retail/Series");
   const dwnapi = async () => {
     dwnrspSet("Wait");
-    const rspdwn = await ApiJeddahPnrsmrDownld(params, "rtlsrs");
+    const rspdwn = await ApiJeddahRtlsrsTmplte();
     rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
     setTimeout(() => dwnrspSet("Download PNR Null Retail/Series"), 500);
   };
@@ -104,7 +81,7 @@ export default function UixJeddahPnrsmrUpldwn({
         <UixGlobalInputxFormdt
           typipt={"file"}
           length={undefined}
-          queryx={"csfile_addfln"}
+          queryx={"csfile_rtlsrs"}
           params={filenm}
           plchdr="Choose file"
           repprm={filech}
@@ -114,9 +91,8 @@ export default function UixJeddahPnrsmrUpldwn({
       <div className="w-1/2 md:w-36 h-10 flexctr">
         <div className="afull flexctr p-1.5">
           <div
-            className={`afull flexctr text-center ${
-              alrtup.includes("Failed") ? "shkeit btncxl" : "btnsbm"
-            } duration-300`}
+            className={`afull flexctr text-center ${alrtup.includes("Failed") ? "shkeit btncxl" : "btnsbm"
+              } duration-300`}
             onClick={() => actupl()}
           >
             <span className="leading-3">{alrtup}</span>

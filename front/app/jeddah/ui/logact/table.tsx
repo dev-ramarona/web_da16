@@ -1,5 +1,5 @@
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
-import { MdlJeddahParamsLogact } from "../../model/mdlJeddahParams";
+import { MdlJeddahParamsLogact } from "../../model/mdlJeddahMainpr";
 
 export default function UixJeddahLogactTablex({
   logact,
@@ -19,14 +19,14 @@ export default function UixJeddahLogactTablex({
             <tr>
               {logact && logact.length > 0
                 ? Object.entries(logact[0]).map(([key]) =>
-                    key != "prmkey" ? (
-                      <th key={key} className="thhead">
-                        {key}
-                      </th>
-                    ) : (
-                      ""
-                    )
+                  key != "prmkey" ? (
+                    <th key={key} className="thhead">
+                      {key}
+                    </th>
+                  ) : (
+                    ""
                   )
+                )
                 : ""}
             </tr>
           </thead>

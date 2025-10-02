@@ -4,20 +4,20 @@ import { UixGlobalIconvcSeting } from "../global/ui/server/uixGlobalIconvc";
 import UixJeddahAgtnmeMainpg from "./ui/agtnme/main";
 import UixGlobalLoadngAnmate from "../global/ui/server/UixGlobalLoadng";
 import UixJeddahLogactMainpg from "./ui/logact/main";
-import UixJeddahAddflnMainpg from "./ui/addfln/main";
 import UixJeddahPrcessMainpg from "./ui/prcess/main";
 import UixJeddahPnrdtlMainpg from "./ui/pnrdtl/main";
-import { FncJeddahAllpnrrParams } from "./function/fncJeddahParams";
-import { MdlJeddahInputxAllpnr } from "./model/mdlJeddahParams";
+import { MdlJeddahInputxAllpnr } from "./model/mdlJeddahMainpr";
 import UixJeddahPnrsmrMainpg from "./ui/pnrsmr/main";
 import UixJeddahFlnsmrMainpg from "./ui/flnsmr/main";
+import { FncJeddahAllpnrrMainpr } from "./function/fncJeddahMainpr";
+import UixJeddahAddflnMainpg from "./ui/flnbfl/main";
 
 export default async function Page(props: {
   searchParams: Promise<MdlJeddahInputxAllpnr>;
 }) {
   const cookie = await ApiGlobalCookieGetdta();
   const qryprm = await props.searchParams;
-  const trtprm = FncJeddahAllpnrrParams(qryprm);
+  const trtprm = FncJeddahAllpnrrMainpr(qryprm);
   // await new Promise((r) => setTimeout(r, 500));
   return (
     <div className="afull flex justify-start items-start flex-wrap p-1.5 md:p-6">
@@ -90,7 +90,7 @@ export default async function Page(props: {
             <UixGlobalIconvcSeting color="gray" size={1.3} bold={3} />
           </div>
           <Suspense fallback={<UixGlobalLoadngAnmate />}>
-            <UixJeddahAddflnMainpg />
+            <UixJeddahAddflnMainpg cookie={cookie} />
           </Suspense>
         </div>
       </div>

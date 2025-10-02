@@ -3,13 +3,13 @@ import {
   FncGlobalFormatArrcpn,
   FncGlobalFormatDatefm,
 } from "@/app/global/function/fncGlobalFormat";
-import { MdlJeddahParamsPnrdtl } from "../../model/mdlJeddahParams";
+import { MdlJeddahPnrdtlDtbase } from "../../model/mdlJeddahMainpr";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 export default function UixJeddahPnrdtlTablex({
   pnrdtl,
   pnrcde,
 }: {
-  pnrdtl: MdlJeddahParamsPnrdtl[];
+  pnrdtl: MdlJeddahPnrdtlDtbase[];
   pnrcde: string;
 }) {
   // Filter all PNR arr split

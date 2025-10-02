@@ -3,18 +3,18 @@ import {
   FncGlobalFormatDatefm,
   FncGlobalFormatDateip,
 } from "@/app/global/function/fncGlobalFormat";
-import { MdlJeddahParamsFlnsmr } from "../../model/mdlJeddahParams";
+import { MdlJeddahFlnsmrDtbase } from "../../model/mdlJeddahMainpr";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 
 export default function UixJeddahFlnsmrTablex({
   flnsmr,
 }: {
-  flnsmr: MdlJeddahParamsFlnsmr[];
+  flnsmr: MdlJeddahFlnsmrDtbase[];
 }) {
   const rplprm = FncGlobalParamsEdlink();
 
   // Focus on this Flight
-  const flnnow = (pnr: MdlJeddahParamsFlnsmr) => {
+  const flnnow = (pnr: MdlJeddahFlnsmrDtbase) => {
     rplprm(
       [
         "flnbfl_pnrdtl",

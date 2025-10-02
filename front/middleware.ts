@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ApiGlobalAxiospParams } from "./app/global/api/apiGlobalPrimer";
-import { mdlGlobalAllusrCookie } from "./app/global/model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "./app/global/model/mdlGlobalPrimer";
 
 export async function middleware(req: NextRequest) {
   const tknnme = process.env.NEXT_PUBLIC_TKN_COOKIE || "x"
@@ -43,5 +43,5 @@ export async function middleware(req: NextRequest) {
 
 // Menerapkan middleware ke semua route di bawah '/global'
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|api|$).*)"],
+  matcher: '/((?!$|_next|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|css|js)).*)',
 };

@@ -4,7 +4,7 @@ import {
   FncGlobalFormatDatefm,
   FncGlobalFormatFilter,
 } from "@/app/global/function/fncGlobalFormat";
-import { MdlJeddahParamsPnrsmr } from "../../model/mdlJeddahParams";
+import { MdlJeddahPnrsmrDtbase } from "../../model/mdlJeddahMainpr";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import {
   UixGlobalIconvcCancel,
@@ -13,15 +13,15 @@ import {
 } from "@/app/global/ui/server/uixGlobalIconvc";
 import { useState } from "react";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { ApiJeddahRtlsrsUpdate } from "../../api/apiJeddahDtbase";
-import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
+import { ApiJeddahRtlsrsUpdate } from "../../api/apiJeddahRtlsrs";
 
 export default function UixJeddahPnrsmrTablex({
   pnrsmr,
   pnrcde,
   cookie,
 }: {
-  pnrsmr: MdlJeddahParamsPnrsmr[];
+  pnrsmr: MdlJeddahPnrsmrDtbase[];
   pnrcde: string;
   cookie: mdlGlobalAllusrCookie;
 }) {
@@ -51,7 +51,7 @@ export default function UixJeddahPnrsmrTablex({
 
   // Action edit PNR Summary Retail or series
   const [rjcedt, rjcedtSet] = useState<string>("");
-  const actedt = (prm: MdlJeddahParamsPnrsmr) => {
+  const actedt = (prm: MdlJeddahPnrsmrDtbase) => {
     if (prm.rtlsrs == "") {
       rjcedtSet(prm.prmkey);
       return setTimeout(() => rjcedtSet(""), 500);
@@ -59,10 +59,10 @@ export default function UixJeddahPnrsmrTablex({
   };
 
   // Edit Input PNR Summary Retail or series
-  const [iptobj, iptobjSet] = useState<MdlJeddahParamsPnrsmr>();
+  const [iptobj, iptobjSet] = useState<MdlJeddahPnrsmrDtbase>();
   const actipt = (
     e: React.ChangeEvent<HTMLInputElement>,
-    pnrsmr: MdlJeddahParamsPnrsmr
+    pnrsmr: MdlJeddahPnrsmrDtbase
   ) => {
     let val = e.currentTarget.value;
     const valuef = FncGlobalFormatFilter(val, [
@@ -74,12 +74,12 @@ export default function UixJeddahPnrsmrTablex({
       ...pnrsmr,
       rtlsrs: valuef,
       notedt: `Updated ${valuef} by ${cookie.stfnme}`,
-    } as MdlJeddahParamsPnrsmr);
+    } as MdlJeddahPnrsmrDtbase);
     console.log(iptobj);
   };
 
   // Confirm update retail or series
-  const update = async (log: MdlJeddahParamsPnrsmr) => {
+  const update = async (log: MdlJeddahPnrsmrDtbase) => {
     if (iptobj) {
       await ApiJeddahRtlsrsUpdate(iptobj);
       iptobjSet({ ...log, prmkey: "" });
@@ -165,11 +165,10 @@ export default function UixJeddahPnrsmrTablex({
                             </div>
                             <div className="afull max-w-fit flexctr gap-x-1.5 relative">
                               <div
-                                className={`flexctr btnsbm duration-300 cursor-pointer ${
-                                  iptobj?.prmkey === log.prmkey
-                                    ? "w-8 opacity-100"
-                                    : "w-5 opacity-0 select-none pointer-events-none"
-                                }`}
+                                className={`flexctr btnsbm duration-300 cursor-pointer ${iptobj?.prmkey === log.prmkey
+                                  ? "w-8 opacity-100"
+                                  : "w-5 opacity-0 select-none pointer-events-none"
+                                  }`}
                                 onClick={() => update(log)}
                               >
                                 <UixGlobalIconvcCeklis
@@ -179,11 +178,10 @@ export default function UixJeddahPnrsmrTablex({
                                 />
                               </div>
                               <div
-                                className={`flexctr btnsbm duration-300 cursor-pointer ${
-                                  iptobj?.prmkey === log.prmkey
-                                    ? "w-8 opacity-100"
-                                    : "w-5 opacity-0 select-none pointer-events-none"
-                                }`}
+                                className={`flexctr btnsbm duration-300 cursor-pointer ${iptobj?.prmkey === log.prmkey
+                                  ? "w-8 opacity-100"
+                                  : "w-5 opacity-0 select-none pointer-events-none"
+                                  }`}
                                 onClick={() =>
                                   iptobjSet({ ...log, prmkey: "" })
                                 }
@@ -195,13 +193,11 @@ export default function UixJeddahPnrsmrTablex({
                                 />
                               </div>
                               <div
-                                className={`absolute flexctr btnsbm duration-300 cursor-pointer ${
-                                  iptobj?.prmkey === log.prmkey
-                                    ? "w-8 opacity-0 select-none pointer-events-none"
-                                    : "w-8 opacity-100"
-                                } ${
-                                  rjcedt == log.prmkey ? "shkeit btncxl" : ""
-                                }`}
+                                className={`absolute flexctr btnsbm duration-300 cursor-pointer ${iptobj?.prmkey === log.prmkey
+                                  ? "w-8 opacity-0 select-none pointer-events-none"
+                                  : "w-8 opacity-100"
+                                  } ${rjcedt == log.prmkey ? "shkeit btncxl" : ""
+                                  }`}
                                 onClick={() => actedt(log)}
                               >
                                 <UixGlobalIconvcEditdt

@@ -1,7 +1,7 @@
-import { MdlJeddahInputxAllpnr } from "../model/mdlJeddahParams";
+import { MdlJeddahInputxAllpnr } from "../model/mdlJeddahMainpr";
 
 // Treatment function params
-export function FncJeddahAllpnrrParams(params: MdlJeddahInputxAllpnr) {
+export function FncJeddahAllpnrrMainpr(params: MdlJeddahInputxAllpnr) {
   return {
     chssmr: params.chssmr || "",
     clssfl_pnrdtl: params.clssfl_pnrdtl || "",

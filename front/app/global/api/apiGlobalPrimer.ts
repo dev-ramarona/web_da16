@@ -1,4 +1,5 @@
 import axios from "axios";
+import { MdlGlobalStatusPrcess } from "../model/mdlGlobalPrimer";
 
 // Global Axios
 export const ApiGlobalAxiospParams = axios.create({
@@ -8,33 +9,41 @@ export const ApiGlobalAxiospParams = axios.create({
 });
 
 // Hit status sabre api
-export async function ApiGlobalStatusSbrapi() {
+export async function ApiGlobalStatusPrcess() {
   try {
     const rspnse = await ApiGlobalAxiospParams.get("/global/status");
     if (rspnse.status === 200) {
-      const fnlstr: string = await rspnse.data;
+      const rawstr: MdlGlobalStatusPrcess = await rspnse.data;
+      const fnlstr: MdlGlobalStatusPrcess = {
+        action: Number(rawstr.action.toFixed(2)),
+        sbrapi: Number(rawstr.sbrapi.toFixed(2))
+      }
       return fnlstr;
     }
   } catch (error) {
     console.log(error);
   }
-  return "failed";
+  const tmpstr: MdlGlobalStatusPrcess = { action: 0, sbrapi: 0, }
+  return tmpstr
 }
 
 // Hit status api with interval time
 export async function ApiGlobalStatusIntrvl(
   statfnSet: (v: string) => void,
   intrvlSet: (v: NodeJS.Timeout | null) => void,
-  statusApi: () => Promise<string>
+  strVarble: "action" | "sbrapi"
 ) {
   const strtiv = setInterval(async () => {
-    const status = await statusApi();
-    statfnSet(status);
-    if (status === "Done") {
+    const status = await ApiGlobalStatusPrcess();
+    const rawval = (strVarble == "action") ? status.action : status.sbrapi
+    const nowval = Number(rawval.toFixed(2));
+    const nowstr = (nowval == 0) ? "Done" : `Wait ${nowval}%`
+    statfnSet(nowstr);
+    if (nowstr === "Done") {
       clearInterval(strtiv);
       intrvlSet(null);
       statfnSet("Process Done");
-      setTimeout(() => statfnSet("Upload"), 1000);
+      setTimeout(() => statfnSet("Done"), 1000);
     }
   }, 3000);
   intrvlSet(strtiv);

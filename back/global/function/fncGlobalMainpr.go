@@ -1,10 +1,15 @@
 package fncGlobal
 
 import (
+	mdlGlobal "back/global/model"
 	"bufio"
+	"crypto/rand"
+	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -33,7 +38,7 @@ func FncGlobalMainprLoadnv(filenm string) {
 }
 
 // manual load
-var Status = "Done"
+var Status = mdlGlobal.MdlGlobalAllusrStatus{Sbrapi: 0, Action: 0}
 var Client *mongo.Client
 var jwtkey []byte
 var Ipalow []string
@@ -53,4 +58,24 @@ func init() {
 	Ipadrs = os.Getenv("NEXT_PUBLIC_IPV_ADRESS")
 	Tknnme = os.Getenv("NEXT_PUBLIC_TKN_COOKIE")
 	Ipalow = strings.Split(os.Getenv("NEXT_PUBLIC_IPV_ALLOWD"), "|")
+}
+
+// Get status data process
+func FncGlobalMainprStatus(c *gin.Context) {
+	c.JSON(http.StatusOK, Status)
+}
+
+// Generate UUID
+func FncGlobalMakevrCduuid() string {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
+
+	// versi 4 UUID (random)
+	b[6] = (b[6] & 0x0f) | 0x40
+	b[8] = (b[8] & 0x3f) | 0x80
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:16])
 }

@@ -1,9 +1,9 @@
-import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 import { ApiJeddahAgtnmeNullnm } from "../../api/apiJeddahAgtnme";
 import {
   MdlJeddahInputxAllpnr,
-  MdlJeddahParamsAgtedt,
-} from "../../model/mdlJeddahParams";
+  MdlJeddahAgtnmeDtbase,
+} from "../../model/mdlJeddahMainpr";
 import UixJeddahAgtnmeTablex from "./table";
 import UixJeddahAgtnmerSearch from "./search";
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
@@ -17,7 +17,7 @@ export default async function UixJeddahAgtnmeMainpg({
 }) {
   // await new Promise((r) => setTimeout(r, 5000));
   const agtnul = await ApiJeddahAgtnmeNullnm(trtprm);
-  const arrdta: MdlJeddahParamsAgtedt[] = agtnul.arrdta;
+  const arrdta: MdlJeddahAgtnmeDtbase[] = agtnul.arrdta;
   const totdta: number = agtnul.totdta;
   return (
     <>

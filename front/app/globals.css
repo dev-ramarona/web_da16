@@ -92,6 +92,10 @@ input[type] {
   @apply bg-sky-800 hover:bg-sky-600 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
 }
 
+.btnscs {
+  @apply bg-green-800 hover:bg-green-600 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
+}
+
 .btnwrn {
   @apply bg-cyan-600 hover:bg-cyan-400 hover:shadow-md shadow-slate-400 text-white rounded-lg px-1.5 font-semibold leading-5 cursor-pointer duration-300;
 }

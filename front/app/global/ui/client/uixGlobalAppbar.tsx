@@ -12,7 +12,7 @@ import {
 } from "../server/uixGlobalIconvc";
 import { MdlGlobalApplstDtbase } from "../../model/mdlGlobalApplst";
 import { ApiGlobalAllusrLogout } from "../../api/apiGlobalLoginx";
-import { mdlGlobalAllusrCookie } from "../../model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "../../model/mdlGlobalPrimer";
 
 export default function UixGlobalAppbarClient({
   cookie,

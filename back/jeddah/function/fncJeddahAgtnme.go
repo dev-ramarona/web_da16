@@ -47,11 +47,11 @@ func FncJeddahAgtnmeNullnm(c *gin.Context) {
 	}
 
 	// Final match pipeline
-	var mtchal bson.D
+	var mtchfn bson.D
 	if len(mtchdt) != 0 {
-		mtchal = bson.D{{Key: "$match", Value: bson.D{{Key: "$and", Value: mtchdt}}}}
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{{Key: "$and", Value: mtchdt}}}}
 	} else {
-		mtchal = bson.D{{Key: "$match", Value: bson.D{}}}
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{}}}
 	}
 
 	// Select database and collection
@@ -64,7 +64,7 @@ func FncJeddahAgtnmeNullnm(c *gin.Context) {
 	go func() {
 		defer sycwgp.Done()
 		pipeln := mongo.Pipeline{
-			mtchal,
+			mtchfn,
 			bson.D{{Key: "$count", Value: "totalCount"}},
 		}
 
@@ -93,7 +93,7 @@ func FncJeddahAgtnmeNullnm(c *gin.Context) {
 	sycwgp.Add(1)
 	go func() {
 		defer sycwgp.Done()
-		piplne := mongo.Pipeline{mtchal,
+		piplne := mongo.Pipeline{mtchfn,
 			bson.D{{Key: "$sort", Value: bson.D{{Key: "agtnme", Value: 1}}}},
 			bson.D{{Key: "$skip", Value: (max(inputx.Pagenw_agtnme, 1) - 1) * inputx.Limitp_agtnme}},
 			bson.D{{Key: "$limit", Value: inputx.Limitp_agtnme}},
@@ -191,7 +191,7 @@ func FncJeddahAgtnmeUpdate(c *gin.Context) {
 
 	// Declar sync wait group
 	syncwg := sync.WaitGroup{}
-	syncwg.Add(3)
+	syncwg.Add(2)
 
 	// Detail PNR
 	go func() {
@@ -294,4 +294,31 @@ func FncJeddahAgtnmeUpdate(c *gin.Context) {
 	// Send token to frontend
 	syncwg.Wait()
 	c.JSON(http.StatusOK, "success")
+}
+
+// Get Sync map data agent name
+func FncJeddahAgtnmeSycmap() *sync.Map {
+
+	// Select database and collection
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("jeddah_agentx")
+	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Get route data
+	datarw, err := tablex.Find(contxt, bson.M{})
+	if err != nil {
+		panic(err)
+	}
+	defer datarw.Close(contxt)
+
+	// Append to slice
+	sycmap := &sync.Map{}
+	for datarw.Next(contxt) {
+		var object mdlJeddah.MdlJeddahAgtnmeDtbase
+		datarw.Decode(&object)
+		sycmap.Store(object.Prmkey, object)
+	}
+
+	// return data
+	return sycmap
 }

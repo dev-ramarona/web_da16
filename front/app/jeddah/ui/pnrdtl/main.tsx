@@ -1,12 +1,12 @@
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
-import { ApiJeddahPnrdtlGetarr } from "../../api/apiJeddahDtbase";
 import {
   MdlJeddahInputxAllpnr,
-  MdlJeddahParamsPnrdtl,
-} from "../../model/mdlJeddahParams";
+  MdlJeddahPnrdtlDtbase,
+} from "../../model/mdlJeddahMainpr";
 
 import UixJeddahPnrdtlSearch from "./search";
 import UixJeddahPnrdtlTablex from "./table";
+import { ApiJeddahPnrdtlGetall } from "../../api/apiJeddahPnrdtl";
 
 export default async function UixJeddahPnrdtlMainpg({
   trtprm,
@@ -14,8 +14,8 @@ export default async function UixJeddahPnrdtlMainpg({
   trtprm: MdlJeddahInputxAllpnr;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));
-  const pnrdtl = await ApiJeddahPnrdtlGetarr(trtprm);
-  const arrdta: MdlJeddahParamsPnrdtl[] = pnrdtl.arrdta;
+  const pnrdtl = await ApiJeddahPnrdtlGetall(trtprm);
+  const arrdta: MdlJeddahPnrdtlDtbase[] = pnrdtl.arrdta;
   const totdta: number = pnrdtl.totdta;
 
   return (

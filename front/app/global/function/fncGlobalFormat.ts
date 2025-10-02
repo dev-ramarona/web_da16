@@ -1,4 +1,4 @@
-import { mdlGlobalAlluserFilter } from "../model/mdlGlobalAllusr";
+import { mdlGlobalAlluserFilter } from "../model/mdlGlobalPrimer";
 
 // Fucntion change format data yymmdd/hhmm to dd-MMM-yyyy hh:mm
 export function FncGlobalFormatDatefm(inputd: string): string {
@@ -33,18 +33,18 @@ export function FncGlobalFormatDateip(inputd: string): string {
   return `${year}-${month}-${day}`;
 }
 
-// Fucntion change format data dd-MMM-yyyy hh:mm to yymmdd
-export function FncGlobalFormatIpdate(inputd: string): string {
-  if (inputd.length !== 10) return "Invalid format";
+// // Fucntion change format data dd-MMM-yyyy hh:mm to yymmdd
+// export function FncGlobalFormatIpdate(inputd: string): string {
+//   if (inputd.length !== 10) return "Invalid format";
 
-  const yearnw = inputd.slice(0, 4);
-  const monthn = inputd.slice(5, 7);
-  const daynow = inputd.slice(8, 10);
+//   const yearnw = inputd.slice(0, 4);
+//   const monthn = inputd.slice(5, 7);
+//   const daynow = inputd.slice(8, 10);
 
-  // Buat Date object
-  const datetx = `${yearnw}-${monthn}-${daynow}`;
-  return datetx;
-}
+//   // Buat Date object
+//   const datetx = `${yearnw}-${monthn}-${daynow}`;
+//   return datetx;
+// }
 
 // Function change format routef to 3-3 characters
 export function FncGlobalFormatRoutfl(routef: string) {

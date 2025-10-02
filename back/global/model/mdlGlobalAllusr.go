@@ -6,7 +6,6 @@ type MdlGlobalAllusrParams struct {
 	Usrnme string `json:"usrnme,omitempty" bson:"usrnme,omitempty"`
 	Psswrd string `json:"psswrd,omitempty" bson:"psswrd,omitempty"`
 }
-
 type MdlGlobalAllusrDtbase struct {
 	Usrnme string   `json:"usrnme,omitempty" bson:"usrnme,omitempty"`
 	Psswrd string   `json:"psswrd,omitempty" bson:"psswrd,omitempty"`
@@ -15,7 +14,6 @@ type MdlGlobalAllusrDtbase struct {
 	Access []string `json:"access,omitempty" bson:"access,omitempty"`
 	Keywrd []string `json:"keywrd,omitempty" bson:"keywrd,omitempty"`
 }
-
 type MdlGlobalAllusrTokens struct {
 	Stfnme string   `json:"stfnme"`
 	Usrnme string   `json:"usrnme"`
@@ -23,8 +21,11 @@ type MdlGlobalAllusrTokens struct {
 	Keywrd []string `json:"keywrd"`
 	jwt.RegisteredClaims
 }
-
 type MdlGlobalAllusrApplst struct {
 	Prmkey string `json:"prmkey,omitempty" bson:"prmkey,omitempty"`
 	Detail string `json:"detail,omitempty" bson:"detail,omitempty"`
+}
+type MdlGlobalAllusrStatus struct {
+	Sbrapi float64 `json:"sbrapi" bson:"sbrapi"`
+	Action float64 `json:"action" bson:"action"`
 }

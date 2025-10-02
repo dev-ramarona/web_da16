@@ -2,7 +2,7 @@ package main
 
 import (
 	fncGlobal "back/global/function"
-	fncJeddah "back/jeddah/function/agtnme"
+	fncJeddah "back/jeddah/function"
 	"context"
 	"fmt"
 	"time"
@@ -36,8 +36,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// // Handle global
-	// r.GET("/global/status", fncGlobal.FncGlobalApisbrStatus)
+	// Handle global
+	r.GET("/global/status", fncGlobal.FncGlobalMainprStatus)
 
 	// Handle web link API all user
 	r.POST("/allusr/loginx", fncGlobal.FncGlobalAllusrLoginx)
@@ -46,21 +46,23 @@ func main() {
 	r.GET("/allusr/applst", fncGlobal.FncGlobalAllusrApplst)
 
 	// // Handle web link API jeddah
-	// // r.POST("/jeddah/addfln", fnc_jeddah.FncJeddahAddflnTodtbs)
-	// r.POST("/jeddah/prcess", fnc_jeddah.FncJeddahPrcessMainpg)
+	r.POST("/jeddah/prcess", fncJeddah.FncJeddahPrcessMainpg)
+	r.GET("/jeddah/actlog/getall", fncJeddah.FncJeddahActlogGetall)
+	r.GET("/jeddah/flnbfl/tmplte", fncJeddah.FncJeddahFlnbflTmplte)
+	r.POST("/jeddah/flnbfl/upload/:upldby", fncJeddah.FncJeddahFlnbflUpload)
+	r.POST("/jeddah/flnbfl/update", fncJeddah.FncJeddahFlnbflUpdate)
 	r.POST("/jeddah/agtnme/nullvl", fncJeddah.FncJeddahAgtnmeNullnm)
-	r.GET("/jeddah/agtnme/search/:newidn/:newdtl", fncJeddah.FncJeddahAgtnmeSearch)
-	// r.GET("/jeddah/logact", fnc_jeddah.FncJeddahLogactGetall)
 	r.POST("/jeddah/agtnme/update", fncJeddah.FncJeddahAgtnmeUpdate)
-	// r.POST("/jeddah/pnrdtl", fnc_jeddah.FncJeddahDtlpnrFrntnd)
-	// r.POST("/jeddah/pnrdtl/:downld", fnc_jeddah.FncJeddahDtlpnrFrntnd)
-	// r.POST("/jeddah/pnrsmr", fnc_jeddah.FncJeddahSmrpnrFrntnd)
-	// r.POST("/jeddah/pnrsmr/:downld", fnc_jeddah.FncJeddahSmrpnrFrntnd)
-	// r.POST("/jeddah/flnsmr", fnc_jeddah.FncJeddahSmrflnFrntnd)
-	// r.POST("/jeddah/flnsmr/:downld", fnc_jeddah.FncJeddahSmrflnFrntnd)
-	// r.POST("/jeddah/rtlsrs/update", fnc_jeddah.FncJeddahRtlsrsUpdate)
-	// r.POST("/jeddah/rtlsrs/upload/:upldby", fnc_jeddah.FncJeddahRtlsrsUpload)
-	// r.GET("/jeddah/rtlsrs/status", fnc_jeddah.FncJeddahRtlsrsStatus)
+	r.GET("/jeddah/agtnme/search/:newidn/:newdtl", fncJeddah.FncJeddahAgtnmeSearch)
+	r.POST("/jeddah/pnrsmr/getall", fncJeddah.FncJeddahPnrsmrFrntnd)
+	r.POST("/jeddah/pnrsmr/getall/:downld", fncJeddah.FncJeddahPnrsmrFrntnd)
+	r.POST("/jeddah/pnrdtl/getall", fncJeddah.FncJeddahPnrdtlGetall)
+	r.POST("/jeddah/pnrdtl/getall/:downld", fncJeddah.FncJeddahPnrdtlGetall)
+	r.POST("/jeddah/flnsmr/getall", fncJeddah.FncJeddahFlnsmrGetall)
+	r.POST("/jeddah/flnsmr/getall/:downld", fncJeddah.FncJeddahFlnsmrGetall)
+	r.GET("/jeddah/rtlsrs/tmplte", fncJeddah.FncJeddahRtlsrsTmplte)
+	r.POST("/jeddah/rtlsrs/update", fncJeddah.FncJeddahRtlsrsUpdate)
+	r.POST("/jeddah/rtlsrs/upload/:upldby", fncJeddah.FncJeddahRtlsrsUpload)
 
 	// // Handle web link API File PPN Lookup
 	// r.POST("/ppnlkp/prcess", fnc_ppnlkp.FncPpnlkpPrcessMainpg)

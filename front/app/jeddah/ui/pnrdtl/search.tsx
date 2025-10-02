@@ -7,18 +7,19 @@ import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import {
   MdlJeddahInputxAllpnr,
-  MdlJeddahSearchPnrdtl,
-} from "../../model/mdlJeddahParams";
+  MdlJeddahPnrdtlSearch,
+} from "../../model/mdlJeddahMainpr";
 import { useEffect, useState } from "react";
-import { mdlGlobalAlluserFilter } from "@/app/global/model/mdlGlobalAllusr";
-import { ApiJeddahPnrdtlDownld } from "../../api/apiJeddahDtbase";
+import { mdlGlobalAlluserFilter } from "@/app/global/model/mdlGlobalPrimer";
+import { ApiJeddahPnrdtlDownld } from "../../api/apiJeddahPnrdtl";
+
 
 export default function UixJeddahPnrdtlSearch({
   trtprm,
 }: {
   trtprm: MdlJeddahInputxAllpnr;
 }) {
-  const [params, paramsSet] = useState<MdlJeddahSearchPnrdtl>({
+  const [params, paramsSet] = useState<MdlJeddahPnrdtlSearch>({
     clssfl_pnrdtl: trtprm.clssfl_pnrdtl || "",
     airlfl_pnrdtl: trtprm.airlfl_pnrdtl || "",
     datefl_pnrdtl: trtprm.datefl_pnrdtl || "",

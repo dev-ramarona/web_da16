@@ -4,20 +4,19 @@ import { useEffect, useState } from "react";
 import { ApiJeddahPrcessManual } from "../../api/apiJeddahPrcess";
 import {
   ApiGlobalStatusIntrvl,
-  ApiGlobalStatusSbrapi,
+  ApiGlobalStatusPrcess,
 } from "@/app/global/api/apiGlobalPrimer";
 
 export default function UixJeddahPrcessManual() {
   // Get status first
-  const apistt = ApiGlobalStatusSbrapi;
   const [statfn, statfnSet] = useState("Upload");
   const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
-      const status = await ApiGlobalStatusSbrapi();
-      statfnSet(status);
-      if (status != "Done") {
-        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, apistt);
+      const status = await ApiGlobalStatusPrcess();
+      statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
+      if (status.sbrapi != 0) {
+        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
       } else statfnSet("Upload");
     };
     gtstat();
@@ -25,12 +24,13 @@ export default function UixJeddahPrcessManual() {
 
   // Hit the database and get interval status
   const prcess = async () => {
-    const status = await ApiGlobalStatusSbrapi();
-    if (status == "Done") {
+    const status = await ApiGlobalStatusPrcess();
+    console.log(status.sbrapi);
+    if (status.sbrapi == 0) {
       statfnSet("Wait");
       ApiJeddahPrcessManual();
-      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, apistt);
-    } else statfnSet(status);
+      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+    } else statfnSet(`Wait ${status.sbrapi}%`);
   };
 
   return (

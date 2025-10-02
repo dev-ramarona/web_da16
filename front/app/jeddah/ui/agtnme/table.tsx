@@ -5,7 +5,7 @@ import {
   UixGlobalIconvcCopydt,
 } from "@/app/global/ui/server/uixGlobalIconvc";
 import React, { useEffect, useRef, useState } from "react";
-import { MdlJeddahParamsAgtedt } from "../../model/mdlJeddahParams";
+import { MdlJeddahAgtnmeDtbase } from "../../model/mdlJeddahMainpr";
 import {
   ApiJeddahAgtnmeAgtupd,
   ApiJeddahAgtnmeNulsrc,
@@ -13,20 +13,19 @@ import {
 import {
   mdlGlobalAllusrCookie,
   mdlGlobalAlluserFilter,
-} from "@/app/global/model/mdlGlobalAllusr";
+} from "@/app/global/model/mdlGlobalPrimer";
 import { FncGlobalFormatFilter } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 
 export default function UixJeddahAgtnmeTablex({
   cookie,
   agtnul,
 }: {
-  agtnul: MdlJeddahParamsAgtedt[];
+  agtnul: MdlJeddahAgtnmeDtbase[];
   cookie: mdlGlobalAllusrCookie;
 }) {
   // Monitoring agent detail and search
-  const defagt: MdlJeddahParamsAgtedt = {
+  const defagt: MdlJeddahAgtnmeDtbase = {
     prmkey: "",
     airlfl: "",
     agtnme: "",
@@ -80,10 +79,6 @@ export default function UixJeddahAgtnmeTablex({
     return () => clearTimeout(timeout);
   }, [agtnme.newidn, agtnme.newdtl]);
 
-  useEffect(() => {
-    console.log(agtnme);
-  }, [agtnme]);
-
   // Focus confirm
   const [confrm, confrmSet] = useState(false);
   const btnrf1 = useRef<HTMLButtonElement>(null);
@@ -98,13 +93,11 @@ export default function UixJeddahAgtnmeTablex({
   // Submit update data
   const btnrf2 = useRef<HTMLButtonElement>(null);
   const [rspupd, rspupdSet] = useState<string>("");
-  const rplprm = FncGlobalParamsEdlink();
   const update = async (action: boolean) => {
     if (btnrf2.current) btnrf2.current.focus();
     confrmSet(false);
     if (!action) return;
     const rspnow = await ApiJeddahAgtnmeAgtupd(agtnme);
-    if (rspnow != "failed") rplprm("", "")
     rspupdSet(rspnow);
     setTimeout(() => rspupdSet(""), 1000);
   };
@@ -273,9 +266,9 @@ export default function UixJeddahAgtnmeTablex({
 }
 
 export function UixJeddahAgtnmeCopydt({ log, agtnme, agtnmeSet }: {
-  log: MdlJeddahParamsAgtedt,
-  agtnme: MdlJeddahParamsAgtedt,
-  agtnmeSet: React.Dispatch<React.SetStateAction<MdlJeddahParamsAgtedt>>
+  log: MdlJeddahAgtnmeDtbase,
+  agtnme: MdlJeddahAgtnmeDtbase,
+  agtnmeSet: React.Dispatch<React.SetStateAction<MdlJeddahAgtnmeDtbase>>
 }
 ) {
   const mtcPrmkey = log.prmkey == agtnme.prmkey
@@ -314,8 +307,8 @@ export function UixJeddahAgtnmeCopydt({ log, agtnme, agtnmeSet }: {
 }
 
 export function UixJeddahAgtnmeCeklis({ log, agtnme, btncfm }: {
-  log: MdlJeddahParamsAgtedt,
-  agtnme: MdlJeddahParamsAgtedt,
+  log: MdlJeddahAgtnmeDtbase,
+  agtnme: MdlJeddahAgtnmeDtbase,
   btncfm: (agtnme: string) => void
 }) {
   const mtcPrmkey = log.prmkey == agtnme.prmkey

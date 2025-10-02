@@ -2,7 +2,7 @@
 
 
 import { cookies } from "next/headers";
-import { mdlGlobalAllusrCookie } from "../model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "../model/mdlGlobalPrimer";
 import { ApiGlobalAxiospParams } from "./apiGlobalPrimer";
 
 // Handle Cookie

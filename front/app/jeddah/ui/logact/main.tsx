@@ -1,10 +1,11 @@
-import { ApiJeddahDtbaseLogact } from "../../api/apiJeddahDtbase";
-import { MdlJeddahParamsLogact } from "../../model/mdlJeddahParams";
+
+import { ApiJeddahDtbaseActlog } from "../../api/apiJeddahLogact";
+import { MdlJeddahParamsLogact } from "../../model/mdlJeddahMainpr";
 import UixJeddahLogactTablex from "./table";
 
 export default async function UixJeddahLogactMainpg() {
   // await new Promise((r) => setTimeout(r, 2000));
-  const logact: MdlJeddahParamsLogact[] = await ApiJeddahDtbaseLogact();
+  const logact: MdlJeddahParamsLogact[] = await ApiJeddahDtbaseActlog();
   return (
     <>
       {logact.length > 0 ? (

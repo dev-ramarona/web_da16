@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { ApiGlobalAxiospParams } from "./apiGlobalPrimer";
 import { MdlGlobalApplstDtbase } from "../model/mdlGlobalApplst";
-import { MdlGlobalAllusrParams } from "../model/mdlGlobalAllusr";
+import { MdlGlobalAllusrParams } from "../model/mdlGlobalPrimer";
 
 // API Login
 export async function ApiGlobalLoginAllusr(

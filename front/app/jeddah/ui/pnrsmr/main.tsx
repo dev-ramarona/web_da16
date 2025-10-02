@@ -1,13 +1,13 @@
-import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalAllusr";
+import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 import {
   MdlJeddahInputxAllpnr,
-  MdlJeddahParamsPnrsmr,
-} from "../../model/mdlJeddahParams";
-import { ApiJeddahPnrsmrGetarr } from "../../api/apiJeddahDtbase";
+  MdlJeddahPnrsmrDtbase,
+} from "../../model/mdlJeddahMainpr";
 import UixJeddahPnrsmrSearch from "./search";
 import UixJeddahPnrsmrTablex from "./table";
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
 import UixJeddahPnrsmrUpldwn from "./upload";
+import { ApiJeddahPnrsmrGetall } from "../../api/apiJeddahPnrsmr";
 
 export default async function UixJeddahPnrsmrMainpg({
   trtprm,
@@ -17,8 +17,8 @@ export default async function UixJeddahPnrsmrMainpg({
   cookie: mdlGlobalAllusrCookie;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));
-  const pnrsmr = await ApiJeddahPnrsmrGetarr(trtprm);
-  const arrdta: MdlJeddahParamsPnrsmr[] = pnrsmr.arrdta;
+  const pnrsmr = await ApiJeddahPnrsmrGetall(trtprm);
+  const arrdta: MdlJeddahPnrsmrDtbase[] = pnrsmr.arrdta;
   const totdta: number = pnrsmr.totdta;
 
   return (
