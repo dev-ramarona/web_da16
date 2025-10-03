@@ -4,7 +4,6 @@ import (
 	fncGlobal "back/global/function"
 	mdlSbrapi "back/sbrapi/model"
 	"encoding/xml"
-	"fmt"
 )
 
 // Get data Reservation PNR froms abre
@@ -14,6 +13,7 @@ func FncSbrapiRsvpnrMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 
 	// Isi struktur data
 	rspRsvpnr := mdlSbrapi.MdlSbrapiRsvpnrRsprsv{}
+	rspEnvpnr := mdlSbrapi.MdlSbrapiRsvpnrRspenv{}
 	bdyRsvpnr := mdlSbrapi.MdlSbrapiRsvpnrReqenv{
 		Xmlns: "http://schemas.xmlsoap.org/soap/envelope/",
 		Header: mdlSbrapi.MdlSbrapiRsvpnrReqhdr{
@@ -47,13 +47,13 @@ func FncSbrapiRsvpnrMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 	}
 
 	// Parsing XML ke dalam struktur Go
-	fmt.Println(string(raw))
-	err = xml.Unmarshal([]byte(raw), &rspRsvpnr)
+	err = xml.Unmarshal([]byte(raw), &rspEnvpnr)
 	if err != nil {
 		return rspRsvpnr, err
 	}
 
 	// Final return data
+	rspRsvpnr = rspEnvpnr.Body.GetReservationRS.Reservation
 	return rspRsvpnr, nil
 
 }

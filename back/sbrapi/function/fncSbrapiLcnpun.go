@@ -34,6 +34,7 @@ func FncSbrapiLcnpunPrcess(lcnpun, output string, params mdlSbrapi.MdlSbrapiMsgh
 
 	// Declare first output
 	var result []mdlSbrapi.MdlSbrapiLcnpunDtbase
+	var allpnr = map[string]bool{}
 	var timenw = time.Now().Format("0601021504")
 	var intTimenw, _ = strconv.Atoi(timenw)
 	var intDatenw, _ = strconv.Atoi(timenw[0:6])
@@ -68,14 +69,17 @@ func FncSbrapiLcnpunPrcess(lcnpun, output string, params mdlSbrapi.MdlSbrapiMsgh
 			}
 
 			// Assign data
-			result = append(result, mdlSbrapi.MdlSbrapiLcnpunDtbase{
-				Prmkey: lcnpun + params.Airlfl + params.Flnbfl + params.Depart +
-					strconv.Itoa(int(params.Datefl)) + pnrcde + timenw[0:6],
-				Airlfl: params.Airlfl, Lcrpun: lcnpun, Totpax: totpax,
-				Flnbfl: params.Flnbfl, Depart: params.Depart,
-				Routfl: params.Routfl, Clssfl: strings.TrimSpace(clssfl),
-				Datefl: params.Datefl, Dateup: int32(intDatenw),
-				Timeup: int64(intTimenw), Agtnme: agtnme, Pnrcde: pnrcde})
+			if _, ist := allpnr[pnrcde]; !ist {
+				allpnr[pnrcde] = true
+				result = append(result, mdlSbrapi.MdlSbrapiLcnpunDtbase{
+					Prmkey: lcnpun + params.Airlfl + params.Flnbfl + params.Depart +
+						strconv.Itoa(int(params.Datefl)) + pnrcde + timenw[0:6],
+					Airlfl: params.Airlfl, Lcrpun: lcnpun, Totpax: totpax,
+					Flnbfl: params.Flnbfl, Depart: params.Depart,
+					Routfl: params.Routfl, Clssfl: strings.TrimSpace(clssfl),
+					Datefl: params.Datefl, Dateup: int32(intDatenw),
+					Timeup: int64(intTimenw), Agtnme: agtnme, Pnrcde: pnrcde})
+			}
 		}
 	}
 
