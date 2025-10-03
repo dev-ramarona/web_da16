@@ -4,7 +4,6 @@ import (
 	fncGlobal "back/global/function"
 	fncJeddah "back/jeddah/function"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -25,9 +24,6 @@ func main() {
 	r := gin.Default()
 
 	// Middleware CORS
-	fmt.Println("fncGlobal.Ipalow")
-	fmt.Println(fncGlobal.Ipalow)
-	fmt.Println("fncGlobal.Ipalow")
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: fncGlobal.Ipalow,
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD"},

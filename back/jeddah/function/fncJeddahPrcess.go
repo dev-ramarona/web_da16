@@ -5,6 +5,7 @@ import (
 	mdlJeddah "back/jeddah/model"
 	fncSbrapi "back/sbrapi/function"
 	mdlSbrapi "back/sbrapi/model"
+	"encoding/json"
 	"fmt"
 	"math"
 	"strconv"
@@ -25,7 +26,7 @@ func FncJeddahPrcessMainpg(c *gin.Context) {
 
 		// Insdicaor Process Start
 		nowTimenw := time.Now().AddDate(0, 0, -0).Format("0601021504")
-		totWokrer, nowTotdta := 9, int64(0)
+		totWokrer, nowTotdta := 1, int64(0)
 		slcFlnbfl, sycFlnbfl, maxTotdta := FncJeddahFlnbflSycmap(nowTimenw[0:6])
 		prvDatefl := FncJeddahActlogLstdta()
 		slcDrules := FncJeddahDrulesSycmap()
@@ -77,19 +78,19 @@ func FncJeddahPrcessMainpg(c *gin.Context) {
 		fncGlobal.Status.Sbrapi = 0
 
 		// Update done again
-		intDatenw, _ := strconv.Atoi(nowTimenw[0:6])
-		intTimenw, _ := strconv.Atoi(nowTimenw)
-		logAction := mdlJeddah.MdlJeddahActlogDtbase{
-			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-			Statdt: "Done"}
-		rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
-			mongo.NewUpdateOneModel().
-				SetFilter(bson.M{"dateup": logAction.Dateup}).
-				SetUpdate(bson.M{"$set": logAction}).
-				SetUpsert(true)}, "jeddah_actlog")
-		if !rsupdt {
-			panic("Error Insert/Update to DB")
-		}
+		// intDatenw, _ := strconv.Atoi(nowTimenw[0:6])
+		// intTimenw, _ := strconv.Atoi(nowTimenw)
+		// logAction := mdlJeddah.MdlJeddahActlogDtbase{
+		// 	Dateup: int32(intDatenw), Timeup: int64(intTimenw),
+		// 	Statdt: "Done"}
+		// rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
+		// 	mongo.NewUpdateOneModel().
+		// 		SetFilter(bson.M{"dateup": logAction.Dateup}).
+		// 		SetUpdate(bson.M{"$set": logAction}).
+		// 		SetUpsert(true)}, "jeddah_actlog")
+		// if !rsupdt {
+		// 	panic("Error Insert/Update to DB")
+		// }
 	}
 }
 
@@ -240,6 +241,8 @@ outlop:
 						}
 
 						// Push to Pnr log data
+						xxxxxx, _ := json.MarshalIndent(defDtlpnr, "", "  ")
+						fmt.Println(string(xxxxxx))
 						nmodelDtlpnr := mongo.NewUpdateOneModel().
 							SetFilter(bson.M{"prmkey": nowPrmkey}).
 							SetUpdate(bson.M{"$set": defDtlpnr}).
@@ -539,37 +542,37 @@ outlop:
 
 		// Push mongo pnrlog
 		if len(mgomdlLcnpun) > lmtdta && len(mgomdlLcnpun) != 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlLcnpun, "jeddah_pnrlog")
-			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
-			}
+			// rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlLcnpun, "jeddah_pnrlog")
+			// if !rspBlkwrt {
+			// 	fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+			// }
 			mgomdlLcnpun = []mongo.WriteModel{}
 		}
 
 		// Push mongo pnrlog
 		if len(mgomdlDtlpnr) > lmtdta && len(mgomdlDtlpnr) != 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlDtlpnr, "jeddah_pnrdtl")
-			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT DTLPNR")
-			}
+			// rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlDtlpnr, "jeddah_pnrdtl")
+			// if !rspBlkwrt {
+			// 	fmt.Println("ERR LOG HERE, CAN'T INPUT DTLPNR")
+			// }
 			mgomdlDtlpnr = []mongo.WriteModel{}
 		}
 
 		// Push mongo pnrlog
 		if len(mgomdlFlnbfl) > lmtdta && len(mgomdlFlnbfl) != 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlFlnbfl, "jeddah_flnbfl")
-			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT FLNbfl")
-			}
+			// rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlFlnbfl, "jeddah_flnbfl")
+			// if !rspBlkwrt {
+			// 	fmt.Println("ERR LOG HERE, CAN'T INPUT FLNbfl")
+			// }
 			mgomdlFlnbfl = []mongo.WriteModel{}
 		}
 
 		// Push mongo pnrlog
 		if len(mgomdlSmrpnr) > lmtdta && len(mgomdlSmrpnr) != 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlSmrpnr, "jeddah_pnrsmr")
-			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT SMRPNR")
-			}
+			// rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlSmrpnr, "jeddah_pnrsmr")
+			// if !rspBlkwrt {
+			// 	fmt.Println("ERR LOG HERE, CAN'T INPUT SMRPNR")
+			// }
 			mgomdlSmrpnr = []mongo.WriteModel{}
 		}
 
@@ -582,7 +585,7 @@ outlop:
 	}
 
 	// Push mongo detail
-	for key, mgo := range map[string][]mongo.WriteModel{
+	for _, mgo := range map[string][]mongo.WriteModel{
 		"jeddah_pnrlog": mgomdlLcnpun,
 		"jeddah_agentx": mgomdlAgtnme,
 		"jeddah_pnrsmr": mgomdlSmrpnr,
@@ -591,10 +594,10 @@ outlop:
 		"jeddah_flnbfl": mgomdlFlnbfl,
 	} {
 		if len(mgo) > 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgo, key)
-			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT " + key + " LAST")
-			}
+			// rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgo, key)
+			// if !rspBlkwrt {
+			// 	fmt.Println("ERR LOG HERE, CAN'T INPUT " + key + " LAST")
+			// }
 		}
 	}
 
@@ -660,6 +663,8 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 		arrItinry := arrRmrkit.PassengerReservation.Segments.Segment
 		varBokdtl := arrRmrkit.BookingDetails
 		arrRemark := arrRmrkit.BookingDetails.DivideSplitDetails.Itemslice
+		xxxxxx, _ := json.MarshalIndent(arrRmrkit, "", "  ")
+		fmt.Println(fnlDtlpnr.Pnrcde, string(xxxxxx))
 
 		// Get remark split data
 		if len(arrRemark) > 0 {

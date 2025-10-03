@@ -4,6 +4,7 @@ import (
 	fncGlobal "back/global/function"
 	mdlSbrapi "back/sbrapi/model"
 	"encoding/xml"
+	"fmt"
 )
 
 // Get data Reservation PNR froms abre
@@ -46,14 +47,13 @@ func FncSbrapiRsvpnrMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 	}
 
 	// Parsing XML ke dalam struktur Go
-	rspCmdscr := mdlSbrapi.MdlSbrapiRsvpnrRspenv{}
-	err = xml.Unmarshal([]byte(raw), &rspCmdscr)
+	fmt.Println(string(raw))
+	err = xml.Unmarshal([]byte(raw), &rspRsvpnr)
 	if err != nil {
 		return rspRsvpnr, err
 	}
 
 	// Final return data
-	rspRsvpnr = rspCmdscr.Body.GetReservationRS.Reservation
 	return rspRsvpnr, nil
 
 }

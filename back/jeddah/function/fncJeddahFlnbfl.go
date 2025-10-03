@@ -39,10 +39,15 @@ func FncJeddahFlnbflSycmap(datefl string) (map[string][]mdlJeddah.MdlJeddahFlnbf
 	defer cancel()
 
 	// Get route data
-	datarw, err := tablex.Find(contxt, bson.M{"$or": []bson.M{
-		{"isjedh": "Jeddah"}, {"isjedh": ""},
-		{"isjedh": bson.M{"$exists": false}},
-	}})
+	datarw, err := tablex.Find(contxt, bson.M{"$and": []bson.M{
+		{"flnbfl": "110"}, {"datefl": 251005}, bson.M{"$or": []bson.M{
+			{"isjedh": "Jeddah"}, {"isjedh": ""},
+			{"isjedh": bson.M{"$exists": false}},
+		}}}})
+	// datarw, err := tablex.Find(contxt, bson.M{"$or": []bson.M{
+	// 	{"isjedh": "Jeddah"}, {"isjedh": ""},
+	// 	{"isjedh": bson.M{"$exists": false}},
+	// }})
 	if err != nil {
 		panic(err)
 	}
@@ -53,6 +58,7 @@ func FncJeddahFlnbflSycmap(datefl string) (map[string][]mdlJeddah.MdlJeddahFlnbf
 	for datarw.Next(contxt) {
 		var object mdlJeddah.MdlJeddahFlnbflDtbase
 		datarw.Decode(&object)
+		fmt.Println(object)
 		sycmap.Store(object.Prmkey, object)
 
 		// Filter registered airlines only
