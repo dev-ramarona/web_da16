@@ -21,7 +21,7 @@ import (
 // Running main process jeddah
 func FncJeddahPrcessMainpg(c *gin.Context) {
 	if fncGlobal.Status.Sbrapi == 0.0 {
-		fncGlobal.Status.Sbrapi = 0.1
+		fncGlobal.Status.Sbrapi = 0.01
 
 		// Insdicaor Process Start
 		nowTimenw := time.Now().AddDate(0, 0, -0).Format("0601021504")
@@ -186,6 +186,69 @@ outlop:
 			var tmpSmrpnr, tmpDtlpnr, tmpLcnpun, tmpFlnbfl []mongo.WriteModel
 			slcOutllc, errOutllc := fncSbrapi.FncSbrapiLcnpunMainob("LC", *tkn, objParams)
 			if errOutllc == nil {
+
+				// Looping LX data (TEMPORARY! DELETE AFTER RUNNING)
+				slcOutlxx, errOutlxx := fncSbrapi.FncSbrapiLcnpunMainob("LX", *tkn, objParams)
+				if errOutlxx == nil {
+					for _, lcnpun := range slcOutlxx {
+						nowPrmkey := lcnpun.Airlfl + lcnpun.Flnbfl + lcnpun.Depart +
+							strconv.Itoa(int(lcnpun.Datefl)) + lcnpun.Pnrcde
+
+						// Push to mongo Lcnpun
+						nmodelLcnpun := mongo.NewUpdateOneModel().
+							SetFilter(bson.M{"prmkey": lcnpun.Prmkey}).
+							SetUpdate(bson.M{"$set": lcnpun}).
+							SetUpsert(true)
+						tmpLcnpun = append(tmpLcnpun, nmodelLcnpun)
+
+						// Default summary PNR
+						defDtlpnr := mdlJeddah.MdlJeddahPnrdtlDtbase{
+							Prmkey: nowPrmkey, Airlfl: lcnpun.Airlfl, Flnbfl: lcnpun.Flnbfl,
+							Depart: lcnpun.Depart, Routfl: lcnpun.Routfl, Clssfl: lcnpun.Clssfl,
+							Datefl: lcnpun.Datefl, Dateup: lcnpun.Dateup, Timeup: lcnpun.Timeup,
+							Agtnme: lcnpun.Agtnme, Agtdtl: "", Agtidn: "",
+							Pnrcde: lcnpun.Pnrcde, Rtlsrs: "", Toflnm: "",
+							Drules: 0, Totisd: 0, Totbok: 0, Totpax: lcnpun.Totpax,
+						}
+
+						// Get remarks history split or cancel
+						strToflnm, cekIsjedh :=
+							FncJeddahItrmrlGetapi("rmv", tkn, &defDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+								idcFlnbfl, sycAgtnme, &tmpSmrpnr, &tmpFlnbfl)
+
+						// cek is Jeddah
+						nowIsjedh := false
+						if cekIsjedh {
+							fnlIsjedh, nowIsjedh, flbase.Isjedh = true, true, "Jeddah"
+						}
+
+						// Get agent name Lcnpun
+						FncJeddahAgtgetParams(&defDtlpnr, nowIsjedh, idcAgtnme, &fnlAgtnme)
+
+						// Response Itenary
+						if strToflnm != "" {
+							defDtlpnr.Toflnm = strToflnm
+							defDtlpnr.Flstat = "Change"
+							defDtlpnr.Totchg = lcnpun.Totpax
+							defDtlpnr.Totpax = 0
+							intTotchg += lcnpun.Totpax
+						} else {
+							defDtlpnr.Flstat = "Cancel"
+							defDtlpnr.Totcxl = lcnpun.Totpax
+							defDtlpnr.Totpax = lcnpun.Totpax
+							intTotcxl += lcnpun.Totpax
+						}
+
+						// Push to Pnr log data
+						nmodelDtlpnr := mongo.NewUpdateOneModel().
+							SetFilter(bson.M{"prmkey": nowPrmkey}).
+							SetUpdate(bson.M{"$set": defDtlpnr}).
+							SetUpsert(true)
+						tmpDtlpnr = append(tmpDtlpnr, nmodelDtlpnr)
+					}
+				}
+
+				// Looping LC data
 				for _, lcnpun := range slcOutllc {
 
 					// Delcare Pnr log data
@@ -454,7 +517,6 @@ outlop:
 							idcFlnbfl, sycAgtnme, &mgomdlSmrpnr, &mgomdlFlnbfl)
 					}
 				}
-
 			}
 
 			// Push to Pnr log data

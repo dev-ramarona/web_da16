@@ -22,7 +22,8 @@ func FncJeddahActlogGetall(c *gin.Context) {
 	defer cancel()
 
 	// Get route data
-	datarw, err := tablex.Find(contxt, bson.M{})
+	datarw, err := tablex.Find(contxt, bson.M{}, options.Find().
+		SetSort(bson.D{{Key: "dateup", Value: -1}}))
 	if err != nil {
 		panic("fail")
 	}
