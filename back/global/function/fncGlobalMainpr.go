@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,7 @@ var Status = mdlGlobal.MdlGlobalAllusrStatus{Sbrapi: 0, Action: 0}
 var Client *mongo.Client
 var jwtkey []byte
 var Ipalow []string
+var Secure = false
 var Dbases, Urlmgo, Pcckey, Usrnme,
 	Psswrd, Ptgolg, Ipadrs, Usrcok, Tknnme string
 
@@ -58,6 +60,10 @@ func init() {
 	Ipadrs = os.Getenv("NEXT_PUBLIC_IPV_ADRESS")
 	Tknnme = os.Getenv("NEXT_PUBLIC_TKN_COOKIE")
 	Ipalow = strings.Split(os.Getenv("NEXT_PUBLIC_IPV_ALLOWD"), "|")
+	Tmpscr, err := strconv.ParseBool(os.Getenv("NEXT_PUBLIC_IPV_SECURE"))
+	if err == nil {
+		Secure = Tmpscr
+	}
 }
 
 // Get status data process
