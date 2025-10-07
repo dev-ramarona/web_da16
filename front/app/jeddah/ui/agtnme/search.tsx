@@ -6,7 +6,7 @@ import {
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import {
-  MdlJeddahInputxAllpnr,
+  MdlJeddahInputxAllprm,
   MdlJeddahAgtnmeSearch,
 } from "../../model/mdlJeddahMainpr";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 export default function UixJeddahAgtnmerSearch({
   trtprm,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
 }) {
   const [params, paramsSet] = useState<MdlJeddahAgtnmeSearch>({
     airlfl_agtnme: trtprm.airlfl_agtnme || "",
@@ -102,7 +102,7 @@ export default function UixJeddahAgtnmerSearch({
           length={20}
           queryx={"srtnul_agtnme"}
           params={params.srtnul_agtnme}
-          plchdr="Sort All Agent"
+          plchdr="Show All Agent"
           repprm={repprm}
           labelx=""
         />

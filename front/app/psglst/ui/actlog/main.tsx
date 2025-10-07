@@ -1,10 +1,11 @@
-import { ApiPsglstDtbaseActlog } from "../../api/apiPsglstDtbase";
-import { MdlPsglstActlogParams } from "../../model/mdlPsglstParams";
+
+import { ApiPsglstActlogDtbase } from "../../api/apiPsglstActlog";
+import { MdlPsglstActlogDtbase } from "../../model/mdlPsglstParams";
 import UixPsglstActlogTablex from "./uixPsglstActlog";
 
 export default async function UixPsglstActlogMainpg() {
   // await new Promise((r) => setTimeout(r, 2000));
-  const actlog: MdlPsglstActlogParams[] = await ApiPsglstDtbaseActlog();
+  const actlog: MdlPsglstActlogDtbase[] = await ApiPsglstActlogDtbase();
   return (
     <>
       {actlog.length > 0 ? (

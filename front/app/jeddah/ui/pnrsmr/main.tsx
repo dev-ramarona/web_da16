@@ -1,6 +1,6 @@
 import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 import {
-  MdlJeddahInputxAllpnr,
+  MdlJeddahInputxAllprm,
   MdlJeddahPnrsmrDtbase,
 } from "../../model/mdlJeddahMainpr";
 import UixJeddahPnrsmrSearch from "./search";
@@ -13,7 +13,7 @@ export default async function UixJeddahPnrsmrMainpg({
   trtprm,
   cookie,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
   cookie: mdlGlobalAllusrCookie;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));

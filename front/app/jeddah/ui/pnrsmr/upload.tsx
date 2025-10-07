@@ -2,8 +2,7 @@
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { useEffect, useState } from "react";
 import {
-  MdlJeddahInputxAllpnr,
-  MdlJeddahPnrsmrSearch,
+  MdlJeddahInputxAllprm,
 } from "../../model/mdlJeddahMainpr";
 import { ApiGlobalStatusIntrvl, ApiGlobalStatusPrcess } from "@/app/global/api/apiGlobalPrimer";
 import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
@@ -15,7 +14,7 @@ export default function UixJeddahPnrsmrUpldwn({
   trtprm,
   cookie,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
   cookie: mdlGlobalAllusrCookie;
 }) {
   // File Upload csv Variable

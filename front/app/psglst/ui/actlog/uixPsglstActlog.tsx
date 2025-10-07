@@ -1,10 +1,10 @@
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
-import { MdlPsglstActlogParams } from "../../model/mdlPsglstParams";
+import { MdlPsglstActlogDtbase } from "../../model/mdlPsglstParams";
 
 export default function UixPsglstActlogTablex({
   actlog,
 }: {
-  actlog: MdlPsglstActlogParams[];
+  actlog: MdlPsglstActlogDtbase[];
 }) {
   return (
     <>
@@ -14,14 +14,14 @@ export default function UixPsglstActlogTablex({
             <tr>
               {actlog && actlog.length > 0
                 ? Object.entries(actlog[0]).map(([key]) =>
-                    key != "prmkey" ? (
-                      <th key={key} className="thhead">
-                        {key}
-                      </th>
-                    ) : (
-                      ""
-                    )
+                  key != "prmkey" ? (
+                    <th key={key} className="thhead">
+                      {key}
+                    </th>
+                  ) : (
+                    ""
                   )
+                )
                 : ""}
             </tr>
           </thead>

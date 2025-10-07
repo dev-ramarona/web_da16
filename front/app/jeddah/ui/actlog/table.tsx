@@ -1,7 +1,7 @@
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
 import { MdlJeddahParamsLogact } from "../../model/mdlJeddahMainpr";
 
-export default function UixJeddahLogactTablex({
+export default function UixJeddahActlogTablex({
   logact,
 }: {
   logact: MdlJeddahParamsLogact[];

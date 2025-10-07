@@ -1,6 +1,6 @@
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
 import {
-  MdlJeddahInputxAllpnr,
+  MdlJeddahInputxAllprm,
   MdlJeddahPnrdtlDtbase,
 } from "../../model/mdlJeddahMainpr";
 
@@ -11,7 +11,7 @@ import { ApiJeddahPnrdtlGetall } from "../../api/apiJeddahPnrdtl";
 export default async function UixJeddahPnrdtlMainpg({
   trtprm,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));
   const pnrdtl = await ApiJeddahPnrdtlGetall(trtprm);

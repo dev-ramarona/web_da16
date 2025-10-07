@@ -1,15 +1,15 @@
-export interface MdlPsglstEdtprmParams {
+export interface MdlPsglstAcpedtDtbase {
   params: string;
   length: number;
 }
 
-export interface MdlPsglstActlogParams {
+export interface MdlPsglstActlogDtbase {
   timeup: number;
   dateup: number;
   statdt: string;
 }
 
-export interface MdlPsglstErrlogParams {
+export interface MdlPsglstErrlogDtbase {
   prmkey: string;
   status: string;
   errprt: string;
@@ -28,7 +28,7 @@ export interface MdlPsglstErrlogParams {
   updtby: string;
 }
 
-export interface MdlPsglstDetailParams {
+export interface MdlPsglstPsgdtlFrntnd {
   prmkey: string;
   mnthfl: string;
   datefl: string;
@@ -81,18 +81,18 @@ export interface MdlPsglstDetailParams {
   updtby: string;
 }
 
-export interface MdlPsglstAllprmSrcprm {
-  mnthfl_detail: string;
-  datefl_detail: string;
-  airlfl_detail: string;
-  flnbfl_detail: string;
-  depart_detail: string;
-  routfl_detail: string;
-  isflwn_detail: string;
-  istrst_detail: string;
-  pnrcde_detail: string;
-  tktnbr_detail: string;
-  istirg_detail: string;
+export interface MdlPsglstSrcprmAllprm {
+  mnthfl_psgdtl: string;
+  datefl_psgdtl: string;
+  airlfl_psgdtl: string;
+  flnbfl_psgdtl: string;
+  depart_psgdtl: string;
+  routfl_psgdtl: string;
+  isflwn_psgdtl: string;
+  istrst_psgdtl: string;
+  pnrcde_psgdtl: string;
+  tktnbr_psgdtl: string;
+  istirg_psgdtl: string;
   mnthfl_others: string;
   datefl_others: string;
   airlfl_others: string;
@@ -106,16 +106,18 @@ export interface MdlPsglstAllprmSrcprm {
   istirg_others: string;
 }
 
-export interface MdlPsglstDetailSrcprm {
-  mnthfl_detail: string;
-  datefl_detail: string;
-  airlfl_detail: string;
-  flnbfl_detail: string;
-  depart_detail: string;
-  routfl_detail: string;
-  isflwn_detail: string;
-  istrst_detail: string;
-  pnrcde_detail: string;
-  tktnbr_detail: string;
-  istirg_detail: string;
+
+// Passenger Detail
+export interface MdlJeddahPsgdtlSearch {
+  mnthfl_psgdtl: string;
+  datefl_psgdtl: string;
+  airlfl_psgdtl: string;
+  flnbfl_psgdtl: string;
+  depart_psgdtl: string;
+  routfl_psgdtl: string;
+  isflwn_psgdtl: string;
+  istrst_psgdtl: string;
+  pnrcde_psgdtl: string;
+  tktnbr_psgdtl: string;
+  istirg_psgdtl: string;
 }

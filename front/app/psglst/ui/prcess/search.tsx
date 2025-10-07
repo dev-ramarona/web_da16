@@ -1,9 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  MdlPsglstAllprmSrcprm,
-  MdlPsglstPsgdtlSrcprm,
-} from "../../model/mdlPsglstParams";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import { mdlGlobalAlluserFilter } from "@/app/global/model/mdlGlobalPrimer";
 import {
@@ -11,13 +7,14 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
+import { MdlJeddahPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
 
 export default function UixPsglstPsgdtlSearch({
   trtprm,
 }: {
-  trtprm: MdlPsglstAllprmSrcprm;
+  trtprm: MdlPsglstSrcprmAllprm;
 }) {
-  const [params, paramsSet] = useState<MdlPsglstPsgdtlSrcprm>({
+  const [params, paramsSet] = useState<MdlJeddahPsgdtlSearch>({
     mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
     datefl_psgdtl: trtprm.datefl_psgdtl || "",
     airlfl_psgdtl: trtprm.airlfl_psgdtl || "",

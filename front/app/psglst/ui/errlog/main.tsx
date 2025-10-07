@@ -1,10 +1,11 @@
-import { ApiPsglstDtbaseErrlog } from "../../api/apiPsglstDtbase";
-import { MdlPsglstErrlogParams } from "../../model/mdlPsglstParams";
+import { ApiPsglstErrlogDtbase } from "../../api/apiPsglstErrlog";
+import { MdlPsglstErrlogDtbase } from "../../model/mdlPsglstParams";
 import UixPsglstErrlogTablex from "./uixPsglstErrlog";
+
 
 export default async function UixPsglstErrlogMainpg() {
   // await new Promise((r) => setTimeout(r, 2000));
-  const errlog: MdlPsglstErrlogParams[] = await ApiPsglstDtbaseErrlog();
+  const errlog: MdlPsglstErrlogDtbase[] = await ApiPsglstErrlogDtbase();
   return (
     <>
       {errlog.length > 0 ? (

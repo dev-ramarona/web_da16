@@ -1,5 +1,5 @@
 // Global
-export interface MdlJeddahInputxAllpnr {
+export interface MdlJeddahInputxAllprm {
   chssmr: string;
   clssfl_pnrdtl: string; airlfl_pnrdtl: string;
   datefl_pnrdtl: string; pnrcde_pnrdtl: string;

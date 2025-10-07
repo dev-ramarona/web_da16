@@ -3,17 +3,17 @@ import { ApiGlobalCookieGetdta } from "../global/api/apiCookieParams";
 import { UixGlobalIconvcSeting } from "../global/ui/server/uixGlobalIconvc";
 import UixJeddahAgtnmeMainpg from "./ui/agtnme/main";
 import UixGlobalLoadngAnmate from "../global/ui/server/UixGlobalLoadng";
-import UixJeddahLogactMainpg from "./ui/logact/main";
+import UixJeddahLogactMainpg from "./ui/actlog/main";
 import UixJeddahPrcessMainpg from "./ui/prcess/main";
 import UixJeddahPnrdtlMainpg from "./ui/pnrdtl/main";
-import { MdlJeddahInputxAllpnr } from "./model/mdlJeddahMainpr";
+import { MdlJeddahInputxAllprm } from "./model/mdlJeddahMainpr";
 import UixJeddahPnrsmrMainpg from "./ui/pnrsmr/main";
 import UixJeddahFlnsmrMainpg from "./ui/flnsmr/main";
 import { FncJeddahAllpnrrMainpr } from "./function/fncJeddahMainpr";
 import UixJeddahAddflnMainpg from "./ui/flnbfl/main";
 
 export default async function Page(props: {
-  searchParams: Promise<MdlJeddahInputxAllpnr>;
+  searchParams: Promise<MdlJeddahInputxAllprm>;
 }) {
   const cookie = await ApiGlobalCookieGetdta();
   const qryprm = await props.searchParams;

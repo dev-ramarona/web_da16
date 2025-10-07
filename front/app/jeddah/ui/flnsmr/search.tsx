@@ -6,7 +6,7 @@ import {
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import {
-  MdlJeddahInputxAllpnr,
+  MdlJeddahInputxAllprm,
   MdlJeddahFlnsmrSearch,
 } from "../../model/mdlJeddahMainpr";
 import { useState } from "react";
@@ -16,7 +16,7 @@ import { ApiJeddahFlnsmrDownld } from "../../api/apiJeddahFlnsmr";
 export default function UixJeddahFlnsmrSearch({
   trtprm,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
 }) {
   const [params, paramsSet] = useState<MdlJeddahFlnsmrSearch>({
     airlfl_flnsmr: trtprm.airlfl_flnsmr || "",

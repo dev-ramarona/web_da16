@@ -30,8 +30,9 @@ func FncJeddahPrcessMainpg(c *gin.Context) {
 		prvDatefl := FncJeddahActlogLstdta()
 		slcDrules := FncJeddahDrulesSycmap()
 		sycAgtnme := FncJeddahAgtnmeSycmap()
+		sycPnrsmr := FncJeddahPnrsmrSycmap(prvDatefl)
 		sycPnrlog := FncJeddahPnrlogSycmap(prvDatefl)
-		sycDtlpnr := FncJeddahDtlpnrSycmap(prvDatefl)
+		sycPnrdtl := FncJeddahPnrdtlSycmap(prvDatefl)
 		idcAgtnme, idcPnrcde, idcFlnbfl := &sync.Map{}, &sync.Map{}, &sync.Map{}
 
 		// Looping all flight number
@@ -55,8 +56,8 @@ func FncJeddahPrcessMainpg(c *gin.Context) {
 					if slcRspssn[i].Bsttkn != "Failed" {
 						swg.Add(1)
 						go FncJeddahPrcessWorker(i, &slcRspssn[i], &swg, jobFlbase,
-							sycAgtnme, sycPnrlog, sycDtlpnr, sycFlnbfl, idcAgtnme,
-							idcPnrcde, idcFlnbfl, nowTimenw, slcDrules, &nowTotdta, &maxTotdta)
+							sycAgtnme, sycPnrlog, sycPnrdtl, sycFlnbfl, idcAgtnme, idcPnrcde,
+							idcFlnbfl, sycPnrsmr, nowTimenw, slcDrules, &nowTotdta, &maxTotdta)
 					}
 				}
 			}
@@ -96,10 +97,10 @@ func FncJeddahPrcessMainpg(c *gin.Context) {
 // Running process jeddah
 func FncJeddahPrcessWorker(nbr int, tkn *mdlSbrapi.MdlSbrapiMsghdrParams, swg *sync.WaitGroup,
 	jobFlbase <-chan mdlJeddah.MdlJeddahFlnbflDtbase,
-	sycAgtnme, sycLcnpun, sycDtlpnr, sycFlnbfl, idcAgtnme, idcPnrcde, idcFlnbfl *sync.Map,
+	sycAgtnme, sycPnrlog, sycPnrdtl, sycFlnbfl, idcAgtnme, idcPnrcde, idcFlnbfl, sycPnrsmr *sync.Map,
 	nowTimenw string, slcDrules []mdlJeddah.MdlJeddahRulesjDtbase, nowTotdta *int64, maxTotdta *float64) {
 	var mgomdlAgtnme, mgomdlLcnpun, mgomdlSmrfln []mongo.WriteModel
-	var mgomdlSmrpnr, mgomdlDtlpnr, mgomdlFlnbfl []mongo.WriteModel
+	var mgomdlSmrpnr, mgomdlPnrdtl, mgomdlFlnbfl []mongo.WriteModel
 	var lmtdta, cntdta = 50, 0
 	defer swg.Done()
 
@@ -130,36 +131,36 @@ outlop:
 		strDatenw := strconv.Itoa(int(dbsDatefl))
 
 		// Get previous LC and PUN data
-		prvLcnpun := map[string]mdlJeddah.MdlJeddahPnrlogDtbase{}
-		if tmpPrvdtl, ist := sycLcnpun.Load(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw); ist {
+		prvPnrlog := map[string]mdlJeddah.MdlJeddahPnrlogDtbase{}
+		if tmpPrvdtl, ist := sycPnrlog.Load(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw); ist {
 			if getPrvdtl, ist := tmpPrvdtl.(map[string]mdlJeddah.MdlJeddahPnrlogDtbase); ist {
-				prvLcnpun = getPrvdtl
-				sycLcnpun.Delete(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw)
+				prvPnrlog = getPrvdtl
+				sycPnrlog.Delete(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw)
 			}
 		}
 
-		// Get Summary PNR data
-		prvDtlpnr := map[string]mdlJeddah.MdlJeddahPnrdtlDtbase{}
-		if tmpPrvdtl, ist := sycDtlpnr.Load(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw); ist {
+		// Get PNR Detail data
+		prvPnrdtl := map[string]mdlJeddah.MdlJeddahPnrdtlDtbase{}
+		if tmpPrvdtl, ist := sycPnrdtl.Load(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw); ist {
 			if getPrvdtl, ist := tmpPrvdtl.(map[string]mdlJeddah.MdlJeddahPnrdtlDtbase); ist {
-				prvDtlpnr = getPrvdtl
-				sycDtlpnr.Delete(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw)
+				prvPnrdtl = getPrvdtl
+				sycPnrdtl.Delete(dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw)
 			}
 		}
 
 		// Check the date is the same or greater than today
 		if dbsDatefl < int32(intTimepv) {
-			for _, dtlpnr := range prvDtlpnr {
+			for _, pnrdtl := range prvPnrdtl {
 
 				// Get agent name Lcnpun
-				FncJeddahAgtgetParams(&dtlpnr, true, idcAgtnme, &fnlAgtnme)
+				FncJeddahAgtgetParams(&pnrdtl, true, idcAgtnme, &fnlAgtnme)
 
 				// Push to Summary PNR
-				nmodelDtlpnr := mongo.NewUpdateOneModel().
-					SetFilter(bson.M{"prmkey": dtlpnr.Prmkey}).
-					SetUpdate(bson.M{"$set": dtlpnr}).
+				nmodelPnrdtl := mongo.NewUpdateOneModel().
+					SetFilter(bson.M{"prmkey": pnrdtl.Prmkey}).
+					SetUpdate(bson.M{"$set": pnrdtl}).
 					SetUpsert(true)
-				mgomdlDtlpnr = append(mgomdlDtlpnr, nmodelDtlpnr)
+				mgomdlPnrdtl = append(mgomdlPnrdtl, nmodelPnrdtl)
 			}
 		} else {
 
@@ -183,7 +184,7 @@ outlop:
 
 			// Looping LC data
 			fnlIsjedh, tmpAllpnr := false, map[string]bool{}
-			var tmpSmrpnr, tmpDtlpnr, tmpLcnpun, tmpFlnbfl []mongo.WriteModel
+			var tmpSmrpnr, tmpPnrdtl, tmpLcnpun, tmpFlnbfl []mongo.WriteModel
 			slcOutllc, errOutllc := fncSbrapi.FncSbrapiLcnpunMainob("LC", *tkn, objParams)
 			if errOutllc == nil {
 				for _, lcnpun := range slcOutllc {
@@ -191,7 +192,7 @@ outlop:
 					// Delcare Pnr log data
 					tmpAllpnr[lcnpun.Pnrcde] = true
 					objParams.Pnrcde = lcnpun.Pnrcde
-					fnlDtlpnr := mdlJeddah.MdlJeddahPnrdtlDtbase{
+					fnlPnrdtl := mdlJeddah.MdlJeddahPnrdtlDtbase{
 						Prmkey: dbsAirlfl + dbsFlnbfl + dbsDepart + strDatenw + lcnpun.Pnrcde,
 						Airlfl: dbsAirlfl, Flnbfl: dbsFlnbfl, Depart: dbsDepart,
 						Clssfl: lcnpun.Clssfl, Datefl: dbsDatefl, Dateup: int32(intDatenw),
@@ -205,27 +206,27 @@ outlop:
 					if nowBooked, ist := tmpBooked[lcnpun.Pnrcde]; ist {
 						valIssued = lcnpun.Totpax - nowBooked
 						intTotbok += nowBooked
-						fnlDtlpnr.Totisd = valIssued
-						fnlDtlpnr.Totbok = nowBooked
+						fnlPnrdtl.Totisd = valIssued
+						fnlPnrdtl.Totbok = nowBooked
 					}
 					intTotisd += valIssued
 
 					// Cek from data Summary PNR and get last remove data
-					if prv, ist := prvDtlpnr[lcnpun.Pnrcde]; ist {
-						delete(prvDtlpnr, lcnpun.Pnrcde)
-						fnlDtlpnr.Dateup = prv.Dateup
-						fnlDtlpnr.Datefl = prv.Datefl
-						fnlDtlpnr.Timecr = prv.Timecr
-						fnlDtlpnr.Totspl = prv.Totspl
-						fnlDtlpnr.Totchg = prv.Totchg
-						fnlDtlpnr.Totcxl = prv.Totcxl
-						fnlDtlpnr.Toflnm = prv.Toflnm
-						fnlDtlpnr.Flstat = prv.Flstat
-						fnlDtlpnr.Notedt = prv.Notedt
+					if prv, ist := prvPnrdtl[lcnpun.Pnrcde]; ist {
+						delete(prvPnrdtl, lcnpun.Pnrcde)
+						fnlPnrdtl.Dateup = prv.Dateup
+						fnlPnrdtl.Datefl = prv.Datefl
+						fnlPnrdtl.Timecr = prv.Timecr
+						fnlPnrdtl.Totspl = prv.Totspl
+						fnlPnrdtl.Totchg = prv.Totchg
+						fnlPnrdtl.Totcxl = prv.Totcxl
+						fnlPnrdtl.Toflnm = prv.Toflnm
+						fnlPnrdtl.Flstat = prv.Flstat
+						fnlPnrdtl.Notedt = prv.Notedt
 					} else {
 
 						// Get remarks history split or cancel
-						_, cekIsjedh := FncJeddahItrmrlGetapi("", tkn, &fnlDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+						_, cekIsjedh := FncJeddahItrmrlGetapi("", tkn, &fnlPnrdtl, objParams, sycFlnbfl, idcPnrcde,
 							idcFlnbfl, sycAgtnme, &tmpSmrpnr, &tmpFlnbfl)
 
 						// cek is Jeddah
@@ -235,18 +236,18 @@ outlop:
 						}
 
 						// Get agent name Lcnpun
-						FncJeddahAgtgetParams(&fnlDtlpnr, nowIsjedh, idcAgtnme, &fnlAgtnme)
+						FncJeddahAgtgetParams(&fnlPnrdtl, nowIsjedh, idcAgtnme, &fnlAgtnme)
 					}
 
 					// Cek from data Summary PNR and get last remove data
-					if prv, ist := prvLcnpun[lcnpun.Pnrcde]; ist {
-						delete(prvLcnpun, lcnpun.Pnrcde)
+					if prv, ist := prvPnrlog[lcnpun.Pnrcde]; ist {
+						delete(prvPnrlog, lcnpun.Pnrcde)
 						fnlIsjedh = true
 						nowRemove := prv.Totpax - lcnpun.Totpax
 						if nowRemove > 0 {
 
 							// Get remarks only
-							FncJeddahItrmrlGetapi("", tkn, &fnlDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+							FncJeddahItrmrlGetapi("", tkn, &fnlPnrdtl, objParams, sycFlnbfl, idcPnrcde,
 								idcFlnbfl, sycAgtnme, &tmpSmrpnr, &tmpFlnbfl)
 
 						}
@@ -260,7 +261,7 @@ outlop:
 						timesc := nowTimenw[0:6]
 						if drules.Rlcolm == "dateup" {
 							timefs = nowTimenw[0:6]
-							timesc = strconv.Itoa(int(fnlDtlpnr.Dateup))
+							timesc = strconv.Itoa(int(fnlPnrdtl.Dateup))
 						}
 
 						// Convert time
@@ -269,7 +270,7 @@ outlop:
 
 						// Start logic different time
 						if math.Abs(param1.Sub(param2).Hours()/24) <= float64(drules.Rldays) {
-							fnlDtlpnr.Drules = int(drules.Rlrate)
+							fnlPnrdtl.Drules = int(drules.Rlrate)
 							break
 						}
 					}
@@ -282,13 +283,13 @@ outlop:
 					tmpLcnpun = append(tmpLcnpun, nmodelLcnpun)
 
 					// Push to Summary PNR
-					intTotcxl += fnlDtlpnr.Totcxl
-					intTotspl += fnlDtlpnr.Totspl
-					nmodelDtlpnr := mongo.NewUpdateOneModel().
-						SetFilter(bson.M{"prmkey": fnlDtlpnr.Prmkey}).
-						SetUpdate(bson.M{"$set": fnlDtlpnr}).
+					intTotcxl += fnlPnrdtl.Totcxl
+					intTotspl += fnlPnrdtl.Totspl
+					nmodelPnrdtl := mongo.NewUpdateOneModel().
+						SetFilter(bson.M{"prmkey": fnlPnrdtl.Prmkey}).
+						SetUpdate(bson.M{"$set": fnlPnrdtl}).
 						SetUpsert(true)
-					tmpDtlpnr = append(tmpDtlpnr, nmodelDtlpnr)
+					tmpPnrdtl = append(tmpPnrdtl, nmodelPnrdtl)
 				}
 			}
 
@@ -315,7 +316,7 @@ outlop:
 				// 				tmpLcnpun = append(tmpLcnpun, nmodelLcnpun)
 
 				// 				// Default summary PNR
-				// 				defDtlpnr := mdlJeddah.MdlJeddahPnrdtlDtbase{
+				// 				defPnrdtl := mdlJeddah.MdlJeddahPnrdtlDtbase{
 				// 					Prmkey: nowPrmkey, Airlfl: lcnpun.Airlfl, Flnbfl: lcnpun.Flnbfl,
 				// 					Depart: lcnpun.Depart, Routfl: lcnpun.Routfl, Clssfl: lcnpun.Clssfl,
 				// 					Datefl: lcnpun.Datefl, Dateup: lcnpun.Dateup, Timeup: lcnpun.Timeup,
@@ -326,7 +327,7 @@ outlop:
 
 				// 				// Get remarks history split or cancel
 				// 				strToflnm, cekIsjedh :=
-				// 					FncJeddahItrmrlGetapi("rmv", tkn, &defDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+				// 					FncJeddahItrmrlGetapi("rmv", tkn, &defPnrdtl, objParams, sycFlnbfl, idcPnrcde,
 				// 						idcFlnbfl, sycAgtnme, &tmpSmrpnr, &tmpFlnbfl)
 
 				// 				// cek is Jeddah
@@ -336,28 +337,28 @@ outlop:
 				// 				}
 
 				// 				// Get agent name Lcnpun
-				// 				FncJeddahAgtgetParams(&defDtlpnr, nowIsjedh, idcAgtnme, &fnlAgtnme)
+				// 				FncJeddahAgtgetParams(&defPnrdtl, nowIsjedh, idcAgtnme, &fnlAgtnme)
 
 				// 				// Response Itenary
 				// 				if strToflnm != "" {
-				// 					defDtlpnr.Toflnm = strToflnm
-				// 					defDtlpnr.Flstat = "Change"
-				// 					defDtlpnr.Totchg = lcnpun.Totpax
-				// 					defDtlpnr.Totpax = 0
+				// 					defPnrdtl.Toflnm = strToflnm
+				// 					defPnrdtl.Flstat = "Change"
+				// 					defPnrdtl.Totchg = lcnpun.Totpax
+				// 					defPnrdtl.Totpax = 0
 				// 					intTotchg += lcnpun.Totpax
 				// 				} else {
-				// 					defDtlpnr.Flstat = "Cancel"
-				// 					defDtlpnr.Totcxl = lcnpun.Totpax
-				// 					defDtlpnr.Totpax = lcnpun.Totpax
+				// 					defPnrdtl.Flstat = "Cancel"
+				// 					defPnrdtl.Totcxl = lcnpun.Totpax
+				// 					defPnrdtl.Totpax = lcnpun.Totpax
 				// 					intTotcxl += lcnpun.Totpax
 				// 				}
 
 				// 				// Push to Pnr log data
-				// 				nmodelDtlpnr := mongo.NewUpdateOneModel().
+				// 				nmodelPnrdtl := mongo.NewUpdateOneModel().
 				// 					SetFilter(bson.M{"prmkey": nowPrmkey}).
-				// 					SetUpdate(bson.M{"$set": defDtlpnr}).
+				// 					SetUpdate(bson.M{"$set": defPnrdtl}).
 				// 					SetUpsert(true)
-				// 				tmpDtlpnr = append(tmpDtlpnr, nmodelDtlpnr)
+				// 				tmpPnrdtl = append(tmpPnrdtl, nmodelPnrdtl)
 				// 			}
 				// 		}
 				// 	}
@@ -372,38 +373,38 @@ outlop:
 				mgomdlFlnbfl = append(mgomdlFlnbfl, nmodelFlnbfl)
 
 				// If prev pnr isset but now null
-				if len(prvLcnpun) > 0 {
-					for _, lcnpun := range prvLcnpun {
+				if len(prvPnrlog) > 0 {
+					for _, lcnpun := range prvPnrlog {
 						objParams.Pnrcde = lcnpun.Pnrcde
 
 						// Get prev summary pnr array split and cancel
-						if nowDtlpnr, ist := prvDtlpnr[lcnpun.Pnrcde]; ist {
-							delete(prvDtlpnr, lcnpun.Pnrcde)
+						if nowPnrdtl, ist := prvPnrdtl[lcnpun.Pnrcde]; ist {
+							delete(prvPnrdtl, lcnpun.Pnrcde)
 
 							// Get remarks history split or cancel
 							strToflnm, _ :=
-								FncJeddahItrmrlGetapi("rmv", tkn, &nowDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+								FncJeddahItrmrlGetapi("rmv", tkn, &nowPnrdtl, objParams, sycFlnbfl, idcPnrcde,
 									idcFlnbfl, sycAgtnme, &mgomdlSmrpnr, &mgomdlFlnbfl)
 
 							// Response Itenary
 							if strToflnm != "" {
-								nowDtlpnr.Toflnm = strToflnm
-								nowDtlpnr.Flstat = "Change"
-								nowDtlpnr.Totchg = nowDtlpnr.Totpax
-								nowDtlpnr.Totpax = 0
-								intTotchg += nowDtlpnr.Totpax
+								nowPnrdtl.Toflnm = strToflnm
+								nowPnrdtl.Flstat = "Change"
+								nowPnrdtl.Totchg = nowPnrdtl.Totpax
+								nowPnrdtl.Totpax = 0
+								intTotchg += nowPnrdtl.Totpax
 							} else {
-								nowDtlpnr.Flstat = "Cancel"
-								nowDtlpnr.Totcxl = nowDtlpnr.Totpax
-								intTotcxl += nowDtlpnr.Totpax
+								nowPnrdtl.Flstat = "Cancel"
+								nowPnrdtl.Totcxl = nowPnrdtl.Totpax
+								intTotcxl += nowPnrdtl.Totpax
 							}
 
 							// Push to Pnr log data
-							nmodelDtlpnr := mongo.NewUpdateOneModel().
-								SetFilter(bson.M{"prmkey": nowDtlpnr.Prmkey}).
-								SetUpdate(bson.M{"$set": nowDtlpnr}).
+							nmodelPnrdtl := mongo.NewUpdateOneModel().
+								SetFilter(bson.M{"prmkey": nowPnrdtl.Prmkey}).
+								SetUpdate(bson.M{"$set": nowPnrdtl}).
 								SetUpsert(true)
-							mgomdlDtlpnr = append(mgomdlDtlpnr, nmodelDtlpnr)
+							mgomdlPnrdtl = append(mgomdlPnrdtl, nmodelPnrdtl)
 						}
 					}
 				}
@@ -414,17 +415,17 @@ outlop:
 				} else {
 					mgomdlSmrpnr = append(mgomdlSmrpnr, tmpSmrpnr...)
 					mgomdlLcnpun = append(mgomdlLcnpun, tmpLcnpun...)
-					mgomdlDtlpnr = append(mgomdlDtlpnr, tmpDtlpnr...)
+					mgomdlPnrdtl = append(mgomdlPnrdtl, tmpPnrdtl...)
 					mgomdlFlnbfl = append(mgomdlFlnbfl, tmpFlnbfl...)
 				}
 
 			// If flight cancel/change but never in db
-			case len(prvDtlpnr) == 0:
+			case len(prvPnrdtl) == 0:
 
 				// Looping LDN data
 				fnlIsjedh := false
 				flbase.Isjedh = "Non Jeddah"
-				var tmpSmrpnr, tmpDtlpnr, tmpLcnpun, tmpFlnbfl []mongo.WriteModel
+				var tmpSmrpnr, tmpPnrdtl, tmpLcnpun, tmpFlnbfl []mongo.WriteModel
 				slcOutldn, errOutldn := fncSbrapi.FncSbrapiLcnpunMainob("LDN", *tkn, objParams)
 				if errOutldn == nil {
 					for _, lcnpun := range slcOutldn {
@@ -440,7 +441,7 @@ outlop:
 						tmpLcnpun = append(tmpLcnpun, nmodelLcnpun)
 
 						// Default summary PNR
-						defDtlpnr := mdlJeddah.MdlJeddahPnrdtlDtbase{
+						defPnrdtl := mdlJeddah.MdlJeddahPnrdtlDtbase{
 							Prmkey: nowPrmkey, Airlfl: lcnpun.Airlfl, Flnbfl: lcnpun.Flnbfl,
 							Depart: lcnpun.Depart, Routfl: lcnpun.Routfl, Clssfl: lcnpun.Clssfl,
 							Datefl: lcnpun.Datefl, Dateup: lcnpun.Dateup, Timeup: lcnpun.Timeup,
@@ -451,7 +452,7 @@ outlop:
 
 						// Get remarks history split or cancel
 						strToflnm, cekIsjedh :=
-							FncJeddahItrmrlGetapi("rmv", tkn, &defDtlpnr, objParams, sycFlnbfl, idcPnrcde,
+							FncJeddahItrmrlGetapi("rmv", tkn, &defPnrdtl, objParams, sycFlnbfl, idcPnrcde,
 								idcFlnbfl, sycAgtnme, &tmpSmrpnr, &tmpFlnbfl)
 
 						// cek is Jeddah
@@ -461,28 +462,28 @@ outlop:
 						}
 
 						// Get agent name Lcnpun
-						FncJeddahAgtgetParams(&defDtlpnr, nowIsjedh, idcAgtnme, &fnlAgtnme)
+						FncJeddahAgtgetParams(&defPnrdtl, nowIsjedh, idcAgtnme, &fnlAgtnme)
 
 						// Response Itenary
 						if strToflnm != "" {
-							defDtlpnr.Toflnm = strToflnm
-							defDtlpnr.Flstat = "Change"
-							defDtlpnr.Totchg = lcnpun.Totpax
-							defDtlpnr.Totpax = 0
+							defPnrdtl.Toflnm = strToflnm
+							defPnrdtl.Flstat = "Change"
+							defPnrdtl.Totchg = lcnpun.Totpax
+							defPnrdtl.Totpax = 0
 							intTotchg += lcnpun.Totpax
 						} else {
-							defDtlpnr.Flstat = "Cancel"
-							defDtlpnr.Totcxl = lcnpun.Totpax
-							defDtlpnr.Totpax = lcnpun.Totpax
+							defPnrdtl.Flstat = "Cancel"
+							defPnrdtl.Totcxl = lcnpun.Totpax
+							defPnrdtl.Totpax = lcnpun.Totpax
 							intTotcxl += lcnpun.Totpax
 						}
 
 						// Push to Pnr log data
-						nmodelDtlpnr := mongo.NewUpdateOneModel().
+						nmodelPnrdtl := mongo.NewUpdateOneModel().
 							SetFilter(bson.M{"prmkey": nowPrmkey}).
-							SetUpdate(bson.M{"$set": defDtlpnr}).
+							SetUpdate(bson.M{"$set": defPnrdtl}).
 							SetUpsert(true)
-						tmpDtlpnr = append(tmpDtlpnr, nmodelDtlpnr)
+						tmpPnrdtl = append(tmpPnrdtl, nmodelPnrdtl)
 					}
 				}
 
@@ -500,28 +501,28 @@ outlop:
 				} else {
 					mgomdlSmrpnr = append(mgomdlSmrpnr, tmpSmrpnr...)
 					mgomdlLcnpun = append(mgomdlLcnpun, tmpLcnpun...)
-					mgomdlDtlpnr = append(mgomdlDtlpnr, tmpDtlpnr...)
+					mgomdlPnrdtl = append(mgomdlPnrdtl, tmpPnrdtl...)
 					mgomdlFlnbfl = append(mgomdlFlnbfl, tmpFlnbfl...)
 				}
 
 			// If flight cancel/change avail in db
-			case len(prvDtlpnr) > 0:
+			case len(prvPnrdtl) > 0:
 
 				// Get agent name Lcnpun
-				for _, dtlpnr := range prvDtlpnr {
-					objParams.Pnrcde = dtlpnr.Pnrcde
-					if dtlpnr.Agtidn == "" {
-						FncJeddahAgtgetParams(&dtlpnr, true, idcAgtnme, &fnlAgtnme)
+				for _, pnrdtl := range prvPnrdtl {
+					objParams.Pnrcde = pnrdtl.Pnrcde
+					if pnrdtl.Agtidn == "" {
+						FncJeddahAgtgetParams(&pnrdtl, true, idcAgtnme, &fnlAgtnme)
 
 						// Push to Pnr log data
-						nmodelDtlpnr := mongo.NewUpdateOneModel().
-							SetFilter(bson.M{"prmkey": dtlpnr.Prmkey}).
-							SetUpdate(bson.M{"$set": dtlpnr}).
+						nmodelPnrdtl := mongo.NewUpdateOneModel().
+							SetFilter(bson.M{"prmkey": pnrdtl.Prmkey}).
+							SetUpdate(bson.M{"$set": pnrdtl}).
 							SetUpsert(true)
-						mgomdlDtlpnr = append(mgomdlDtlpnr, nmodelDtlpnr)
+						mgomdlPnrdtl = append(mgomdlPnrdtl, nmodelPnrdtl)
 
 						// Get remarks history split or cancel
-						FncJeddahItrmrlGetapi("rmv", tkn, &dtlpnr, objParams, sycFlnbfl, idcPnrcde,
+						FncJeddahItrmrlGetapi("rmv", tkn, &pnrdtl, objParams, sycFlnbfl, idcPnrcde,
 							idcFlnbfl, sycAgtnme, &mgomdlSmrpnr, &mgomdlFlnbfl)
 					}
 				}
@@ -555,12 +556,12 @@ outlop:
 		}
 
 		// Push mongo pnrlog
-		if len(mgomdlDtlpnr) > lmtdta && len(mgomdlDtlpnr) != 0 {
-			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlDtlpnr, "jeddah_pnrdtl")
+		if len(mgomdlPnrdtl) > lmtdta && len(mgomdlPnrdtl) != 0 {
+			rspBlkwrt := fncGlobal.FncGlobalDtbaseBlkwrt(mgomdlPnrdtl, "jeddah_pnrdtl")
 			if !rspBlkwrt {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT DTLPNR")
+				fmt.Println("ERR LOG HERE, CAN'T INPUT Pnrdtl")
 			}
-			mgomdlDtlpnr = []mongo.WriteModel{}
+			mgomdlPnrdtl = []mongo.WriteModel{}
 		}
 
 		// Push mongo pnrlog
@@ -594,7 +595,7 @@ outlop:
 		"jeddah_pnrlog": mgomdlLcnpun,
 		"jeddah_agentx": mgomdlAgtnme,
 		"jeddah_pnrsmr": mgomdlSmrpnr,
-		"jeddah_pnrdtl": mgomdlDtlpnr,
+		"jeddah_pnrdtl": mgomdlPnrdtl,
 		"jeddah_flnsmr": mgomdlSmrfln,
 		"jeddah_flnbfl": mgomdlFlnbfl,
 	} {
@@ -609,28 +610,28 @@ outlop:
 }
 
 // Get agent detail and id name
-func FncJeddahAgtgetParams(dtlpnr *mdlJeddah.MdlJeddahPnrdtlDtbase, istjed bool,
+func FncJeddahAgtgetParams(pnrdtl *mdlJeddah.MdlJeddahPnrdtlDtbase, istjed bool,
 	idcAgtnme *sync.Map, fnlAgtnme *map[string]mongo.WriteModel) {
 
 	// Get agent name Lcnpun
-	keyAgtnme := dtlpnr.Airlfl + dtlpnr.Agtnme
+	keyAgtnme := pnrdtl.Airlfl + pnrdtl.Agtnme
 	nowAgtnme := *fnlAgtnme
 	tmpAgtnme := mdlJeddah.MdlJeddahAgtnmeDtbase{
-		Prmkey: keyAgtnme, Agtnme: dtlpnr.Agtnme, Airlfl: dtlpnr.Airlfl}
-	if dtlpnr.Agtidn == "" {
+		Prmkey: keyAgtnme, Agtnme: pnrdtl.Agtnme, Airlfl: pnrdtl.Airlfl}
+	if pnrdtl.Agtidn == "" {
 		if !istjed {
-			dtlpnr.Agtdtl, tmpAgtnme.Agtdtl = "NON JEDDAH", "NON JEDDAH"
-			dtlpnr.Agtidn, tmpAgtnme.Agtidn = "0X", "0X"
-			dtlpnr.Rtlsrs, tmpAgtnme.Rtlsrs = "-", "-"
+			pnrdtl.Agtdtl, tmpAgtnme.Agtdtl = "NON JEDDAH", "NON JEDDAH"
+			pnrdtl.Agtidn, tmpAgtnme.Agtidn = "0X", "0X"
+			pnrdtl.Rtlsrs, tmpAgtnme.Rtlsrs = "-", "-"
 		}
 		if _, ist := idcAgtnme.Load(keyAgtnme); !ist {
-			if strings.ReplaceAll(dtlpnr.Agtnme, " ", "") != "" {
+			if strings.ReplaceAll(pnrdtl.Agtnme, " ", "") != "" {
 				mgoUpdate := mongo.NewUpdateOneModel().
 					SetFilter(bson.M{"prmkey": keyAgtnme}).
 					SetUpdate(bson.M{"$set": tmpAgtnme}).
 					SetUpsert(true)
 				idcAgtnme.Store(keyAgtnme, true)
-				nowAgtnme[dtlpnr.Pnrcde] = mgoUpdate
+				nowAgtnme[pnrdtl.Pnrcde] = mgoUpdate
 			}
 		}
 	}
@@ -638,19 +639,19 @@ func FncJeddahAgtgetParams(dtlpnr *mdlJeddah.MdlJeddahPnrdtlDtbase, istjed bool,
 
 // Get itenary remark and record locator and fligt number
 func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
-	fnlDtlpnr *mdlJeddah.MdlJeddahPnrdtlDtbase, objParams mdlSbrapi.MdlSbrapiMsghdrApndix,
+	fnlPnrdtl *mdlJeddah.MdlJeddahPnrdtlDtbase, objParams mdlSbrapi.MdlSbrapiMsghdrApndix,
 	sycFlnbfl, idcPnrcde, idcFlnbfl, sycAgtnme *sync.Map,
 	mgomdlSmrpnr, mgomdlFlnbfl *[]mongo.WriteModel,
 ) (string, bool) {
 
 	// Get agent name Lcnpun
-	if fnlDtlpnr.Agtidn == "" {
-		keyAgtnme := fnlDtlpnr.Airlfl + fnlDtlpnr.Agtnme
+	if fnlPnrdtl.Agtidn == "" {
+		keyAgtnme := fnlPnrdtl.Airlfl + fnlPnrdtl.Agtnme
 		if rawAgtnme, ist := sycAgtnme.Load(keyAgtnme); ist {
 			if getAgtnme, ist := rawAgtnme.(mdlJeddah.MdlJeddahAgtnmeDtbase); ist {
-				fnlDtlpnr.Agtdtl = getAgtnme.Agtdtl
-				fnlDtlpnr.Agtidn = getAgtnme.Agtidn
-				fnlDtlpnr.Rtlsrs = getAgtnme.Rtlsrs
+				fnlPnrdtl.Agtdtl = getAgtnme.Agtdtl
+				fnlPnrdtl.Agtidn = getAgtnme.Agtidn
+				fnlPnrdtl.Rtlsrs = getAgtnme.Rtlsrs
 			}
 		}
 	}
@@ -689,19 +690,19 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 			}
 
 			// Push to final detail PNR Remark split PNR
-			fnlDtlpnr.Totspl = tmpTotspl
-			fnlDtlpnr.Arrspl = strings.Join(tmpArrspl, "|")
+			fnlPnrdtl.Totspl = tmpTotspl
+			fnlPnrdtl.Arrspl = strings.Join(tmpArrspl, "|")
 		}
 
 		// Get interline PNR
 		arlIntrln := arrRmrkit.POS.Source.TTYRecordLocator.CRSCode
 		pnrIntrln := arrRmrkit.POS.Source.TTYRecordLocator.RecordLocator
 		if pnrIntrln != "" {
-			if !strings.Contains(fnlDtlpnr.Intrln, pnrIntrln) {
-				if fnlDtlpnr.Intrln == "" {
-					fnlDtlpnr.Intrln = arlIntrln + "*" + pnrIntrln
+			if !strings.Contains(fnlPnrdtl.Intrln, pnrIntrln) {
+				if fnlPnrdtl.Intrln == "" {
+					fnlPnrdtl.Intrln = arlIntrln + "*" + pnrIntrln
 				} else {
-					fnlDtlpnr.Intrln += "|" + arlIntrln + "*" + pnrIntrln
+					fnlPnrdtl.Intrln += "|" + arlIntrln + "*" + pnrIntrln
 				}
 			}
 		}
@@ -737,18 +738,18 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 		}
 
 		// Default data smrpnr
-		fnlDtlpnr.Timecr = int64(intTimerw)
+		fnlPnrdtl.Timecr = int64(intTimerw)
 
 		// Declare first blank object PNR summary
 		objSmrpnr := mdlJeddah.MdlJeddahPnrsmrDtbase{
 			Routfl: "", Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-			Agtnme: fnlDtlpnr.Agtnme, Agtdtl: fnlDtlpnr.Agtdtl, Agtidn: fnlDtlpnr.Agtidn,
-			Pnrcde: fnlDtlpnr.Pnrcde, Intrln: fnlDtlpnr.Intrln, Rtlsrs: fnlDtlpnr.Rtlsrs,
-			Arrcpn: "", Totisd: fnlDtlpnr.Totisd, Totbok: fnlDtlpnr.Totbok,
-			Totpax: fnlDtlpnr.Totpax, Totcxl: fnlDtlpnr.Totcxl, Totspl: fnlDtlpnr.Totspl,
-			Arrspl: fnlDtlpnr.Arrspl, Notedt: "", Timedp: int64(intTimedp),
+			Agtnme: fnlPnrdtl.Agtnme, Agtdtl: fnlPnrdtl.Agtdtl, Agtidn: fnlPnrdtl.Agtidn,
+			Pnrcde: fnlPnrdtl.Pnrcde, Intrln: fnlPnrdtl.Intrln, Rtlsrs: fnlPnrdtl.Rtlsrs,
+			Arrcpn: "", Totisd: fnlPnrdtl.Totisd, Totbok: fnlPnrdtl.Totbok,
+			Totpax: fnlPnrdtl.Totpax, Totcxl: fnlPnrdtl.Totcxl, Totspl: fnlPnrdtl.Totspl,
+			Arrspl: fnlPnrdtl.Arrspl, Notedt: "", Timedp: int64(intTimedp),
 			Timerv: int64(intTimerv), Timecr: int64(intTimerw), Agtdie: varBokdtl.CreationAgentID,
-			Prmkey: fnlDtlpnr.Pnrcde + pnrTimecr.Format("0601021504"),
+			Prmkey: fnlPnrdtl.Pnrcde + pnrTimecr.Format("0601021504"),
 		}
 
 		// Looping intenary
@@ -796,11 +797,11 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 						itinry.Air.AirlineRefId = itinry.Air.AirlineRefId + "PURGED"
 					}
 					pnrIntrln := itinry.Air.AirlineRefId[2:11]
-					if !strings.Contains(fnlDtlpnr.Intrln, pnrIntrln[3:9]) {
-						if fnlDtlpnr.Intrln == "" {
-							fnlDtlpnr.Intrln = pnrIntrln
+					if !strings.Contains(fnlPnrdtl.Intrln, pnrIntrln[3:9]) {
+						if fnlPnrdtl.Intrln == "" {
+							fnlPnrdtl.Intrln = pnrIntrln
 						} else {
-							fnlDtlpnr.Intrln += "|" + pnrIntrln
+							fnlPnrdtl.Intrln += "|" + pnrIntrln
 						}
 					}
 				}
@@ -811,7 +812,7 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 				}
 
 				// Match new flight
-				if cpnRoutfl == fnlDtlpnr.Routfl && cpnActncd == "HK" {
+				if cpnRoutfl == fnlPnrdtl.Routfl && cpnActncd == "HK" {
 					strToflnm = cpnTimefl[0:6] + ":" + cpnAirlfl + ":" + cpnFlnbfl
 				}
 
@@ -851,7 +852,7 @@ func FncJeddahItrmrlGetapi(rmv string, tkn *mdlSbrapi.MdlSbrapiMsghdrParams,
 			arrRoutfl = append(arrRoutfl, lstArrivl)
 			objSmrpnr.Routfl = strings.Join(arrRoutfl, "-")
 			objSmrpnr.Arrcpn = strings.Join(arrArrcpn, "|")
-			objSmrpnr.Intrln = fnlDtlpnr.Intrln
+			objSmrpnr.Intrln = fnlPnrdtl.Intrln
 
 		}
 

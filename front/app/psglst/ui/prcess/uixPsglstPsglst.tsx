@@ -6,8 +6,8 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import {
-  MdlPsglstEdtprmParams,
-  MdlPsglstDetailParams,
+  MdlPsglstAcpedtDtbase,
+  MdlPsglstPsgdtlFrntnd,
 } from "../../model/mdlPsglstParams";
 import {
   UixGlobalIconvcCancel,
@@ -17,16 +17,16 @@ import {
 import { useState } from "react";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 
-export default function UixPsglstDetailTablex({
-  detail,
+export default function UixPsglstPsgdtlTablex({
+  psgdtl,
   edtprm,
 }: {
-  detail: MdlPsglstDetailParams[];
-  edtprm: MdlPsglstEdtprmParams[];
+  psgdtl: MdlPsglstPsgdtlFrntnd[];
+  edtprm: MdlPsglstAcpedtDtbase[];
 }) {
   console.log(edtprm);
 
-  const [edtobj, edtobjSet] = useState<MdlPsglstDetailParams>();
+  const [edtobj, edtobjSet] = useState<MdlPsglstPsgdtlFrntnd>();
   const actedt = (e: React.ChangeEvent<HTMLInputElement>) => {
     const key = e.currentTarget.id;
     let val = e.currentTarget.value;
@@ -37,7 +37,7 @@ export default function UixPsglstDetailTablex({
     edtobjSet({
       ...edtobj,
       [key]: val,
-    } as MdlPsglstDetailParams);
+    } as MdlPsglstPsgdtlFrntnd);
   };
 
   return (
@@ -47,30 +47,28 @@ export default function UixPsglstDetailTablex({
           <thead className="sticky top-0 z-20 text-white">
             <tr>
               <th className="thhead sticky left-0">Action</th>
-              {detail && detail.length > 0
-                ? Object.entries(detail[0]).map(([key]) => (
-                    <th key={key} className="thhead">
-                      {key}
-                    </th>
-                  ))
+              {psgdtl && psgdtl.length > 0
+                ? Object.entries(psgdtl[0]).map(([key]) => (
+                  <th key={key} className="thhead">
+                    {key}
+                  </th>
+                ))
                 : ""}
             </tr>
           </thead>
           <tbody className="text-slate-700 bg-sky-100">
-            {detail.map((log, idx) => (
+            {psgdtl.map((log, idx) => (
               <tr className="group" key={idx}>
                 <td
-                  className={`tdbody text-center sticky left-0 z-10 shadow-md ${
-                    edtobj?.prmkey === log.prmkey ? "bg-sky-200" : "bg-sky-100"
-                  }`}
+                  className={`tdbody text-center sticky left-0 z-10 shadow-md ${edtobj?.prmkey === log.prmkey ? "bg-sky-200" : "bg-sky-100"
+                    }`}
                 >
                   <div className="afull flexctr gap-x-1.5 relative">
                     <div
-                      className={`flexctr btnsbm duration-300 cursor-pointer ${
-                        edtobj?.prmkey === log.prmkey
-                          ? "opacity-100"
-                          : "opacity-0 select-none pointer-events-none"
-                      }`}
+                      className={`flexctr btnsbm duration-300 cursor-pointer ${edtobj?.prmkey === log.prmkey
+                        ? "opacity-100"
+                        : "opacity-0 select-none pointer-events-none"
+                        }`}
                       onClick={() => edtobjSet({ ...log, prmkey: "" })}
                     >
                       <UixGlobalIconvcCeklis
@@ -80,11 +78,10 @@ export default function UixPsglstDetailTablex({
                       />
                     </div>
                     <div
-                      className={`flexctr btnsbm duration-300 cursor-pointer ${
-                        edtobj?.prmkey === log.prmkey
-                          ? "opacity-100"
-                          : "opacity-0 select-none pointer-events-none"
-                      }`}
+                      className={`flexctr btnsbm duration-300 cursor-pointer ${edtobj?.prmkey === log.prmkey
+                        ? "opacity-100"
+                        : "opacity-0 select-none pointer-events-none"
+                        }`}
                       onClick={() => edtobjSet({ ...log, prmkey: "" })}
                     >
                       <UixGlobalIconvcCancel
@@ -94,11 +91,10 @@ export default function UixPsglstDetailTablex({
                       />
                     </div>
                     <div
-                      className={`absolute flexctr btnsbm duration-300 cursor-pointer ${
-                        edtobj?.prmkey === log.prmkey
-                          ? "opacity-0 select-none pointer-events-none"
-                          : "opacity-100"
-                      }`}
+                      className={`absolute flexctr btnsbm duration-300 cursor-pointer ${edtobj?.prmkey === log.prmkey
+                        ? "opacity-0 select-none pointer-events-none"
+                        : "opacity-100"
+                        }`}
                       onClick={() => edtobjSet(log)}
                     >
                       <UixGlobalIconvcEditdt
@@ -111,13 +107,12 @@ export default function UixPsglstDetailTablex({
                 </td>
                 {Object.entries(log).map(([key, val]) => (
                   <td
-                    className={`tdbody text-center z-0 h-8 ${
-                      edtobj?.prmkey === log.prmkey ? "bg-sky-200" : ""
-                    }`}
+                    className={`tdbody text-center z-0 h-8 ${edtobj?.prmkey === log.prmkey ? "bg-sky-200" : ""
+                      }`}
                     key={key}
                   >
                     {edtobj?.prmkey === log.prmkey &&
-                    edtprm.some((item) => item.params === key) ? (
+                      edtprm.some((item) => item.params === key) ? (
                       <div className="relative flexctr">
                         <span className="invisible">
                           XXXX{String(edtobj[key as keyof typeof edtobj])}

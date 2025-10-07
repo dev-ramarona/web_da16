@@ -1,6 +1,6 @@
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
 import {
-  MdlJeddahInputxAllpnr,
+  MdlJeddahInputxAllprm,
   MdlJeddahFlnsmrDtbase,
 } from "../../model/mdlJeddahMainpr";
 import UixJeddahFlnsmrSearch from "./search";
@@ -10,7 +10,7 @@ import { ApiJeddahFlnsmrGetall } from "../../api/apiJeddahFlnsmr";
 export default async function UixJeddahFlnsmrMainpg({
   trtprm,
 }: {
-  trtprm: MdlJeddahInputxAllpnr;
+  trtprm: MdlJeddahInputxAllprm;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));
   const flnsmr = await ApiJeddahFlnsmrGetall(trtprm);

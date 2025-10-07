@@ -1,7 +1,7 @@
-import { MdlJeddahInputxAllpnr } from "../model/mdlJeddahMainpr";
+import { MdlJeddahInputxAllprm } from "../model/mdlJeddahMainpr";
 
 // Treatment function params
-export function FncJeddahAllpnrrMainpr(params: MdlJeddahInputxAllpnr) {
+export function FncJeddahAllpnrrMainpr(params: MdlJeddahInputxAllprm) {
   return {
     chssmr: params.chssmr || "",
     clssfl_pnrdtl: params.clssfl_pnrdtl || "",
@@ -42,5 +42,5 @@ export function FncJeddahAllpnrrMainpr(params: MdlJeddahInputxAllpnr) {
     srtnul_agtnme: params.srtnul_agtnme || "",
     pagenw_agtnme: Number(params.pagenw_agtnme) || 1,
     limitp_agtnme: Number(params.limitp_agtnme) || 15,
-  } as MdlJeddahInputxAllpnr;
+  } as MdlJeddahInputxAllprm;
 }

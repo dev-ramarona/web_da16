@@ -1,14 +1,14 @@
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
-import { MdlPsglstErrlogParams } from "../../model/mdlPsglstParams";
 import {
   UixGlobalIconvcIgnore,
   UixGlobalIconvcRfresh,
 } from "@/app/global/ui/server/uixGlobalIconvc";
+import { MdlPsglstErrlogDtbase } from "../../model/mdlPsglstParams";
 
 export default function UixPsglstErrlogTablex({
   errlog,
 }: {
-  errlog: MdlPsglstErrlogParams[];
+  errlog: MdlPsglstErrlogDtbase[];
 }) {
   return (
     <>
@@ -19,10 +19,10 @@ export default function UixPsglstErrlogTablex({
               <th className="thhead">Action</th>
               {errlog && errlog.length > 0
                 ? Object.entries(errlog[0]).map(([key]) => (
-                    <th key={key} className="thhead">
-                      {key}
-                    </th>
-                  ))
+                  <th key={key} className="thhead">
+                    {key}
+                  </th>
+                ))
                 : ""}
             </tr>
           </thead>

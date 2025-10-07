@@ -1,23 +1,17 @@
-import {
-  ApiPsglstDtbaseEdtprm,
-  ApiPsglstDtbasePsgdtl,
-} from "../../api/apiPsglstDtbase";
-import {
-  MdlPsglstAllprmSrcprm,
-  MdlPsglstEdtprmParams,
-  MdlPsglstPsgdtlParams,
-} from "../../model/mdlPsglstParams";
+import { ApiPsglstAcpedtDtbase } from "../../api/apiPsglstAcpedt";
+import { ApiPsglstPsgdtlGetall } from "../../api/apiPsglstPsgdtl";
+import { MdlPsglstAcpedtDtbase, MdlPsglstPsgdtlFrntnd, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
 import UixPsglstPsgdtlSearch from "./search";
 import UixPsglstPsgdtlTablex from "./uixPsglstPsglst";
 
 export default async function UixPsglstPsgdtlMainpg({
   trtprm,
 }: {
-  trtprm: MdlPsglstAllprmSrcprm;
+  trtprm: MdlPsglstSrcprmAllprm;
 }) {
   // await new Promise((r) => setTimeout(r, 2000));
-  const psgdtl: MdlPsglstPsgdtlParams[] = await ApiPsglstDtbasePsgdtl();
-  const edtprm: MdlPsglstEdtprmParams[] = await ApiPsglstDtbaseEdtprm();
+  const psgdtl: MdlPsglstPsgdtlFrntnd[] = await ApiPsglstPsgdtlGetall();
+  const edtprm: MdlPsglstAcpedtDtbase[] = await ApiPsglstAcpedtDtbase();
   return (
     <>
       <UixPsglstPsgdtlSearch trtprm={trtprm} />
