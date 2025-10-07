@@ -12,6 +12,7 @@ export async function ApiGlobalCookieGetdta() {
   const tokenx = (await fnccok).get(tknnme)?.value || "";
   const Objusr: mdlGlobalAllusrCookie
     = { stfnme: "", usrnme: "", access: ["null"], keywrd: ["null"] };
+  if (tokenx == "" || !tokenx) return Objusr;
 
   // Try hit API
   try {

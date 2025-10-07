@@ -63,7 +63,7 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 	}
 
 	// Set the JWT token in the cookie
-	c.SetCookie(Tknnme, tknstr, 10800, "/", Ipadrs, false, true)
+	c.SetCookie(Tknnme, tknstr, 10800, "/", Ipadrs, Secure, true)
 	c.JSON(200, "Login Successfull")
 }
 
@@ -71,7 +71,7 @@ func FncGlobalAllusrLoginx(c *gin.Context) {
 func FncGlobalAllusrLogout(c *gin.Context) {
 
 	// Delete Cookie
-	c.SetCookie(Tknnme, "", -1, "/", Ipadrs, false, true)
+	c.SetCookie(Tknnme, "", -1, "/", Ipadrs, Secure, true)
 	c.JSON(200, "Logout")
 }
 

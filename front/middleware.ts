@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
   const pathnm = req.nextUrl.pathname.split("/")[1];
 
   // Jika belum login, arahkan ke "/"
-  if (!tokenx) {
+  if (tokenx == "" || !tokenx) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 

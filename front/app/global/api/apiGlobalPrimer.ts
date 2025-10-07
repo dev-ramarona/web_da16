@@ -3,7 +3,8 @@ import { MdlGlobalStatusPrcess } from "../model/mdlGlobalPrimer";
 
 // Global Axios
 export const ApiGlobalAxiospParams = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_IPV_ADRESS}:${process.env.NEXT_PUBLIC_PRT_GOLANG}`,
+  baseURL: `${process.env.NEXT_PUBLIC_URL_AXIOSB}`,
+  withCredentials: true,
   timeout: 1000000,
   headers: { "Content-Type": "application/json" },
 });

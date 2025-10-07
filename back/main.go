@@ -60,10 +60,6 @@ func main() {
 	r.POST("/jeddah/rtlsrs/update", fncJeddah.FncJeddahRtlsrsUpdate)
 	r.POST("/jeddah/rtlsrs/upload/:upldby", fncJeddah.FncJeddahRtlsrsUpload)
 
-	// // Handle web link API File PPN Lookup
-	// r.POST("/ppnlkp/prcess", fnc_ppnlkp.FncPpnlkpPrcessMainpg)
-	// r.GET("/ppnlkp/agrgte", fnc_ppnlkp.FncPpnlkpPrcessAgrgte)
-
 	// Run server
 	r.Run("0.0.0.0:" + fncGlobal.Ptgolg)
 }
