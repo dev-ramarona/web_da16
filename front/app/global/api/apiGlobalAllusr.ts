@@ -4,7 +4,7 @@ import { MdlGlobalApplstDtbase } from "../model/mdlGlobalApplst";
 import { MdlGlobalAllusrParams } from "../model/mdlGlobalPrimer";
 
 // API Login
-export async function ApiGlobalLoginAllusr(
+export async function ApiGlobalAllusrLogin(
   prvstt: object | null | void,
   formdt: FormData
 ) {

@@ -4,7 +4,7 @@ import "./globals.css";
 import UixGlobalAppbarClient from "./global/ui/client/uixGlobalAppbar";
 import { ApiGlobalCookieGetdta } from "./global/api/apiCookieParams";
 import { MdlGlobalApplstDtbase } from "./global/model/mdlGlobalApplst";
-import { ApiGlobalAllusrApplst } from "./global/api/apiGlobalLoginx";
+import { ApiGlobalAllusrApplst } from "./global/api/apiGlobalAllusr";
 import UixGlobalHeaderClient from "./global/ui/client/uixGlobalHeader";
 
 const geistSans = Geist({
@@ -26,6 +26,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Data Analyst Web",
   description: "Created by Data Analyst Lion Tower Internal Control",
+  icons: {
+    icon: "/lionairblack.png",
+  },
 };
 
 export default async function RootLayout({

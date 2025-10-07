@@ -1,9 +1,9 @@
 "use client";
 import { useActionState, useEffect, useState } from "react";
-import { ApiGlobalLoginAllusr } from "../../api/apiGlobalLoginx";
+import { ApiGlobalAllusrLogin } from "../../api/apiGlobalAllusr";
 
 export default function UixGlobalLoginxFormdt() {
-  const [formac, formacSet] = useActionState(ApiGlobalLoginAllusr, null);
+  const [formac, formacSet] = useActionState(ApiGlobalAllusrLogin, null);
   const [formdt, formdtSet] = useState({ usrnme: "", psswrd: "" });
   const [rspnse, rspnseSet] = useState({
     dfault: formac?.dfault || "",
@@ -55,8 +55,8 @@ export default function UixGlobalLoginxFormdt() {
               <div className="opacity-0">Username</div>
               <div
                 className={`absolute opacity-100 cursor-text ${formdt.usrnme.length > 0
-                    ? "translate-y-0 pt-0 pb-1"
-                    : "translate-y-full pt-1 pb-0"
+                  ? "translate-y-0 pt-0 pb-1"
+                  : "translate-y-full pt-1 pb-0"
                   } duration-300`}
               >
                 Username
@@ -82,8 +82,8 @@ export default function UixGlobalLoginxFormdt() {
               <div className="opacity-0">Password</div>
               <div
                 className={`absolute opacity-100 cursor-text ${formdt.psswrd.length > 0
-                    ? "translate-y-0 pt-0 pb-1"
-                    : "translate-y-full pt-1 pb-0"
+                  ? "translate-y-0 pt-0 pb-1"
+                  : "translate-y-full pt-1 pb-0"
                   } duration-300`}
               >
                 Password

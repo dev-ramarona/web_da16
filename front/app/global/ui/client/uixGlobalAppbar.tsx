@@ -11,7 +11,7 @@ import {
   UixGlobalIconvcUsrdtl,
 } from "../server/uixGlobalIconvc";
 import { MdlGlobalApplstDtbase } from "../../model/mdlGlobalApplst";
-import { ApiGlobalAllusrLogout } from "../../api/apiGlobalLoginx";
+import { ApiGlobalAllusrLogout } from "../../api/apiGlobalAllusr";
 import { mdlGlobalAllusrCookie } from "../../model/mdlGlobalPrimer";
 
 export default function UixGlobalAppbarClient({
