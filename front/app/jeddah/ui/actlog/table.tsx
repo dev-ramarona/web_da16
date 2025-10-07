@@ -1,10 +1,10 @@
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
-import { MdlJeddahParamsLogact } from "../../model/mdlJeddahMainpr";
+import { MdlJeddahParamsActlog } from "../../model/mdlJeddahMainpr";
 
 export default function UixJeddahActlogTablex({
   logact,
 }: {
-  logact: MdlJeddahParamsLogact[];
+  logact: MdlJeddahParamsActlog[];
 }) {
   const header = {
     datenb: "Date Flown",

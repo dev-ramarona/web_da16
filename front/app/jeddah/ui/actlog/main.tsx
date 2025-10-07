@@ -1,11 +1,10 @@
-import { ApiPsglstActlogDtbase } from "@/app/psglst/api/apiPsglstActlog";
-import { MdlPsglstActlogDtbase } from "@/app/psglst/model/mdlPsglstParams";
+import { ApiJeddahDtbaseActlog } from "../../api/apiJeddahActlog";
+import { MdlJeddahParamsActlog } from "../../model/mdlJeddahMainpr";
 import UixJeddahActlogTablex from "./table";
 
 
 export default async function UixJeddahLogactMainpg() {
-  // await new Promise((r) => setTimeout(r, 2000));
-  const logact: MdlPsglstActlogDtbase[] = await ApiPsglstActlogDtbase();
+  const logact: MdlJeddahParamsActlog[] = await ApiJeddahDtbaseActlog();
   return (
     <>
       {logact.length > 0 ? (

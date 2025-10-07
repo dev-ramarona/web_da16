@@ -42,7 +42,7 @@ export interface MdlJeddahAgtnmeDefapi {
 
 
 // Log action
-export interface MdlJeddahParamsLogact {
+export interface MdlJeddahParamsActlog {
   timeup: number;
   dateup: number;
   statdt: string;
