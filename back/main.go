@@ -2,7 +2,9 @@ package main
 
 import (
 	fncGlobal "back/global/function"
+	fncHoldst "back/holdst/function"
 	fncJeddah "back/jeddah/function"
+	fncPsglst "back/psglst/function"
 	"context"
 	"time"
 
@@ -41,7 +43,7 @@ func main() {
 	r.GET("/allusr/logout", fncGlobal.FncGlobalAllusrLogout)
 	r.GET("/allusr/applst", fncGlobal.FncGlobalAllusrApplst)
 
-	// // Handle web link API jeddah
+	// Handle web link API jeddah
 	r.POST("/jeddah/prcess", fncJeddah.FncJeddahPrcessMainpg)
 	r.GET("/jeddah/actlog/getall", fncJeddah.FncJeddahActlogGetall)
 	r.GET("/jeddah/flnbfl/tmplte", fncJeddah.FncJeddahFlnbflTmplte)
@@ -59,6 +61,17 @@ func main() {
 	r.GET("/jeddah/rtlsrs/tmplte", fncJeddah.FncJeddahRtlsrsTmplte)
 	r.POST("/jeddah/rtlsrs/update", fncJeddah.FncJeddahRtlsrsUpdate)
 	r.POST("/jeddah/rtlsrs/upload/:upldby", fncJeddah.FncJeddahRtlsrsUpload)
+
+	// Handle web link API Passangger list
+	r.POST("/psglst/prcess", fncPsglst.FncPsglstPrcessMainpg)
+	r.POST("/psglst/psgdtl/getall", fncPsglst.FncPsglstPsgdtlGetall)
+	r.POST("/psglst/errlog/getall", fncPsglst.FncPsglstErrlogGetall)
+	r.GET("/psglst/actlog/getall", fncPsglst.FncPsglstActlogGetall)
+	r.GET("/psglst/acpedt/getall", fncPsglst.FncPsglstPsgdtlAcpedt)
+	r.POST("/psglst/psgdtl/update", fncPsglst.FncPsglstRtlsrsUpdate)
+
+	// Handle web link API Hold seat
+	r.POST("/holdst/prcess", fncHoldst.FncHoldstPrcessMainpg)
 
 	// Run server
 	r.Run("0.0.0.0:" + fncGlobal.Ptgolg)

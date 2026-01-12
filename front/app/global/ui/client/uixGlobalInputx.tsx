@@ -9,9 +9,9 @@ export default function UixGlobalInputxFormdt({
   plchdr,
   repprm,
 }: {
-  typipt: "text" | "date" | "month" | "number" | "file";
+  typipt: "text" | "date" | "month" | "number" | "file" | "datetime-local";
   labelx: "hidden" | "";
-  length: number | undefined;
+  length: number | undefined | string[];
   queryx: string;
   params: string;
   plchdr: string;
@@ -35,8 +35,8 @@ export default function UixGlobalInputxFormdt({
           />
           <label
             className={`afull bg-white cursor-pointer rounded-md p-1.5 shadow-md ${params != ""
-                ? "text-slate-700 overflow-hidden whitespace-nowrap"
-                : "text-white peer-focus:text-slate-500"
+              ? "text-slate-700 overflow-hidden whitespace-nowrap"
+              : "text-white peer-focus:text-slate-500"
               } duration-300`}
             htmlFor={queryx}
           >
@@ -44,10 +44,10 @@ export default function UixGlobalInputxFormdt({
           </label>
           <label
             className={`absolute left-3 select-none cursor-pointer whitespace-nowrap ${params != ""
-                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
-                }`
-                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
-                }`
+              ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
+              }`
+              : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
+              }`
               } duration-300`}
             htmlFor={queryx}
           >
@@ -59,25 +59,27 @@ export default function UixGlobalInputxFormdt({
         <>
           <input
             className={`afull bg-white rounded-md p-1.5 peer shadow-md ${params != ""
-                ? "text-slate-700"
-                : "text-white focus:text-slate-500"
+              ? "text-slate-700"
+              : "text-white focus:text-slate-500"
               } duration-300`}
             value={params}
-            maxLength={length ? length : undefined}
+            maxLength={length && typeof length == "number" ? length : undefined}
+            min={(Array.isArray(length) ? length[0] : length)}
+            max={(Array.isArray(length) ? length[length.length - 1] : length)}
             type={typipt}
             id={queryx}
             onChange={(e) => (repprm ? repprm(e) : "")}
             onClick={() =>
-              typipt == "date" || typipt == "month" ? pckrdt() : null
+              typipt == "date" || typipt == "month" || typipt == "datetime-local" ? pckrdt() : null
             }
-            ref={typipt == "date" || typipt == "month" ? refdte : null}
+            ref={typipt == "date" || typipt == "month" || typipt == "datetime-local" ? refdte : null}
           />
           <label
             className={`absolute left-3 select-none cursor-text whitespace-nowrap ${params != ""
-                ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
-                }`
-                : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
-                }`
+              ? `h-1/2 -translate-y-full mb-1 text-slate-600 font-semibold text-[0.65rem] ${labelx == "hidden" ? "opacity-0" : ""
+              }`
+              : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
+              }`
               } duration-300`}
             htmlFor={queryx}
           >

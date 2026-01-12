@@ -9,8 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Input to the database All
-func FncGlobalDtbaseBlkwrt(dtamdl []mongo.WriteModel, cltion string) bool {
+// Input Bulkwrite to the database All
+func FncGlobalDtbaseBlkwrt(dtamdl []mongo.WriteModel, cltion string) error {
 
 	// Select database and collection
 	tablex := Client.Database(Dbases).Collection(cltion)
@@ -23,5 +23,18 @@ func FncGlobalDtbaseBlkwrt(dtamdl []mongo.WriteModel, cltion string) bool {
 	if errorx != nil {
 		fmt.Println(errorx)
 	}
-	return errorx == nil
+	return errorx
+}
+
+// Input to the database All
+func FncGlobalDtbaseBtcwrt(mapMgomdl map[string]*[]mongo.WriteModel, blimit int) {
+	for key, mgo := range mapMgomdl {
+		if len(*mgo) > blimit {
+			rsupdt := FncGlobalDtbaseBlkwrt(*mgo, key)
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
+			}
+			*mgo = []mongo.WriteModel{}
+		}
+	}
 }

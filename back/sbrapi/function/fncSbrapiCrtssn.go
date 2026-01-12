@@ -12,8 +12,8 @@ import (
 func FncSbrapiCrtssnMainob(carrierCode string) (mdlSbrapi.MdlSbrapiMsghdrParams, error) {
 
 	// Declare first output
-	convid := fncGlobal.FncGlobalMakevrCduuid()
-	mssgid := fncGlobal.FncGlobalMakevrCduuid()
+	convid := fncGlobal.FncGlobalMainprCduuid()
+	mssgid := fncGlobal.FncGlobalMainprCduuid()
 	timefm := time.Now().UTC().Format(time.RFC3339)
 	var objhdr = mdlSbrapi.MdlSbrapiMsghdrParams{
 		Convid: fmt.Sprintf("V1@%s@%s", convid, fncGlobal.Pcckey),

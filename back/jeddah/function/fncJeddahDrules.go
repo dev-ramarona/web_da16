@@ -11,7 +11,7 @@ import (
 )
 
 // Get Sync map data LC and PUN prev day
-func FncJeddahDrulesSycmap() []mdlJeddah.MdlJeddahRulesjDtbase {
+func FncJeddahDrulesSlcobj() []mdlJeddah.MdlJeddahRulesjDtbase {
 
 	// Inisialisasi variabel
 	fnldta := []mdlJeddah.MdlJeddahRulesjDtbase{}

@@ -5,6 +5,7 @@ import (
 	mdlJeddah "back/jeddah/model"
 	"context"
 	"encoding/csv"
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -52,13 +53,14 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 		for _, params := range []string{inputx.Airlfl_pnrsmr,
 			inputx.Flnbfl_pnrsmr, inputx.Routfl_pnrsmr,
 			strconv.Itoa(intDatefl)} {
-			if params != "" {
+			if params != "" && params != "0" {
 				nowArrcpn = append(nowArrcpn, params)
 			} else {
 				nowArrcpn = append(nowArrcpn, ".*")
 			}
 		}
 		strArrcpn := strings.Join(nowArrcpn, "-")
+		fmt.Println(strArrcpn)
 		csvFilenm = append(csvFilenm, strconv.Itoa(intDatefl))
 		mtchdt = append(mtchdt, bson.D{{Key: "arrcpn",
 			Value: bson.D{{Key: "$regex", Value: strArrcpn}}}})
@@ -69,7 +71,7 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 		nowTimenb := time.Now().Format("0601020000")
 		intTimenb, _ := strconv.Atoi(nowTimenb)
 		csvFilenm = append(csvFilenm, inputx.Psdate_pnrsmr, nowTimenb)
-		mtchdt = append(mtchdt, bson.D{{Key: "timedp",
+		mtchdt = append(mtchdt, bson.D{{Key: "timest",
 			Value: bson.D{{Key: "$gte", Value: intTimenb}}}})
 	}
 	if inputx.Pnrcde_pnrsmr != "" {
@@ -133,7 +135,7 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 		// Streaming file CSV ke client
 		writer := csv.NewWriter(c.Writer)
 		defer writer.Flush()
-		writer.Write([]string{"Prmkey", "Routfl", "Timedp", "Timerv", "Dateup", "Timeup", "Timecr",
+		writer.Write([]string{"Prmkey", "Routfl", "Timest", "Timend", "Dateup", "Timeup", "Timecr",
 			"Agtnme", "Agtdtl", "Agtidn", "Pnrcde", "Intrln", "Rtlsrs", "Arrcpn", "Agtdie", "Totisd",
 			"Totbok", "Totpax", "Totcxl", "Totspl", "Arrspl", "Notedt"})
 
@@ -157,8 +159,8 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 			writer.Write([]string{
 				slcDtaset.Prmkey,
 				slcDtaset.Routfl,
-				strconv.Itoa(int(slcDtaset.Timedp)),
-				strconv.Itoa(int(slcDtaset.Timerv)),
+				strconv.Itoa(int(slcDtaset.Timest)),
+				strconv.Itoa(int(slcDtaset.Timend)),
 				strconv.Itoa(int(slcDtaset.Dateup)),
 				strconv.Itoa(int(slcDtaset.Timeup)),
 				strconv.Itoa(int(slcDtaset.Timecr)),
@@ -169,7 +171,7 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 				slcDtaset.Intrln,
 				slcDtaset.Rtlsrs,
 				slcDtaset.Arrcpn,
-				slcDtaset.Agtdie,
+				slcDtaset.Agtdcr,
 				strconv.Itoa(slcDtaset.Totisd),
 				strconv.Itoa(slcDtaset.Totbok),
 				strconv.Itoa(slcDtaset.Totpax),
@@ -243,4 +245,34 @@ func FncJeddahPnrsmrFrntnd(c *gin.Context) {
 		// Return final output
 		c.JSON(200, gin.H{"totdta": totidx, "arrdta": slcobj})
 	}
+}
+
+// Get Sync map data LC and PUN prev day
+func FncJeddahPnrsmrSycmap(prvDateup string) *sync.Map {
+
+	// Inisialisasi variabel
+	fnldta := &sync.Map{}
+
+	// Select database and collection
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("jeddah_pnrsmr")
+	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Get route data
+	intDateup, _ := strconv.Atoi(prvDateup + "0000")
+	datarw, err := tablex.Find(contxt, bson.M{"timend": bson.M{"$gte": intDateup}})
+	if err != nil {
+		panic(err)
+	}
+	defer datarw.Close(contxt)
+
+	// Append to slice
+	for datarw.Next(contxt) {
+		var object mdlJeddah.MdlJeddahPnrsmrDtbase
+		datarw.Decode(&object)
+		fnldta.Store(object.Prmkey, object)
+	}
+
+	// return data
+	return fnldta
 }

@@ -1,26 +1,19 @@
+import { ApiGlobalAxiospParams } from "@/app/global/api/apiGlobalPrimer";
 import { MdlPsglstActlogDtbase } from "../model/mdlPsglstParams";
 
 // Function get jeddah database log action
 export async function ApiPsglstActlogDtbase() {
-    //   try {
-    //     const rspnse = await ApiGlobalAxiospParams.get("/opclss/logact");
-    //     if (rspnse.status === 200) {
-    //       const fnlobj = await rspnse.data;
-    //       return fnlobj;
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    //   return [];
-    const tempry: MdlPsglstActlogDtbase[] = [
-        {
-            dateup: 2508221647,
-            statdt: "Final",
-            timeup: 2508221647,
-        },
-    ];
-    for (let i = 0; i < 20; i++) {
-        tempry.push(tempry[0]);
+  var actlog: MdlPsglstActlogDtbase[] = [];
+  var datefl: string[] = [];
+  var fnlrsl = { actlog: actlog, datefl: datefl };
+  try {
+    const rspnse = await ApiGlobalAxiospParams.get("/psglst/actlog/getall");
+    if (rspnse.status === 200) {
+      const fnlobj = await rspnse.data;
+      fnlrsl = fnlobj;
     }
-    return tempry;
+  } catch (error) {
+    console.log(error);
+  }
+  return fnlrsl;
 }

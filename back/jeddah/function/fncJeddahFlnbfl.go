@@ -27,7 +27,7 @@ import (
 )
 
 // Get flight number format map data from database
-func FncJeddahFlnbflSycmap(datefl string) (map[string][]mdlJeddah.MdlJeddahFlnbflDtbase, *sync.Map, float64) {
+func FncJeddahFlnbflSycmap() (map[string][]mdlJeddah.MdlJeddahFlnbflDtbase, *sync.Map, float64) {
 
 	// Inisialisasi variabel
 	fnlmap := map[string][]mdlJeddah.MdlJeddahFlnbflDtbase{}
@@ -40,7 +40,7 @@ func FncJeddahFlnbflSycmap(datefl string) (map[string][]mdlJeddah.MdlJeddahFlnbf
 
 	// Get route data
 	// datarw, err := tablex.Find(contxt, bson.M{"$and": []bson.M{
-	// 	{"flnbfl": "110"}, {"datefl": 251005}, {"$or": []bson.M{
+	// 	{"flnbfl": "323"}, {"datefl": 251012}, {"$or": []bson.M{
 	// 		{"isjedh": "Jeddah"}, {"isjedh": ""},
 	// 		{"isjedh": bson.M{"$exists": false}},
 	// 	}}}})
@@ -110,8 +110,8 @@ func FncJeddahFlnbflUpdate(c *gin.Context) {
 				Updtby: inputx.Updtby,
 			}}).
 			SetUpsert(true)}, "jeddah_flnbfl")
-	if !rslupd {
-		c.JSON(http.StatusInternalServerError, "failed")
+	if rslupd != nil {
+		c.JSON(http.StatusInternalServerError, "failed"+rslupd.Error())
 	}
 
 	// Send token to frontend
@@ -267,7 +267,7 @@ func FncJeddahFlnbflUpload(c *gin.Context) {
 					tmpNowerr := []string{rawDatefl, rawAirlne, rawFlnbfl, rawRoutfl, rawFltype}
 
 					// Treatment Date flight
-					prsDatefl, erraaa := time.Parse("02-Jan-06", rawDatefl)
+					prsDatefl, erraaa := time.Parse("2-Jan-06", rawDatefl)
 					intDatefl, errbbb := strconv.Atoi(prsDatefl.Format("060102"))
 					if erraaa != nil || errbbb != nil {
 						tmpNowerr = append(tmpNowerr, fmt.Sprintf("Row %d: Invalid Datefl '%s', (%v|%v)",
@@ -333,9 +333,9 @@ func FncJeddahFlnbflUpload(c *gin.Context) {
 
 					// Push mongo pnrdtl
 					if len(mgofln) > limitz && len(mgofln) != 0 {
-						rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgofln, "jeddah_flnbfl")
-						if !rspons {
-							fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+						rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgofln, "jeddah_flnbfl")
+						if rsupdt != nil {
+							panic("Error Insert/Update to DB:" + rsupdt.Error())
 						}
 						fmt.Println("Updated batch 100 jeddah_flnbfl")
 						mgofln = []mongo.WriteModel{}
@@ -354,9 +354,9 @@ func FncJeddahFlnbflUpload(c *gin.Context) {
 
 		// Push mongo pnrdtl
 		if len(mgofln) > 0 {
-			rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgofln, "jeddah_flnbfl")
-			if !rspons {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+			rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgofln, "jeddah_flnbfl")
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
 			}
 		}
 

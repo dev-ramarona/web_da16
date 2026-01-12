@@ -289,33 +289,3 @@ func FncJeddahPnrdtlSycmap(prvDateup string) *sync.Map {
 	// return data
 	return fnldta
 }
-
-// Get Sync map data LC and PUN prev day
-func FncJeddahPnrsmrSycmap(prvDateup string) *sync.Map {
-
-	// Inisialisasi variabel
-	fnldta := &sync.Map{}
-
-	// Select database and collection
-	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("jeddah_pnrsmr")
-	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	// Get route data
-	intDateup, _ := strconv.Atoi(prvDateup + "0000")
-	datarw, err := tablex.Find(contxt, bson.M{"timerv": bson.M{"$gte": intDateup}})
-	if err != nil {
-		panic(err)
-	}
-	defer datarw.Close(contxt)
-
-	// Append to slice
-	for datarw.Next(contxt) {
-		var object mdlJeddah.MdlJeddahPnrsmrDtbase
-		datarw.Decode(&object)
-		fnldta.Store(object.Prmkey, object.Arrcpn)
-	}
-
-	// return data
-	return fnldta
-}

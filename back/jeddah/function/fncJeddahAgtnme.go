@@ -180,13 +180,13 @@ func FncJeddahAgtnmeUpdate(c *gin.Context) {
 	}
 
 	// Push Summaryt data
-	rslupd := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
+	rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
 		mongo.NewUpdateOneModel().
 			SetFilter(bson.M{"prmkey": update.Prmkey}).
 			SetUpdate(bson.M{"$set": update}).
 			SetUpsert(true)}, "jeddah_agentx")
-	if !rslupd {
-		c.JSON(http.StatusInternalServerError, "failed")
+	if rsupdt != nil {
+		panic("Error Insert/Update to DB:" + rsupdt.Error())
 	}
 
 	// Declar sync wait group
@@ -223,20 +223,20 @@ func FncJeddahAgtnmeUpdate(c *gin.Context) {
 
 			// Push Summaryt data
 			if len(uplDtlpnr) >= lmtdta {
-				rslupd := fncGlobal.FncGlobalDtbaseBlkwrt(uplDtlpnr, "jeddah_pnrdtl")
+				rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(uplDtlpnr, "jeddah_pnrdtl")
 				uplDtlpnr = []mongo.WriteModel{}
-				if !rslupd {
-					c.JSON(http.StatusInternalServerError, "failed")
+				if rsupdt != nil {
+					panic("Error Insert/Update to DB:" + rsupdt.Error())
 				}
 			}
 		}
 
 		// Push Summaryt data
 		if len(uplDtlpnr) > 0 {
-			rslupd := fncGlobal.FncGlobalDtbaseBlkwrt(uplDtlpnr, "jeddah_pnrdtl")
+			rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(uplDtlpnr, "jeddah_pnrdtl")
 			uplDtlpnr = []mongo.WriteModel{}
-			if !rslupd {
-				c.JSON(http.StatusInternalServerError, "failed")
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
 			}
 		}
 	}()
@@ -273,20 +273,20 @@ func FncJeddahAgtnmeUpdate(c *gin.Context) {
 
 			// Push Summaryt data
 			if len(uplSmrpnr) >= lmtdta {
-				rslupd := fncGlobal.FncGlobalDtbaseBlkwrt(uplSmrpnr, "jeddah_pnrsmr")
+				rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(uplSmrpnr, "jeddah_pnrsmr")
 				uplSmrpnr = []mongo.WriteModel{}
-				if !rslupd {
-					c.JSON(http.StatusInternalServerError, "failed")
+				if rsupdt != nil {
+					panic("Error Insert/Update to DB:" + rsupdt.Error())
 				}
 			}
 		}
 
 		// Push Summaryt data
 		if len(uplSmrpnr) > 0 {
-			rslupd := fncGlobal.FncGlobalDtbaseBlkwrt(uplSmrpnr, "jeddah_pnrsmr")
+			rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(uplSmrpnr, "jeddah_pnrsmr")
 			uplSmrpnr = []mongo.WriteModel{}
-			if !rslupd {
-				c.JSON(http.StatusInternalServerError, "failed")
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
 			}
 		}
 	}()

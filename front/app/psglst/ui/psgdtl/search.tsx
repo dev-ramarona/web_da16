@@ -1,9 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  MdlPsglstAllprmSrcprm,
-  MdlPsglstDetailSrcprm,
-} from "../../model/mdlPsglstParams";
+
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import { mdlGlobalAlluserFilter } from "@/app/global/model/mdlGlobalPrimer";
 import {
@@ -11,40 +8,45 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
+import { MdlJeddahPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
 
 export default function UixPsglstDetailSearch({
   trtprm,
+  datefl,
 }: {
-  trtprm: MdlPsglstAllprmSrcprm;
+  trtprm: MdlPsglstSrcprmAllprm;
+  datefl: string[];
 }) {
-  const [params, paramsSet] = useState<MdlPsglstDetailSrcprm>({
-    mnthfl_detail: trtprm.mnthfl_detail || "",
-    datefl_detail: trtprm.datefl_detail || "",
-    airlfl_detail: trtprm.airlfl_detail || "",
-    flnbfl_detail: trtprm.flnbfl_detail || "",
-    depart_detail: trtprm.depart_detail || "",
-    routfl_detail: trtprm.routfl_detail || "",
-    isflwn_detail: trtprm.isflwn_detail || "",
-    istrst_detail: trtprm.istrst_detail || "",
-    pnrcde_detail: trtprm.pnrcde_detail || "",
-    tktnbr_detail: trtprm.tktnbr_detail || "",
-    istirg_detail: trtprm.istirg_detail || "",
+  const [params, paramsSet] = useState<MdlJeddahPsgdtlSearch>({
+    nclear_psgdtl: trtprm.nclear_psgdtl || "",
+    mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
+    datefl_psgdtl: trtprm.datefl_psgdtl || "",
+    airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
+    flnbfl_psgdtl: trtprm.flnbfl_psgdtl || "",
+    depart_psgdtl: trtprm.depart_psgdtl || "",
+    routfl_psgdtl: trtprm.routfl_psgdtl || "",
+    pnrcde_psgdtl: trtprm.pnrcde_psgdtl || "",
+    tktnfl_psgdtl: trtprm.tktnfl_psgdtl || "",
+    isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
+    isittx_psgdtl: trtprm.isittx_psgdtl || "",
+    isitir_psgdtl: trtprm.isitir_psgdtl || "",
   });
 
   // Monitor change
   useEffect(() => {
     paramsSet({
-      mnthfl_detail: trtprm.mnthfl_detail || "",
-      datefl_detail: trtprm.datefl_detail || "",
-      airlfl_detail: trtprm.airlfl_detail || "",
-      flnbfl_detail: trtprm.flnbfl_detail || "",
-      depart_detail: trtprm.depart_detail || "",
-      routfl_detail: trtprm.routfl_detail || "",
-      isflwn_detail: trtprm.isflwn_detail || "",
-      istrst_detail: trtprm.istrst_detail || "",
-      pnrcde_detail: trtprm.pnrcde_detail || "",
-      tktnbr_detail: trtprm.tktnbr_detail || "",
-      istirg_detail: trtprm.istirg_detail || "",
+      nclear_psgdtl: trtprm.nclear_psgdtl || "",
+      mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
+      datefl_psgdtl: trtprm.datefl_psgdtl || "",
+      airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
+      flnbfl_psgdtl: trtprm.flnbfl_psgdtl || "",
+      depart_psgdtl: trtprm.depart_psgdtl || "",
+      routfl_psgdtl: trtprm.routfl_psgdtl || "",
+      pnrcde_psgdtl: trtprm.pnrcde_psgdtl || "",
+      tktnfl_psgdtl: trtprm.tktnfl_psgdtl || "",
+      isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
+      isittx_psgdtl: trtprm.isittx_psgdtl || "",
+      isitir_psgdtl: trtprm.isitir_psgdtl || "",
     });
   }, [trtprm]);
 
@@ -54,20 +56,21 @@ export default function UixPsglstDetailSearch({
     const filter: mdlGlobalAlluserFilter[] = [{ keywrd: "", output: "True" }];
     const namefl = e.currentTarget.id;
     let valuef = e.currentTarget.value;
-    if (["istrst_detail", "isflwn_detail", "istirg_detail"].includes(namefl))
+    if (["isittx_psgdtl", "isitfl_psgdtl", "isitir_psgdtl"].includes(namefl))
       valuef = FncGlobalFormatFilter(valuef, filter);
-    else if (namefl == "flnbfl_pnrsmr") valuef = valuef.replace(/[^0-9]/g, "");
-    else if (namefl == "routfl_pnrsmr") valuef = FncGlobalFormatRoutfl(valuef);
-    else if (namefl == "psdate_pnrsmr")
-      valuef = valuef = FncGlobalFormatFilter(valuef, [
-        { keywrd: "", output: "Show Past Date" },
-      ]);
+    else if (namefl == "nclear_psgdtl") valuef = FncGlobalFormatFilter(valuef,
+      [{ keywrd: "clr", output: "CLEAR" },
+      { keywrd: "sas", output: "SLSRPT" },
+      { keywrd: "mnf", output: "MNFEST" }]);
+    else if (["flnbfl_psgdtl", "tktnfl_psgdtl"].includes(namefl))
+      valuef = valuef.replace(/[^0-9]/g, "");
+    else if (namefl == "routfl_psgdtl") valuef = FncGlobalFormatRoutfl(valuef);
     else valuef = valuef.toUpperCase();
     paramsSet({
       ...params,
       [namefl]: valuef,
     });
-    rplprm([namefl, "pagenw_pnrsmr"], [valuef, ""]);
+    rplprm([namefl, "pagenw_psgdtl"], [valuef, ""]);
   };
 
   // Download csv summary pnr
@@ -83,18 +86,20 @@ export default function UixPsglstDetailSearch({
   const resetx = () => {
     rplprm(
       [
-        "prmkey_smrfln",
-        "prmkey_pnrsmr",
-        "airlfl_pnrsmr",
-        "flnbfl_pnrsmr",
-        "routfl_pnrsmr",
-        "datefl_pnrsmr",
-        "pnrcde_pnrsmr",
-        "agtnme_pnrsmr",
-        "srtspl_pnrsmr",
-        "srtcxl_pnrsmr",
-        "pagenw_pnrsmr",
-        "limitp_pnrsmr",
+        "prmkey_psgdtl",
+        "nclear_psgdtl",
+        "mnthfl_psgdtl",
+        "datefl_psgdtl",
+        "airlfl_psgdtl",
+        "flnbfl_psgdtl",
+        "depart_psgdtl",
+        "routfl_psgdtl",
+        "pnrcde_psgdtl",
+        "tktnfl_psgdtl",
+        "isitfl_psgdtl",
+        "isittx_psgdtl",
+        "isitir_psgdtl",
+        "pagenw_psgdtl",
       ],
       ""
     );
@@ -103,10 +108,21 @@ export default function UixPsglstDetailSearch({
     <div className="w-full h-20 min-h-fit pb-1.5 flexctr flex-wrap gap-y-3">
       <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
         <UixGlobalInputxFormdt
+          typipt={"text"}
+          length={undefined}
+          queryx={"nclear_psgdtl"}
+          params={params.nclear_psgdtl}
+          plchdr="Not Clear"
+          repprm={repprm}
+          labelx=""
+        />
+      </div>
+      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <UixGlobalInputxFormdt
           typipt={"month"}
           length={undefined}
-          queryx={"mnthfl_detail"}
-          params={params.mnthfl_detail}
+          queryx={"mnthfl_psgdtl"}
+          params={params.mnthfl_psgdtl}
           plchdr="Flight Month"
           repprm={repprm}
           labelx=""
@@ -115,9 +131,9 @@ export default function UixPsglstDetailSearch({
       <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
         <UixGlobalInputxFormdt
           typipt={"date"}
-          length={undefined}
-          queryx={"datefl_detail"}
-          params={params.datefl_detail}
+          length={datefl}
+          queryx={"datefl_psgdtl"}
+          params={params.datefl_psgdtl}
           plchdr="Flight Date"
           repprm={repprm}
           labelx=""
@@ -127,8 +143,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"airlfl_detail"}
-          params={params.airlfl_detail}
+          queryx={"airlfl_psgdtl"}
+          params={params.airlfl_psgdtl}
           plchdr="Airline"
           repprm={repprm}
           labelx=""
@@ -138,8 +154,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"flnbfl_detail"}
-          params={params.flnbfl_detail}
+          queryx={"flnbfl_psgdtl"}
+          params={params.flnbfl_psgdtl}
           plchdr="Flight Number"
           repprm={repprm}
           labelx=""
@@ -149,8 +165,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"depart_detail"}
-          params={params.depart_detail}
+          queryx={"depart_psgdtl"}
+          params={params.depart_psgdtl}
           plchdr="Departure"
           repprm={repprm}
           labelx=""
@@ -160,8 +176,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"routfl_detail"}
-          params={params.routfl_detail}
+          queryx={"routfl_psgdtl"}
+          params={params.routfl_psgdtl}
           plchdr="Route"
           repprm={repprm}
           labelx=""
@@ -171,8 +187,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"pnrcde_detail"}
-          params={params.pnrcde_detail}
+          queryx={"pnrcde_psgdtl"}
+          params={params.pnrcde_psgdtl}
           plchdr="PNR Code"
           repprm={repprm}
           labelx=""
@@ -182,8 +198,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"tktnbr_detail"}
-          params={params.tktnbr_detail}
+          queryx={"tktnfl_psgdtl"}
+          params={params.tktnfl_psgdtl}
           plchdr="Ticket Number"
           repprm={repprm}
           labelx=""
@@ -193,8 +209,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"isflwn_detail"}
-          params={params.isflwn_detail}
+          queryx={"isitfl_psgdtl"}
+          params={params.isitfl_psgdtl}
           plchdr="Flown Only"
           repprm={repprm}
           labelx=""
@@ -204,8 +220,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"istrst_detail"}
-          params={params.istrst_detail}
+          queryx={"isittx_psgdtl"}
+          params={params.isittx_psgdtl}
           plchdr="Transit Only"
           repprm={repprm}
           labelx=""
@@ -215,8 +231,8 @@ export default function UixPsglstDetailSearch({
         <UixGlobalInputxFormdt
           typipt={"text"}
           length={undefined}
-          queryx={"istirg_detail"}
-          params={params.istirg_detail}
+          queryx={"isitir_psgdtl"}
+          params={params.isitir_psgdtl}
           plchdr="Irreg Only"
           repprm={repprm}
           labelx=""

@@ -1,0 +1,364 @@
+package fncPsglst
+
+import (
+	fncGlobal "back/global/function"
+	mdlPsglst "back/psglst/model"
+	"net/http"
+
+	"context"
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+// Get Detail PNR from database
+func FncPsglstPsgdtlGetall(c *gin.Context) {
+
+	// Bind JSON Body input to variable
+	istDownld := c.Param("downld")
+	csvFilenm := []string{time.Now().Format("02Jan06/15:04")}
+	var inputx mdlPsglst.MdlPsglstPsgdtlInputx
+	if err := c.BindJSON(&inputx); err != nil {
+		panic(err)
+	}
+
+	// Treatment date number
+	intDatefl := 0
+	if inputx.Datefl_psgdtl != "" {
+		strDatefl, _ := time.Parse("2006-01-02", inputx.Datefl_psgdtl)
+		intDatefl, _ = strconv.Atoi(strDatefl.Format("060102"))
+	}
+
+	// Select db and context to do
+	var totidx = 0
+	var slcobj = []mdlPsglst.MdlPsglstPsgdtlDtbase{}
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("psglst_psgdtl")
+	contxt, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Pipeline get the data logic match
+	var mtchdt = bson.A{}
+	var sortdt = bson.D{{Key: "$sort", Value: bson.D{{Key: "prmkey", Value: 1}}}}
+	var wg sync.WaitGroup
+
+	// Check if data Route all is isset
+	if inputx.Datefl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, strconv.Itoa(intDatefl))
+		mtchdt = append(mtchdt, bson.D{{Key: "datefl",
+			Value: intDatefl}})
+	}
+	if inputx.Airlfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Airlfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "airlfl",
+			Value: inputx.Airlfl_psgdtl}})
+	}
+	if inputx.Flnbfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Flnbfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "flnbfl",
+			Value: inputx.Flnbfl_psgdtl}})
+	}
+	if inputx.Depart_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Depart_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "depart",
+			Value: inputx.Depart_psgdtl}})
+	}
+	if inputx.Routfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Routfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "routfl",
+			Value: inputx.Routfl_psgdtl}})
+	}
+	if inputx.Pnrcde_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Pnrcde_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "pnrcde",
+			Value: inputx.Pnrcde_psgdtl}})
+	}
+	if inputx.Tktnfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Tktnfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "tktnfl",
+			Value: inputx.Tktnfl_psgdtl}})
+	}
+	if inputx.Nclear_psgdtl != "CLEAR" {
+		var mtchor = bson.A{}
+		if inputx.Nclear_psgdtl == "MNFEST" || inputx.Nclear_psgdtl == "" {
+			mtchor = append(mtchor, bson.D{{Key: "mnfest", Value: "NOT CLEAR"}})
+		}
+		if inputx.Nclear_psgdtl == "SLSRPT" || inputx.Nclear_psgdtl == "" {
+			mtchor = append(mtchor, bson.D{{Key: "slsrpt", Value: "NOT CLEAR"}})
+		}
+		csvFilenm = append(csvFilenm, inputx.Nclear_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "$or", Value: mtchor}})
+	}
+
+	// Final match pipeline
+	var mtchfn bson.D
+	if len(mtchdt) != 0 {
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{{Key: "$and", Value: mtchdt}}}}
+	} else {
+		fmt.Println("mtchblnk")
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{}}}
+	}
+
+	// Logic download data
+	if istDownld == "downld" {
+		FncPsglstPsgdtlDownld(c, csvFilenm, inputx, mtchfn, sortdt, tablex, contxt)
+	} else {
+
+		// Get Total Count Data
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			nowPillne := mongo.Pipeline{
+				mtchfn,
+				bson.D{{Key: "$count", Value: "totalCount"}},
+			}
+
+			// Find user by username in database
+			rawDtaset, err := tablex.Aggregate(contxt, nowPillne)
+			if err != nil {
+				panic(err)
+			}
+			defer rawDtaset.Close(contxt)
+
+			// Store to slice from raw bson
+			var slcDtaset []bson.M
+			if err = rawDtaset.All(contxt, &slcDtaset); err != nil {
+				panic(err)
+			}
+
+			// Mengambil jumlah dokumen dari hasil
+			if len(slcDtaset) > 0 {
+				if count, ok := slcDtaset[0]["totalCount"].(int32); ok {
+					totidx = int(count)
+				}
+			}
+		}()
+
+		// Get All Match Data
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			pipeln := mongo.Pipeline{
+				mtchfn,
+				sortdt,
+				bson.D{{Key: "$skip", Value: (max(inputx.Pagenw_psgdtl, 1) - 1) * inputx.Limitp_psgdtl}},
+				bson.D{{Key: "$limit", Value: inputx.Limitp_psgdtl}},
+			}
+
+			// Find user by username in database
+			rawDtaset, err := tablex.Aggregate(contxt, pipeln)
+			if err != nil {
+				fmt.Println(err)
+				panic(err)
+			}
+			defer rawDtaset.Close(contxt)
+
+			// Store to slice from raw bson
+			for rawDtaset.Next(contxt) {
+				var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
+				rawDtaset.Decode(&slcDtaset)
+				slcobj = append(slcobj, slcDtaset)
+			}
+		}()
+
+		// Waiting until all go done
+		wg.Wait()
+
+		// Return final output
+		c.JSON(200, gin.H{"totdta": totidx, "arrdta": slcobj})
+	}
+}
+
+// Download PNR Detail all
+func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.MdlPsglstPsgdtlInputx,
+	mtchfn, sortdt bson.D, tablex *mongo.Collection, contxt context.Context) {
+
+	// Set header untuk file CSV
+	fnlFilenm := strings.Join(csvFilenm, "_")
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename=Psglst_Detail_PNR_"+fnlFilenm+".csv")
+	c.Header("Access-Control-Expose-Headers", "Content-Disposition")
+
+	// Streaming file CSV ke client
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+	writer.Write([]string{"Prmkey", "Airlfl", "Flnbfl", "Depart", "Routfl", "Clssfl",
+		"Datefl", "Dateup", "Timeup", "Timecr", "Agtnme", "Agtdtl", "Agtidn", "Pnrcde",
+		"Intrln", "Rtlsrs", "Toflnm", "Drules", "Totisd", "Totbok", "Totpax", "Totcxl",
+		"Totchg", "Totspl", "Arrspl", "Notedt", "Flstat",
+	})
+
+	// Get All Match Data
+	pipeln := mongo.Pipeline{
+		mtchfn,
+		sortdt,
+	}
+
+	// Find user by username in database
+	rawDtaset, err := tablex.Aggregate(contxt, pipeln)
+	if err != nil {
+		panic(err)
+	}
+	defer rawDtaset.Close(contxt)
+
+	// Store to slice from raw bson
+	for rawDtaset.Next(contxt) {
+		var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
+		rawDtaset.Decode(&slcDtaset)
+		writer.Write([]string{
+			// slcDtaset.Prmkey,
+			// slcDtaset.Airlfl,
+			// slcDtaset.Flnbfl,
+			// slcDtaset.Depart,
+			// slcDtaset.Routfl,
+			// slcDtaset.Clssfl,
+			// strconv.Itoa(int(slcDtaset.Datefl)),
+			// strconv.Itoa(int(slcDtaset.Dateup)),
+			// strconv.Itoa(int(slcDtaset.Timeup)),
+			// strconv.Itoa(int(slcDtaset.Timecr)),
+			// slcDtaset.Agtnme,
+			// slcDtaset.Agtdtl,
+			// slcDtaset.Agtidn,
+			// slcDtaset.Pnrcde,
+			// slcDtaset.Intrln,
+			// slcDtaset.Rtlsrs,
+			// slcDtaset.Toflnm,
+			// strconv.Itoa(slcDtaset.Drules),
+			// strconv.Itoa(slcDtaset.Totisd),
+			// strconv.Itoa(slcDtaset.Totbok),
+			// strconv.Itoa(slcDtaset.Totpax),
+			// strconv.Itoa(slcDtaset.Totcxl),
+			// strconv.Itoa(slcDtaset.Totchg),
+			// strconv.Itoa(slcDtaset.Totspl),
+			// slcDtaset.Arrspl,
+			// slcDtaset.Notedt,
+			// slcDtaset.Flstat,
+		})
+	}
+}
+
+// Get data can accepted edit
+func FncPsglstPsgdtlAcpedt(c *gin.Context) {
+
+	// Select database and collection
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("psglst_acpedt")
+	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Get route data
+	datarw, err := tablex.Find(contxt, bson.M{})
+	if err != nil {
+		panic("fail")
+	}
+	defer datarw.Close(contxt)
+
+	// Append to slice
+	var slices = []mdlPsglst.MdlPsglstPsgdtlAcpedt{}
+	for datarw.Next(contxt) {
+		var object mdlPsglst.MdlPsglstPsgdtlAcpedt
+		if err := datarw.Decode(&object); err == nil {
+			slices = append(slices, object)
+		}
+	}
+
+	// Send token to frontend
+	c.JSON(200, slices)
+}
+
+// Get Response Update database from input
+func FncPsglstRtlsrsUpdate(c *gin.Context) {
+
+	// Bind JSON Body input to variable
+	var inputx mdlPsglst.MdlPsglstPsgdtlDtbase
+	var findne mdlPsglst.MdlPsglstPsgdtlDtbase
+	if err := c.BindJSON(&inputx); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+	}
+
+	// Select database and collection
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("psglst_psgdtl")
+	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	b, _ := json.MarshalIndent(inputx, " ", "")
+	fmt.Println(string(b))
+
+	// Get data
+	err := tablex.FindOne(contxt, bson.M{"prmkey": inputx.Prmkey}).Decode(&findne)
+	if err != nil {
+		fmt.Println(err)
+		panic("fail")
+	}
+
+	// Get from input
+	if findne.Mnfest == "NOT CLEAR" && inputx.Tktnvc != "" {
+		findne.Tktnvc = inputx.Tktnvc
+		if findne.Tktnfl == "" {
+			findne.Tktnfl = inputx.Tktnvc
+		}
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "TKT MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Airlvc != "" {
+		findne.Airlvc = inputx.Airlvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "AIRLINE MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Flnbvc != "" {
+		findne.Flnbvc = inputx.Flnbvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "FLNUMBER MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Cpnbvc != 0 {
+		findne.Cpnbvc = inputx.Cpnbvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "CPN MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Routvc != "" {
+		findne.Routvc = inputx.Routvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "ROUTE MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Statvc != "" {
+		findne.Statvc = inputx.Statvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "STAT MANUAL")
+	}
+	if findne.Mnfest == "NOT CLEAR" && inputx.Timeis != 0 {
+		findne.Statvc = inputx.Statvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "STAT MANUAL")
+	}
+	if findne.Slsrpt == "NOT CLEAR" && inputx.Ntafvc != 0 {
+		findne.Ntafvc = inputx.Ntafvc
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "NTA MANUAL")
+	}
+	if findne.Slsrpt == "NOT CLEAR" && inputx.Curncy != "" {
+		findne.Curncy = inputx.Curncy
+		fncGlobal.FncGlobalMainprNoterr(&findne.Noteup, "CURR MANUAL")
+	}
+	if inputx.Updtby != "" {
+		fncGlobal.FncGlobalMainprNoterr(&findne.Updtby, inputx.Updtby)
+	}
+
+	// Cek data to confirm clear
+	if findne.Ntafvc != 0 && findne.Curncy != "" && findne.Ntaffl != 0 {
+		findne.Slsrpt = "CLEAR"
+	}
+	if findne.Tktnfl != "" && findne.Tktnvc != "" && findne.Pnrcde != "" &&
+		findne.Timeis != 0 && findne.Routvc != "" {
+		findne.Mnfest = "CLEAR"
+	}
+
+	// Push updated data
+	rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
+		mongo.NewUpdateOneModel().
+			SetFilter(bson.M{"prmkey": findne.Prmkey}).
+			SetUpdate(bson.M{"$set": findne}).
+			SetUpsert(true)}, "psglst_psgdtl")
+	if rsupdt != nil {
+		panic("Error Insert/Update to DB:" + rsupdt.Error())
+	}
+
+	// Send token to frontend
+	c.JSON(200, "success")
+}

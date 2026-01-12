@@ -74,10 +74,10 @@ type MdlJeddahPnrdtlDtbase struct {
 	Depart string `json:"depart" bson:"depart,omitempty"`
 	Routfl string `json:"routfl" bson:"routfl,omitempty"`
 	Clssfl string `json:"clssfl" bson:"clssfl,omitempty"`
-	Datefl int32  `json:"datefl" bson:"datefl"`
-	Dateup int32  `json:"dateup" bson:"dateup"`
-	Timeup int64  `json:"timeup" bson:"timeup"`
-	Timecr int64  `json:"timecr" bson:"timecr"`
+	Datefl int32  `json:"datefl" bson:"datefl,omitempty"`
+	Dateup int32  `json:"dateup" bson:"dateup,omitempty"`
+	Timeup int64  `json:"timeup" bson:"timeup,omitempty"`
+	Timecr int64  `json:"timecr" bson:"timecr,omitempty"`
 	Agtnme string `json:"agtnme" bson:"agtnme,omitempty"`
 	Agtdtl string `json:"agtdtl" bson:"agtdtl,omitempty"`
 	Agtidn string `json:"agtidn" bson:"agtidn,omitempty"`
@@ -95,17 +95,18 @@ type MdlJeddahPnrdtlDtbase struct {
 	Arrspl string `json:"arrspl" bson:"arrspl,omitempty"`
 	Notedt string `json:"notedt" bson:"notedt,omitempty"`
 	Flstat string `json:"flstat" bson:"flstat,omitempty"`
+	Isjedh string `json:"isjedh" bson:"isjedh,omitempty"`
 }
 
 // PNR Summary
 type MdlJeddahPnrsmrDtbase struct {
 	Prmkey string `json:"prmkey" bson:"prmkey,omitempty"`
 	Routfl string `json:"routfl" bson:"routfl,omitempty"`
-	Timedp int64  `json:"timedp" bson:"timedp"`
-	Timerv int64  `json:"timerv" bson:"timerv"`
-	Dateup int32  `json:"dateup" bson:"dateup"`
-	Timeup int64  `json:"timeup" bson:"timeup"`
-	Timecr int64  `json:"timecr" bson:"timecr"`
+	Timest int64  `json:"timest" bson:"timest,omitempty"`
+	Timend int64  `json:"timend" bson:"timend,omitempty"`
+	Dateup int32  `json:"dateup" bson:"dateup,omitempty"`
+	Timeup int64  `json:"timeup" bson:"timeup,omitempty"`
+	Timecr int64  `json:"timecr" bson:"timecr,omitempty"`
 	Agtnme string `json:"agtnme" bson:"agtnme,omitempty"`
 	Agtdtl string `json:"agtdtl" bson:"agtdtl,omitempty"`
 	Agtidn string `json:"agtidn" bson:"agtidn,omitempty"`
@@ -113,7 +114,7 @@ type MdlJeddahPnrsmrDtbase struct {
 	Intrln string `json:"intrln" bson:"intrln,omitempty"`
 	Rtlsrs string `json:"rtlsrs" bson:"rtlsrs,omitempty"`
 	Arrcpn string `json:"arrcpn" bson:"arrcpn,omitempty"`
-	Agtdie string `json:"agtdie" bson:"agtdie,omitempty"`
+	Agtdcr string `json:"agtdcr" bson:"agtdcr,omitempty"`
 	Totisd int    `json:"totisd" bson:"totisd"`
 	Totbok int    `json:"totbok" bson:"totbok"`
 	Totpax int    `json:"totpax" bson:"totpax"`
@@ -121,6 +122,7 @@ type MdlJeddahPnrsmrDtbase struct {
 	Totspl int    `json:"totspl" bson:"totspl"`
 	Arrspl string `json:"arrspl" bson:"arrspl,omitempty"`
 	Notedt string `json:"notedt" bson:"notedt,omitempty"`
+	Isjedh string `json:"isjedh" bson:"isjedh,omitempty"`
 }
 
 // PNR log
@@ -142,6 +144,7 @@ type MdlJeddahPnrlogDtbase struct {
 
 // Log Action
 type MdlJeddahActlogDtbase struct {
+	Airlfl string `json:"airlfl,omitempty" bson:"airlfl,omitempty"`
 	Dateup int32  `json:"dateup,omitempty" bson:"dateup,omitempty"`
 	Timeup int64  `json:"timeup,omitempty" bson:"timeup,omitempty"`
 	Statdt string `json:"statdt,omitempty" bson:"statdt,omitempty"`
@@ -165,6 +168,7 @@ type MdlJeddahFlnsmrDtbase struct {
 	Totchg int    `json:"totchg" bson:"totchg"`
 	Totspl int    `json:"totspl" bson:"totspl"`
 	Notedt string `json:"notedt" bson:"notedt,omitempty"`
+	Isjedh string `json:"isjedh" bson:"isjedh,omitempty"`
 }
 
 // Flight Number flown database

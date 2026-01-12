@@ -75,7 +75,6 @@ export default function UixJeddahPnrsmrTablex({
       rtlsrs: valuef,
       notedt: `Updated ${valuef} by ${cookie.stfnme}`,
     } as MdlJeddahPnrsmrDtbase);
-    console.log(iptobj);
   };
 
   // Confirm update retail or series
@@ -116,8 +115,8 @@ export default function UixJeddahPnrsmrTablex({
                     key != "prmkey" ? (
                       <td className="tdbody text-center" key={key}>
                         {[
-                          "timedp",
-                          "timerv",
+                          "timest",
+                          "timend",
                           "dateup",
                           "timeup",
                           "timecr",

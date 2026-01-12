@@ -11,6 +11,7 @@ import UixJeddahPnrsmrMainpg from "./ui/pnrsmr/main";
 import UixJeddahFlnsmrMainpg from "./ui/flnsmr/main";
 import { FncJeddahAllpnrrMainpr } from "./function/fncJeddahMainpr";
 import UixJeddahAddflnMainpg from "./ui/flnbfl/main";
+import UixJeddahFrbaseMainpg from "./ui/frbase/main";
 
 export default async function Page(props: {
   searchParams: Promise<MdlJeddahInputxAllprm>;
@@ -91,6 +92,19 @@ export default async function Page(props: {
           </div>
           <Suspense fallback={<UixGlobalLoadngAnmate />}>
             <UixJeddahAddflnMainpg cookie={cookie} />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Sixth section */}
+      <div className="w-full md:w-full h-fit p-3">
+        <div className="afull rounded-xl py-1.5 px-3 flexstr flex-col shadow-md">
+          <div className="w-full text-slate-800 font-semibold text-base py-1.5 flexstr">
+            Manage Database Farebase
+            <UixGlobalIconvcSeting color="gray" size={1.3} bold={3} />
+          </div>
+          <Suspense fallback={<UixGlobalLoadngAnmate />}>
+            <UixJeddahFrbaseMainpg />
           </Suspense>
         </div>
       </div>

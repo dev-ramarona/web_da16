@@ -2,10 +2,11 @@ import { mdlGlobalAlluserFilter } from "../model/mdlGlobalPrimer";
 
 // Fucntion change format data yymmdd/hhmm to dd-MMM-yyyy hh:mm
 export function FncGlobalFormatDatefm(inputd: string): string {
-  if (inputd.length !== 6 && inputd.length !== 10) return "Invalid format";
+  if (inputd.length !== 6 && inputd.length !== 10 && inputd.length !== 4)
+    return inputd == "0" ? "-" : inputd;
   const yearnw = inputd.slice(0, 2);
   const monthn = inputd.slice(2, 4);
-  const daynow = inputd.slice(4, 6);
+  const daynow = inputd.length == 4 ? "01" : inputd.slice(4, 6);
   const yearfl = parseInt(yearnw) < 50 ? `20${yearnw}` : `19${yearnw}`;
   const hournw = inputd.length === 10 ? inputd.slice(6, 8) : null;
   const minute = inputd.length === 10 ? inputd.slice(8, 10) : null;
@@ -14,11 +15,17 @@ export function FncGlobalFormatDatefm(inputd: string): string {
   const datenw = new Date(
     `${yearfl}-${monthn}-${daynow}T${hournw ?? "00"}:${minute ?? "00"}`
   );
-  const optons: Intl.DateTimeFormatOptions = {
+  var optons: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "short",
-    year: "numeric",
+    year: "2-digit",
   };
+  if (inputd.length === 4) {
+    optons = {
+      month: "short",
+      year: "2-digit",
+    };
+  }
   const datetx = datenw.toLocaleDateString("en-GB", optons).replace(/ /g, "-");
   if (hournw && minute) return `${datetx} ${hournw}:${minute}`;
   return datetx;

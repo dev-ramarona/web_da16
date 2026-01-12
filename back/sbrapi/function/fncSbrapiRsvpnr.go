@@ -8,7 +8,7 @@ import (
 
 // Get data Reservation PNR froms abre
 func FncSbrapiRsvpnrMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
-	params mdlSbrapi.MdlSbrapiMsghdrApndix, sbarea []string) (
+	pnrcde string, sbarea []string) (
 	mdlSbrapi.MdlSbrapiRsvpnrRsprsv, error) {
 
 	// Isi struktur data
@@ -29,7 +29,7 @@ func FncSbrapiRsvpnrMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 			GetReservationRQ: mdlSbrapi.MdlSbrapiRsvpnrReqrsv{
 				Xmlns:       "http://webservices.sabre.com/pnrbuilder/v1_19",
 				Version:     "1.19.0",
-				Locator:     params.Pnrcde,
+				Locator:     pnrcde,
 				RequestType: "Stateless",
 				ReturnOptions: mdlSbrapi.MdlSbrapiRsvpnrReqopt{
 					SubjectAreas:   mdlSbrapi.MdlSbrapiRsvpnrReqsbj{SubjectArea: sbarea},

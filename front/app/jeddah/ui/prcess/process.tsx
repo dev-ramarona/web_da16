@@ -6,6 +6,7 @@ import {
   ApiGlobalStatusIntrvl,
   ApiGlobalStatusPrcess,
 } from "@/app/global/api/apiGlobalPrimer";
+import { MdlJeddahParamsActlog } from "../../model/mdlJeddahMainpr";
 
 export default function UixJeddahPrcessManual() {
   // Get status first
@@ -28,7 +29,13 @@ export default function UixJeddahPrcessManual() {
     console.log(status.sbrapi);
     if (status.sbrapi == 0) {
       statfnSet("Wait");
-      ApiJeddahPrcessManual();
+      const params: MdlJeddahParamsActlog = {
+        airlfl: "",
+        timeup: 0,
+        dateup: 0,
+        statdt: "",
+      }
+      ApiJeddahPrcessManual(params);
       await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };

@@ -78,13 +78,13 @@ func FncJeddahRtlsrsUpdate(c *gin.Context) {
 	}
 
 	// Push Summaryt data
-	rslupd := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
+	rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt([]mongo.WriteModel{
 		mongo.NewUpdateOneModel().
 			SetFilter(bson.M{"prmkey": inputx.Prmkey}).
 			SetUpdate(bson.M{"$set": inputx}).
 			SetUpsert(true)}, "jeddah_pnrsmr")
-	if !rslupd {
-		c.JSON(http.StatusInternalServerError, "failed")
+	if rsupdt != nil {
+		panic("Error Insert/Update to DB:" + rsupdt.Error())
 	}
 
 	// Update detail PNR
@@ -117,9 +117,9 @@ func FncJeddahRtlsrsUpdate(c *gin.Context) {
 		}
 
 		// Update final data
-		rslupd := fncGlobal.FncGlobalDtbaseBlkwrt(pnrdtlMgomdl, "jeddah_pnrdtl")
-		if !rslupd {
-			c.JSON(http.StatusInternalServerError, "failed")
+		rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(pnrdtlMgomdl, "jeddah_pnrdtl")
+		if rsupdt != nil {
+			panic("Error Insert/Update to DB:" + rsupdt.Error())
 		}
 	}()
 
@@ -290,9 +290,9 @@ func FncJeddahRtlsrsUpload(c *gin.Context) {
 
 					// Push mongo pnrdtl
 					if len(mgodtl) > limitz && len(mgodtl) != 0 {
-						rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgodtl, "jeddah_pnrdtl")
-						if !rspons {
-							fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+						rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgodtl, "jeddah_pnrdtl")
+						if rsupdt != nil {
+							panic("Error Insert/Update to DB:" + rsupdt.Error())
 						}
 						fmt.Println("Updated batch 100 jeddah_pnrdtl")
 						mgodtl = []mongo.WriteModel{}
@@ -308,9 +308,9 @@ func FncJeddahRtlsrsUpload(c *gin.Context) {
 
 					// Push mongo pnrsmr
 					if len(mgosmr) > limitz && len(mgosmr) != 0 {
-						rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgosmr, "jeddah_pnrsmr")
-						if !rspons {
-							fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+						rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgosmr, "jeddah_pnrsmr")
+						if rsupdt != nil {
+							panic("Error Insert/Update to DB:" + rsupdt.Error())
 						}
 						fmt.Println("Updated batch 100 jeddah_pnrsmr")
 						mgosmr = []mongo.WriteModel{}
@@ -329,17 +329,17 @@ func FncJeddahRtlsrsUpload(c *gin.Context) {
 
 		// Push mongo pnrdtl
 		if len(mgodtl) > 0 {
-			rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgodtl, "jeddah_pnrdtl")
-			if !rspons {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+			rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgodtl, "jeddah_pnrdtl")
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
 			}
 		}
 
 		// Push mongo pnrsmr
 		if len(mgosmr) > 0 {
-			rspons := fncGlobal.FncGlobalDtbaseBlkwrt(mgosmr, "jeddah_pnrsmr")
-			if !rspons {
-				fmt.Println("ERR LOG HERE, CAN'T INPUT LCNPUN")
+			rsupdt := fncGlobal.FncGlobalDtbaseBlkwrt(mgosmr, "jeddah_pnrsmr")
+			if rsupdt != nil {
+				panic("Error Insert/Update to DB:" + rsupdt.Error())
 			}
 		}
 

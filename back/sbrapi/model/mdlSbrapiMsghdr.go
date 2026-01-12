@@ -33,8 +33,13 @@ type MdlSbrapiMsghdrApndix struct {
 	Airlfl string
 	Clssfl string
 	Datefl int32
+	Dateup int32
+	Timeup int64
 	Depart string
+	Arrivl string
 	Flnbfl string
 	Pnrcde string
 	Routfl string
+	Seatpx string
+	Tktnfl string
 }

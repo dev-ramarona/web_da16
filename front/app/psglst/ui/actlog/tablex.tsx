@@ -30,7 +30,7 @@ export default function UixPsglstActlogTablex({
               <tr className="h-8 group" key={idx}>
                 {Object.entries(log).map(([key, val]) => (
                   <td className="tdbody text-center" key={key}>
-                    {["dateup", "datenb", "timeup"].includes(key)
+                    {["dateup", "datefl", "timeup"].includes(key)
                       ? FncGlobalFormatDatefm(String(val))
                       : val}
                   </td>
