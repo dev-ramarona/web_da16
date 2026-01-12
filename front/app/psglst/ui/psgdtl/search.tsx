@@ -66,7 +66,7 @@ export default function UixPsglstDetailSearch({
     if (["isittx_psgdtl", "isitfl_psgdtl", "isitir_psgdtl"].includes(namefl))
       valuef = FncGlobalFormatFilter(valuef, filter);
     else if (namefl == "nclear_psgdtl") valuef = FncGlobalFormatFilter(valuef,
-      [{ keywrd: "all", output: "ALL" },
+      [{ keywrd: "a", output: "ALL" },
       { keywrd: "spt", output: "SLSRPT" },
       { keywrd: "mnf", output: "MNFEST" }]);
     else if (["flnbfl_psgdtl", "tktnfl_psgdtl"].includes(namefl))
