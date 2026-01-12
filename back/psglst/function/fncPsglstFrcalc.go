@@ -139,12 +139,14 @@ brk:
 			rsl := regCrrat2.FindAllString(slc, -1)
 
 			// Push all currency
-			for idx := range nowFrbase {
-				if nowFrbase[idx].Routfl != "" {
-					if prvCrrate {
-						nowFrbase[idx].Crrate += rsl[0]
-					} else {
-						nowFrbase[idx].Crrate = rsl[0]
+			if len(rsl) > 0 {
+				for idx := range nowFrbase {
+					if nowFrbase[idx].Routfl != "" {
+						if prvCrrate {
+							nowFrbase[idx].Crrate += rsl[0]
+						} else {
+							nowFrbase[idx].Crrate = rsl[0]
+						}
 					}
 				}
 			}

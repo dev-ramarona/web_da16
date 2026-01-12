@@ -1,11 +1,11 @@
 import { ApiGlobalAxiospParams } from "@/app/global/api/apiGlobalPrimer";
 import {
   MdlPsglstPsgdtlFrntnd,
-  MdlPsglstSrcprmAllprm,
+  MdlPsglstPsgdtlSearch,
 } from "../model/mdlPsglstParams";
 
 // Function get psglst database
-export async function ApiPsglstPsgdtlGetall(params: MdlPsglstSrcprmAllprm) {
+export async function ApiPsglstPsgdtlGetall(params: MdlPsglstPsgdtlSearch) {
   var arrdta: MdlPsglstPsgdtlFrntnd[] = [];
   var fnlrsl = { arrdta: arrdta, totdta: 0 };
   try {
@@ -63,4 +63,44 @@ export async function ApiPsglstPsgdtlUpdate(params: MdlPsglstPsgdtlFrntnd) {
     console.log(error);
   }
   return fnlrsl;
+}
+
+// Function get psglst summary PNR
+export async function ApiPsglstPnrsmrDownld(params: MdlPsglstPsgdtlSearch) {
+  try {
+    const rspnse = await ApiGlobalAxiospParams.post(
+      `/psglst/psgdtl/getall/downld`,
+      params,
+      {
+        timeout: 70000,
+        responseType: "blob",
+      }
+    );
+
+    // Buat Blob URL untuk file besar
+    const blobfl = new Blob([rspnse.data], { type: "text/csv" });
+    const dwnurl = window.URL.createObjectURL(blobfl);
+
+    // Ambil nama file dari header
+    const rawnme = rspnse.headers["content-disposition"];
+    let flname = "download.csv";
+    if (rawnme && rawnme.includes("filename="))
+      flname = rawnme.split("filename=")[1].replace(/['"]/g, "");
+
+    // Trigger unduhan file
+    const a = document.createElement("a");
+    a.href = dwnurl;
+    a.download = flname;
+    document.body.appendChild(a);
+    a.click();
+
+    // Bersihkan URL blob
+    window.URL.revokeObjectURL(dwnurl);
+    document.body.removeChild(a);
+
+    return true;
+  } catch (error) {
+    console.error("Error downloading CSV file:", error);
+  }
+  return false;
 }

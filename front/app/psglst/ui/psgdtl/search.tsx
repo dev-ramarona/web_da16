@@ -8,7 +8,8 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { MdlJeddahPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
+import { MdlPsglstPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
+import { ApiPsglstPnrsmrDownld } from "../../api/apiPsglstPsgdtl";
 
 export default function UixPsglstDetailSearch({
   trtprm,
@@ -17,8 +18,8 @@ export default function UixPsglstDetailSearch({
   trtprm: MdlPsglstSrcprmAllprm;
   datefl: string[];
 }) {
-  const [params, paramsSet] = useState<MdlJeddahPsgdtlSearch>({
-    nclear_psgdtl: trtprm.nclear_psgdtl || "",
+  const [params, paramsSet] = useState<MdlPsglstPsgdtlSearch>({
+    update_psgdtl: trtprm.update_psgdtl || "",
     mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
     datefl_psgdtl: trtprm.datefl_psgdtl || "",
     airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
@@ -30,12 +31,15 @@ export default function UixPsglstDetailSearch({
     isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
     isittx_psgdtl: trtprm.isittx_psgdtl || "",
     isitir_psgdtl: trtprm.isitir_psgdtl || "",
+    nclear_psgdtl: trtprm.nclear_psgdtl || "",
+    pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
+    limitp_psgdtl: trtprm.limitp_psgdtl || 15,
   });
 
   // Monitor change
   useEffect(() => {
     paramsSet({
-      nclear_psgdtl: trtprm.nclear_psgdtl || "",
+      update_psgdtl: trtprm.update_psgdtl || "",
       mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
       datefl_psgdtl: trtprm.datefl_psgdtl || "",
       airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
@@ -47,6 +51,9 @@ export default function UixPsglstDetailSearch({
       isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
       isittx_psgdtl: trtprm.isittx_psgdtl || "",
       isitir_psgdtl: trtprm.isitir_psgdtl || "",
+      nclear_psgdtl: trtprm.nclear_psgdtl || "",
+      pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
+      limitp_psgdtl: trtprm.limitp_psgdtl || 15,
     });
   }, [trtprm]);
 
@@ -59,8 +66,8 @@ export default function UixPsglstDetailSearch({
     if (["isittx_psgdtl", "isitfl_psgdtl", "isitir_psgdtl"].includes(namefl))
       valuef = FncGlobalFormatFilter(valuef, filter);
     else if (namefl == "nclear_psgdtl") valuef = FncGlobalFormatFilter(valuef,
-      [{ keywrd: "clr", output: "CLEAR" },
-      { keywrd: "sas", output: "SLSRPT" },
+      [{ keywrd: "all", output: "ALL" },
+      { keywrd: "spt", output: "SLSRPT" },
       { keywrd: "mnf", output: "MNFEST" }]);
     else if (["flnbfl_psgdtl", "tktnfl_psgdtl"].includes(namefl))
       valuef = valuef.replace(/[^0-9]/g, "");
@@ -77,8 +84,8 @@ export default function UixPsglstDetailSearch({
   const [dwnrsp, dwnrspSet] = useState("Download");
   const dwnapi = async () => {
     dwnrspSet("Wait");
-    // const rspdwn = await ApiPsglstPnrsmrDownld(params);
-    // rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
+    const rspdwn = await ApiPsglstPnrsmrDownld(params);
+    rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
     setTimeout(() => dwnrspSet("Download"), 500);
   };
 

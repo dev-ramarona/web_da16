@@ -148,19 +148,22 @@ export interface MdlPsglstPsgdtlFrntnd {
   dstrxt: string;
   nmbrxt: string;
 }
-export interface MdlJeddahPsgdtlSearch {
-  nclear_psgdtl: string;
+export interface MdlPsglstPsgdtlSearch {
+  update_psgdtl: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
   airlfl_psgdtl: string;
   flnbfl_psgdtl: string;
   depart_psgdtl: string;
   routfl_psgdtl: string;
-  isitfl_psgdtl: string;
-  isittx_psgdtl: string;
   pnrcde_psgdtl: string;
   tktnfl_psgdtl: string;
+  isitfl_psgdtl: string;
+  isittx_psgdtl: string;
   isitir_psgdtl: string;
+  nclear_psgdtl: string;
+  pagenw_psgdtl: number;
+  limitp_psgdtl: number;
 }
 export interface MdlPsglstAcpedtDtbase {
   params: string;
