@@ -32,7 +32,9 @@ type MdlSbrapiMsghdrParams struct {
 type MdlSbrapiMsghdrApndix struct {
 	Airlfl string
 	Clssfl string
+	Ndayfl string
 	Datefl int32
+	Mnthfl int32
 	Dateup int32
 	Timeup int64
 	Depart string

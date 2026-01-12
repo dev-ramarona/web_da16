@@ -25,7 +25,6 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	[]mongo.WriteModel, []mongo.WriteModel, []mongo.WriteModel,
 	[]mongo.WriteModel, []mongo.WriteModel, []mongo.WriteModel) {
 	sycWgroup, sycClrpsg, sycNulpsg := &sync.WaitGroup{}, &sync.Map{}, &sync.Map{}
-	nowDatefl, nowMnthfl, nowNdayfl := int32(0), int32(0), ""
 	totPsgdtl := len(rspPsglst)
 	for _, psglst := range rspPsglst {
 
@@ -40,9 +39,6 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		}
 
 		// Running concurency every psglst
-		nowNdayfl = psglst.Ndayfl
-		nowDatefl = psglst.Datefl
-		nowMnthfl = psglst.Mnthfl
 		sycWgroup.Add(1)
 		go FncPslgstRsvpnrMainpg(psglst,
 			sycClrpsg, sycNulpsg, sycPnrcde, sycChrter, sycMilege,
@@ -109,7 +105,11 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 	// FInal loop and push to database
 	totSmmary := mdlPsglst.MdlPsglstPsgsmrDtbase{
-		Mnthfl: nowMnthfl, Datefl: nowDatefl, Ndayfl: nowNdayfl,
+		Mnthfl: objParams.Mnthfl, Datefl: objParams.Datefl,
+		Ndayfl: objParams.Ndayfl, Depart: objParams.Depart,
+		Airlfl: objParams.Airlfl, Flnbfl: objParams.Flnbfl,
+		Prmkey: objParams.Airlfl + objParams.Flnbfl + objParams.Depart +
+			strconv.Itoa(int(objParams.Datefl)),
 	}
 	mgoFrbase, mgoFrtaxs := []mongo.WriteModel{}, []mongo.WriteModel{}
 	mgoFlhour, mgoMilege := []mongo.WriteModel{}, []mongo.WriteModel{}
@@ -369,10 +369,6 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 			mtcPsglst.Yqtxvc = float64(mtcPsglst.Yqtxvc) * mtcPsglst.Frrate * valChrter
 
 			// Push summary
-			totSmmary.Prmkey = mtcPsglst.Airlfl + mtcPsglst.Flnbfl + mtcPsglst.Depart +
-				strconv.Itoa(int(mtcPsglst.Datefl))
-			totSmmary.Airlfl = mtcPsglst.Airlfl
-			totSmmary.Flnbfl = mtcPsglst.Flnbfl
 			totSmmary.Totnta += mtcPsglst.Ntafvc
 			totSmmary.Tottyq += mtcPsglst.Yqtxvc
 			totSmmary.Totpax += 1

@@ -19,7 +19,6 @@ export default async function UixPsglstDetailMainpg({
   datefl: string[];
   cookie: mdlGlobalAllusrCookie;
 }) {
-  // await new Promise((r) => setTimeout(r, 2000));
   const psgdtl = await ApiPsglstPsgdtlGetall(trtprm);
   const arrdta: MdlPsglstPsgdtlFrntnd[] = psgdtl.arrdta;
   const totdta: number = psgdtl.totdta;

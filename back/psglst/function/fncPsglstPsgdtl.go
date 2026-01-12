@@ -31,6 +31,8 @@ func FncPsglstPsgdtlGetall(c *gin.Context) {
 	}
 
 	// Treatment date number
+	b, _ := json.MarshalIndent(inputx, " ", "")
+	fmt.Println(string(b))
 	intDatefl := 0
 	if inputx.Datefl_psgdtl != "" {
 		strDatefl, _ := time.Parse("2006-01-02", inputx.Datefl_psgdtl)
@@ -84,6 +86,20 @@ func FncPsglstPsgdtlGetall(c *gin.Context) {
 		csvFilenm = append(csvFilenm, inputx.Tktnfl_psgdtl)
 		mtchdt = append(mtchdt, bson.D{{Key: "tktnfl",
 			Value: inputx.Tktnfl_psgdtl}})
+	}
+	if inputx.Tktnfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Tktnfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "tktnfl",
+			Value: inputx.Tktnfl_psgdtl}})
+	}
+	if inputx.Isitfl_psgdtl != "" {
+		nowIsitfl := "F"
+		if inputx.Isitfl_psgdtl == "Not flown" {
+			nowIsitfl = "N"
+		}
+		csvFilenm = append(csvFilenm, inputx.Isitfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "isitfl",
+			Value: nowIsitfl}})
 	}
 	if inputx.Nclear_psgdtl != "ALL" {
 		var mtchor = bson.A{}

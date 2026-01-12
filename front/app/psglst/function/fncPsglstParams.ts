@@ -1,11 +1,14 @@
 import { MdlPsglstSrcprmAllprm } from "../model/mdlPsglstParams";
 
 // Treatment function params
-export function FncPsglstDetailParams(params: MdlPsglstSrcprmAllprm) {
+export function FncPsglstDetailParams(
+  params: MdlPsglstSrcprmAllprm,
+  actdte: string[]
+) {
   return {
     update_psgdtl: params.update_psgdtl || "",
     mnthfl_psgdtl: params.mnthfl_psgdtl || "",
-    datefl_psgdtl: params.datefl_psgdtl || "",
+    datefl_psgdtl: params.datefl_psgdtl || actdte[0],
     airlfl_psgdtl: params.airlfl_psgdtl || "",
     flnbfl_psgdtl: params.flnbfl_psgdtl || "",
     depart_psgdtl: params.depart_psgdtl || "",

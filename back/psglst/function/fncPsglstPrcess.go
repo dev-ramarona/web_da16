@@ -237,6 +237,12 @@ func FncPsglstPrcessWorker(
 			Arrivl: dbsArrivl, Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl}
 
 		// Conver String and int date
+		rawNdayfl, _ := time.Parse("060102", strconv.Itoa(int(intDatefl)))
+		strNdayfl := rawNdayfl.Format("Mon")
+		objParams.Ndayfl = strNdayfl
+		strMnthfl := rawNdayfl.Format("0601")
+		intMnthfl, _ := strconv.Atoi(strMnthfl)
+		objParams.Mnthfl = int32(intMnthfl)
 		intDatenw, _ := strconv.Atoi(strTimenw[0:6])
 		objParams.Dateup = int32(intDatenw)
 		intTimenw, _ := strconv.Atoi(strTimenw)
@@ -385,7 +391,6 @@ func FncPsglstPrcessWorker(
 			}
 
 			// Get passangger list
-			// objParams.Depart = dbsDepart //INI BERMASALAH
 			rspPsglst, err := fncSbrapi.FncSbrapiPsglstMainob(nowObjtkn, objParams, mapCurrcv, fllist, mapClslvl)
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
 				Erpart: "psglst", Ersrce: "dtbase", Erdvsn: "mnfest",

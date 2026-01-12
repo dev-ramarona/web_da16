@@ -60,11 +60,11 @@ export default function UixPsglstDetailSearch({
   // Replace params
   const rplprm = FncGlobalParamsEdlink();
   const repprm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filter: mdlGlobalAlluserFilter[] = [{ keywrd: "", output: "True" }];
     const namefl = e.currentTarget.id;
     let valuef = e.currentTarget.value;
     if (["isittx_psgdtl", "isitfl_psgdtl", "isitir_psgdtl"].includes(namefl))
-      valuef = FncGlobalFormatFilter(valuef, filter);
+      valuef = FncGlobalFormatFilter(valuef,
+        [{ keywrd: "fl", output: "Flown" }, { keywrd: "no", output: "Not flown" }]);
     else if (namefl == "nclear_psgdtl") valuef = FncGlobalFormatFilter(valuef,
       [{ keywrd: "a", output: "ALL" },
       { keywrd: "spt", output: "SLSRPT" },

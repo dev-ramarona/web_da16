@@ -92,16 +92,17 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 	getDatedp := rawxml.ItineraryInfo.DepartureArrival_Dates
 
 	// Treatment date
-	rawDatefl, _ := time.Parse("2006-01-02", getDatedp.ScheduledDepartureDate)
-	strDatefl := rawDatefl.Format("060102")
-	strNdayfl := rawDatefl.Format("Mon")
-	intDatefl, _ := strconv.Atoi(strDatefl)
-	intMnthfl, _ := strconv.Atoi(strDatefl[:4])
+	// rawDatefl, _ := time.Parse("2006-01-02", getDatedp.ScheduledDepartureDate)
+	// strDatefl := rawDatefl.Format("060102")
+	// strNdayfl := rawDatefl.Format("Mon")
+	// intDatefl, _ := strconv.Atoi(strDatefl)
+	// intMnthfl, _ := strconv.Atoi(strDatefl[:4])
 	rawDaterv, _ := time.Parse("2006-01-02", getDatedp.ScheduledDepartureDate)
 	strDaterv := rawDaterv.Format("060102")
 	intDaterv, _ := strconv.Atoi(strDaterv)
 
 	// Treatment time
+	strDatefl := strconv.Itoa(int(apndix.Datefl))
 	rawTimefl, _ := time.Parse("3:04PM", getDatedp.DepartureTime)
 	strTimefl := rawTimefl.Format("1504")
 	intTimefl, _ := strconv.Atoi(strDatefl + strTimefl)
@@ -117,11 +118,11 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 
 	// Declare global variable
 	tmpPsglst := mdlPsglst.MdlPsglstPsgdtlDtbase{
-		Datefl: int32(intDatefl),
+		Datefl: apndix.Datefl,
 		Daterv: int32(intDaterv),
-		Mnthfl: int32(intMnthfl),
+		Mnthfl: apndix.Mnthfl,
 		Timefl: int64(intTimefl),
-		Ndayfl: strNdayfl,
+		Ndayfl: apndix.Ndayfl,
 		Timerv: int64(intTimerv),
 		Airlfl: getItnrry.Airline,
 		Airtyp: getItnrry.AircraftType,

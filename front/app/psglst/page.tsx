@@ -15,10 +15,10 @@ export default async function Page(props: {
 }) {
   const cookie = await ApiGlobalCookieGetdta();
   const qryprm = await props.searchParams;
-  const trtprm = FncPsglstDetailParams(qryprm);
   const actobj = await ApiPsglstActlogDtbase();
   const actlog: MdlPsglstActlogDtbase[] = actobj.actlog;
   const actdte: string[] = actobj.datefl;
+  const trtprm = FncPsglstDetailParams(qryprm, actdte);
   return (
     <div className="afull flex justify-start items-start flex-wrap p-1.5 md:p-6">
       <div className="w-full md:w-[10rem] min-w-1/5 h-[15rem] md:h-[20rem] max-h-fit p-3">

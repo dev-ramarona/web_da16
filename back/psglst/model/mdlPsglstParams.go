@@ -3,6 +3,7 @@ package mdlPsglst
 type MdlPsglstPsgsmrDtbase struct {
 	Prmkey string  `json:"prmkey,omitempty" bson:"prmkey,omitempty"`
 	Airlfl string  `json:"airlfl,omitempty" bson:"airlfl,omitempty"`
+	Depart string  `json:"depart,omitempty" bson:"depart,omitempty"`
 	Flnbfl string  `json:"flnbfl,omitempty" bson:"flnbfl,omitempty"`
 	Routfl string  `json:"routfl,omitempty" bson:"routfl,omitempty"`
 	Ndayfl string  `json:"ndayfl,omitempty" bson:"ndayfl,omitempty"`
@@ -129,6 +130,7 @@ type MdlPsglstFllistDtbase struct {
 	Timerv int64   `json:"timerv,omitempty" bson:"timerv,omitempty"`
 	Datefl int32   `json:"datefl,omitempty" bson:"datefl,omitempty"`
 	Mnthfl int32   `json:"mnthfl,omitempty" bson:"mnthfl,omitempty"`
+	Ndayfl string  `json:"ndayfl,omitempty" bson:"ndayfl,omitempty"`
 	Flstat string  `json:"flstat,omitempty" bson:"flstat,omitempty"`
 	Routfl string  `json:"routfl,omitempty" bson:"routfl,omitempty"`
 	Routac string  `json:"routac,omitempty" bson:"routac,omitempty"`
