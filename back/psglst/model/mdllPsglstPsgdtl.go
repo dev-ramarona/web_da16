@@ -75,6 +75,7 @@ type MdlPsglstPsgdtlDtbase struct {
 	Typepx string  `json:"typepx" bson:"typepx,omitempty"`
 	Seatpx string  `json:"seatpx" bson:"seatpx,omitempty"`
 	Groupc string  `json:"groupc" bson:"groupc,omitempty"`
+	Totpax int32   `json:"totpax" bson:"totpax,omitempty"`
 	Segmnt string  `json:"segmnt" bson:"segmnt,omitempty"`
 	Psgrid string  `json:"psgrid" bson:"psgrid,omitempty"`
 	Nmefst string  `json:"nmefst" bson:"nmefst,omitempty"`
@@ -113,6 +114,9 @@ type MdlPsglstPsgdtlDtbase struct {
 	Nmbrbt string `json:"nmbrbt" bson:"nmbrbt,omitempty"`
 	Qntybt string `json:"qntybt" bson:"qntybt,omitempty"`
 	Wghtbt int32  `json:"wghtbt" bson:"wghtbt,omitempty"`
+	Qtotbt int32  `json:"qtotbt" bson:"qtotbt,omitempty"`
+	Wtotbt int32  `json:"wtotbt" bson:"wtotbt,omitempty"`
+	Excsbt int32  `json:"excsbt" bson:"excsbt,omitempty"`
 	Typebt string `json:"typebt" bson:"typebt,omitempty"`
 	Coment string `json:"coment" bson:"coment,omitempty"`
 

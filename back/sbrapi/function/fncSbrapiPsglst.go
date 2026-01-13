@@ -134,6 +134,8 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 
 	// Looping all passangger list
 	slcPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
+	mapQntybt := map[string]int{}
+	mapWghtbt := map[string]int{}
 	for _, psglst := range rawxml.PassengerInfoList {
 		objPsglst := tmpPsglst
 
@@ -142,7 +144,6 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Routmx = fllist.Routmx
 		objPsglst.Linenb = int32(psglst.LineNumber)
 		objPsglst.Seatpx = psglst.Seat
-		objPsglst.Groupc = psglst.GroupCode
 		objPsglst.Pnrcde = psglst.PNRLocator
 		objPsglst.Tktnfl = psglst.VCRInfo.VCRData.SerialNumber
 		objPsglst.Tktnvc = psglst.VCRInfo.VCRData.SerialNumber
@@ -156,6 +157,15 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Cbinfl = psglst.Cabin
 		objPsglst.Cbinvc = psglst.Cabin
 		objPsglst.Qntybt = psglst.BagCount
+
+		// Get group code and totpax
+		objPsglst.Groupc = psglst.GroupCode
+		regTotpax := regexp.MustCompile(`\d+`)
+		rslTotpax := regTotpax.FindAllString(psglst.GroupCode, -1)
+		if len(rslTotpax) > 0 {
+			intTotpax, _ := strconv.Atoi(rslTotpax[0])
+			objPsglst.Totpax = int32(intTotpax)
+		}
 
 		// Ancillary
 		func() {
@@ -248,11 +258,22 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 				if len(partsl) == 3 {
 					objPsglst.Nmbrbt = partsl[2]
 				} else if len(partsl) == 4 {
+
+					// Quantity
 					if partsl[0] != "" {
 						objPsglst.Qntybt = partsl[0]
+						regQntybt := regexp.MustCompile(`\d+`)
+						rslQntybt := regQntybt.FindAllString(partsl[0], -1)
+						if len(rslQntybt) > 0 {
+							intQntybt, _ := strconv.Atoi(rslQntybt[0])
+							mapQntybt[objPsglst.Groupc] += intQntybt
+						}
 					}
-					btwght, _ := strconv.Atoi(partsl[2])
-					objPsglst.Wghtbt = int32(btwght)
+
+					// Weight
+					intBtwght, _ := strconv.Atoi(partsl[2])
+					objPsglst.Wghtbt = int32(intBtwght)
+					mapWghtbt[objPsglst.Groupc] += int(intBtwght)
 					objPsglst.Typebt = partsl[3]
 				}
 
@@ -366,6 +387,17 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		strFlnbfl, strDepart := objPsglst.Flnbfl, objPsglst.Depart
 		objPsglst.Prmkey = strDatefl + strFlnbfl + strDepart + strSeatpx + strPsgrid
 		slcPsglst = append(slcPsglst, objPsglst)
+	}
+
+	// Looping again to push total ebt
+	for idx := range slcPsglst {
+		nowGroupc := slcPsglst[idx].Groupc
+		if val, ist := mapQntybt[nowGroupc]; ist {
+			slcPsglst[idx].Qtotbt = int32(val)
+		}
+		if val, ist := mapWghtbt[nowGroupc]; ist {
+			slcPsglst[idx].Wtotbt = int32(val)
+		}
 	}
 
 	// Final return
