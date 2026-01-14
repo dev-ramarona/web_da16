@@ -431,6 +431,7 @@ brk:
 	mapFrcacl := map[string]mdlPsglst.MdlPsglstFrcalcFrbase{}
 	prvPrrate := map[string]string{}
 	slcRoutfr := []string{}
+	allNonrev := true
 	for _, val := range nowFrbase {
 		if val.Routfl != "" {
 			slcRoutsg := strings.Split(psglst.Routsg, "-")
@@ -581,6 +582,11 @@ brk:
 					}
 				}
 			}
+
+			// Non rev
+			if allNonrev {
+				allNonrev = val.Frbase == "0" || val.Frbase == "0.00"
+			}
 		}
 	}
 
@@ -608,14 +614,10 @@ brk:
 			psglst.Qsrcrw = getFlsgmn.Qsrcrw
 			psglst.Routfr = getFlsgmn.Routfl
 			psglst.Isittf = "FRCALC"
-			// if psglst.Prmkey == "2512227051HLP8DRUMINTO" {
-			// 	fmt.Println("final", hghest.key, getFlsgmn.Frbcnv, psglst.Ntafvc)
-			// }
 			if getFlsgmn.Isitpr == "PRORTE" {
 				psglst.Isittf = "PRCALC"
 			}
-			cekNonrev = getFlsgmn.Isitit == "" &&
-				(getFlsgmn.Frbase == "0" || getFlsgmn.Frbase == "0.00")
+			cekNonrev = getFlsgmn.Isitit == "" && allNonrev
 			psglst.Routfx = strings.ReplaceAll(strings.Join(slcRoutfr, "|"), getFlsgmn.Routfl, "")
 		}
 	}

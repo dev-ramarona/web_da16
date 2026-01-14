@@ -52,13 +52,33 @@ type MdlSbrapiGettktRspget struct {
 	CustomDetails MdlSbrapiGettktRspcsd `xml:"CustomDetails"`
 }
 type MdlSbrapiGettktRspcsd struct {
+	Agent  MdlSbrapiGettktRspagt `xml:"Agent"`
 	Ticket MdlSbrapiGettktRsptkt `xml:"Ticket"`
 	Number string                `xml:"number,attr"`
 }
+type MdlSbrapiGettktRspagt struct {
+	Duty            string `xml:"duty,attr"`
+	Sine            string `xml:"sine,attr"`
+	StationLocation string `xml:"StationLocation"`
+	StationNumber   string `xml:"StationNumber"`
+	WorkLocation    string `xml:"WorkLocation"`
+	HomeLocation    string `xml:"HomeLocation"`
+	Lniata          string `xml:"Lniata"`
+	EmployeeNumber  string `xml:"EmployeeNumber"`
+}
 type MdlSbrapiGettktRsptkt struct {
+	Details         MdlSbrapiGettktRspdtl   `xml:"Details"`
 	ServiceCoupon   []MdlSbrapiGettktRspsvc `xml:"ServiceCoupon"`
 	Amounts         MdlSbrapiGettktRspbse   `xml:"Amounts>New>Base>Amount"`
 	FareCalculation string                  `xml:"FareCalculation>New"`
+}
+type MdlSbrapiGettktRspdtl struct {
+	TourNumber         string                `xml:"TourNumber"`
+	Reservation        MdlSbrapiGettktRsprsv `xml:"Reservation>Sabre"`
+	LocalIssueDateTime string                `xml:"LocalIssueDateTime"`
+}
+type MdlSbrapiGettktRsprsv struct {
+	CreateDate string `xml:"createDate,attr"`
 }
 type MdlSbrapiGettktRspsvc struct {
 	Coupon                int                   `xml:"coupon,attr"`
@@ -73,7 +93,8 @@ type MdlSbrapiGettktRspsvc struct {
 	BookingStatus         string                `xml:"BookingStatus"`
 	CurrentStatus         string                `xml:"CurrentStatus"`
 	PreviousStatus        string                `xml:"PreviousStatus"`
-	FlownCoupon           MdlSbrapiGettktRspflc `xml:"FlownCoupon>New"`
+	FlownCoupon           MdlSbrapiGettktRspflc `xml:"FlownCoupon"`
+	BagAllowance          string                `xml:"BagAllowance"`
 }
 type MdlSbrapiGettktRspflc struct {
 	MarketingProvider     string `xml:"MarketingProvider"`

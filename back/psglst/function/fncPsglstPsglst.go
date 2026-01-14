@@ -208,7 +208,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 			// Get flown farebase
 			mapRoutfb := map[string]string{"routfl": mtcPsglst.Airlfl + mtcPsglst.Routfl}
-			if mtcPsglst.Ntafvc == 0 && mtcPsglst.Isitnr == "" {
+			if mtcPsglst.Ntafvc == 0 && (mtcPsglst.Isitnr == "" || mtcPsglst.Frbcde == "HB") {
 				nowRoutvc := mtcPsglst.Routvc
 				if mtcPsglst.Routvc == "" {
 					nowRoutvc = mtcPsglst.Depart + "-" + mtcPsglst.Arrivl
@@ -220,7 +220,9 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 				}
 			}
 			for key, val := range mapRoutfb {
-				for nky, nvl := range map[string]string{"FRBCDE": val + mtcPsglst.Frbcde, "CLSSFL": val + mtcPsglst.Clssfl} {
+				for nky, nvl := range map[string]string{
+					"FRBCDE": val + mtcPsglst.Frbcde,
+					"CLSSFL": val + mtcPsglst.Clssfl} {
 					if len(val) < 7 || (key == "routfl" && nky == "FRBCDE") {
 						continue
 					}
@@ -275,7 +277,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 			// Get all taxes
 			mapRouttx := map[string]string{"routfl": mtcPsglst.Airlfl + mtcPsglst.Routfl + mtcPsglst.Cbinfl}
-			if mtcPsglst.Isitnr == "" {
+			if mtcPsglst.Isitnr != "CREW" {
 				mapRouttx["routvc"] = mtcPsglst.Airlfl + mtcPsglst.Routvc + mtcPsglst.Cbinvc
 			}
 			for key, val := range mapRouttx {

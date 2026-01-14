@@ -7,7 +7,6 @@ import (
 
 	"context"
 	"encoding/csv"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -31,8 +30,6 @@ func FncPsglstPsgdtlGetall(c *gin.Context) {
 	}
 
 	// Treatment date number
-	b, _ := json.MarshalIndent(inputx, " ", "")
-	fmt.Println(string(b))
 	intDatefl := 0
 	if inputx.Datefl_psgdtl != "" {
 		strDatefl, _ := time.Parse("2006-01-02", inputx.Datefl_psgdtl)
@@ -266,7 +263,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.
 		"Cbinfl",
 		"Cbinvc",
 		"Agtdie",
-		"Agtdcr",
+		// "Agtdcr",
 		"Codels",
 		"Isitfl",
 		"Isittx",
@@ -397,7 +394,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.
 			slcDtaset.Cbinfl,
 			slcDtaset.Cbinvc,
 			slcDtaset.Agtdie,
-			slcDtaset.Agtdcr,
+			// slcDtaset.Agtdcr,
 			slcDtaset.Codels,
 			slcDtaset.Isitfl,
 			slcDtaset.Isittx,
@@ -493,8 +490,6 @@ func FncPsglstRtlsrsUpdate(c *gin.Context) {
 	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("psglst_psgdtl")
 	contxt, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	b, _ := json.MarshalIndent(inputx, " ", "")
-	fmt.Println(string(b))
 
 	// Get data
 	err := tablex.FindOne(contxt, bson.M{"prmkey": inputx.Prmkey}).Decode(&findne)

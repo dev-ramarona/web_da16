@@ -78,6 +78,13 @@ type MdlPsglstPsgdtlDtbase struct {
 	Totpax int32   `json:"totpax" bson:"totpax,omitempty"`
 	Segmnt string  `json:"segmnt" bson:"segmnt,omitempty"`
 	Psgrid string  `json:"psgrid" bson:"psgrid,omitempty"`
+	Tourcd string  `json:"tourcd" bson:"tourcd,omitempty"`
+	Staloc string  `json:"staloc" bson:"staloc,omitempty"`
+	Stanbr string  `json:"stanbr" bson:"stanbr,omitempty"`
+	Wrkloc string  `json:"wrkloc" bson:"wrkloc,omitempty"`
+	Hmeloc string  `json:"hmeloc" bson:"hmeloc,omitempty"`
+	Lniata string  `json:"lniata" bson:"lniata,omitempty"`
+	Emplid string  `json:"emplid" bson:"emplid,omitempty"`
 	Nmefst string  `json:"nmefst" bson:"nmefst,omitempty"`
 	Nmelst string  `json:"nmelst" bson:"nmelst,omitempty"`
 	Cpnbfl int32   `json:"cpnbfl" bson:"cpnbfl,omitempty"`
@@ -88,17 +95,17 @@ type MdlPsglstPsgdtlDtbase struct {
 	Cbinfl string  `json:"cbinfl" bson:"cbinfl,omitempty"`
 	Cbinvc string  `json:"cbinvc" bson:"cbinvc,omitempty"`
 	Agtdie string  `json:"agtdie" bson:"agtdie,omitempty"`
-	Agtdcr string  `json:"agtdcr" bson:"agtdcr,omitempty"`
-	Codels string  `json:"codels" bson:"codels,omitempty"`
-	Isitfl string  `json:"isitfl" bson:"isitfl,omitempty"`
-	Isittx string  `json:"isittx" bson:"isittx,omitempty"`
-	Isitir string  `json:"isitir" bson:"isitir,omitempty"`
-	Isitct string  `json:"isitct" bson:"isitct,omitempty"`
-	Isittf string  `json:"isittf" bson:"isittf,omitempty"`
-	Isitnr string  `json:"isitnr" bson:"isitnr,omitempty"`
-	Noteup string  `json:"noteup" bson:"noteup,omitempty"`
-	Updtby string  `json:"updtby" bson:"updtby,omitempty"`
-	Prmkey string  `json:"prmkey" bson:"prmkey,omitempty"`
+	// Agtdcr string  `json:"agtdcr" bson:"agtdcr,omitempty"`
+	Codels string `json:"codels" bson:"codels,omitempty"`
+	Isitfl string `json:"isitfl" bson:"isitfl,omitempty"`
+	Isittx string `json:"isittx" bson:"isittx,omitempty"`
+	Isitir string `json:"isitir" bson:"isitir,omitempty"`
+	Isitct string `json:"isitct" bson:"isitct,omitempty"`
+	Isittf string `json:"isittf" bson:"isittf,omitempty"`
+	Isitnr string `json:"isitnr" bson:"isitnr,omitempty"`
+	Noteup string `json:"noteup" bson:"noteup,omitempty"`
+	Updtby string `json:"updtby" bson:"updtby,omitempty"`
+	Prmkey string `json:"prmkey" bson:"prmkey,omitempty"`
 
 	// Ancillary
 	Aeitid string `json:"aeitid" bson:"aeitid,omitempty"`
@@ -114,6 +121,8 @@ type MdlPsglstPsgdtlDtbase struct {
 	Nmbrbt string `json:"nmbrbt" bson:"nmbrbt,omitempty"`
 	Qntybt string `json:"qntybt" bson:"qntybt,omitempty"`
 	Wghtbt int32  `json:"wghtbt" bson:"wghtbt,omitempty"`
+	Vfbabt string `json:"vfbabt" bson:"vfbabt,omitempty"`
+	Hfbabt int32  `json:"hfbabt" bson:"hfbabt,omitempty"`
 	Qtotbt int32  `json:"qtotbt" bson:"qtotbt,omitempty"`
 	Wtotbt int32  `json:"wtotbt" bson:"wtotbt,omitempty"`
 	Excsbt int32  `json:"excsbt" bson:"excsbt,omitempty"`
