@@ -83,7 +83,6 @@ func FncSbrapiFllistTrtmnt(rawxml mdlSbrapi.MdlSbrapiFllistRspfls,
 		strTimefl := fllist.DepartureDate + "/" + fllist.DepartureTime
 		fmtTimefl, _ := time.Parse("2006-01-02/03:04PM", strTimefl)
 		intTimefl, _ := strconv.Atoi(fmtTimefl.Format("0601021504"))
-		intTimerv, _ := strconv.Atoi(fllist.DepartureTime)
 		strMnthfl := strconv.Itoa(int(apndix.Datefl))[:4]
 		intMnthfl, _ := strconv.Atoi(strMnthfl)
 
@@ -113,7 +112,7 @@ func FncSbrapiFllistTrtmnt(rawxml mdlSbrapi.MdlSbrapiFllistRspfls,
 			Flnbfl: strFlnbfl,
 			Timeup: int64(intTimeup),
 			Timefl: int64(intTimefl),
-			Timerv: int64(intTimerv),
+			Timerv: int64(intTimefl),
 			Datefl: apndix.Datefl,
 			Mnthfl: int32(intMnthfl),
 			Flstat: fllist.Status,

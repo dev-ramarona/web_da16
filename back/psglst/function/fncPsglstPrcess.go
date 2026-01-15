@@ -288,26 +288,16 @@ func FncPsglstPrcessWorker(
 						fllist.Flhour = flhour.Flhour
 					}
 				}
-			} else {
-
-				// If can get flhour from diff time
-				if fllist.Timerv > fllist.Timefl {
-					fmtTimefl, _ := time.Parse("0601021504", strconv.Itoa(int(fllist.Timefl)))
-					fmtTimerv, _ := time.Parse("0601021504", strconv.Itoa(int(fllist.Timerv)))
-					difFlhour := fmtTimerv.Sub(fmtTimefl)
-					getHourdf := strconv.Itoa(int(difFlhour.Hours()))
-					getMntedf := strconv.Itoa(int(difFlhour.Minutes()) % 60)
-					floFlhour, err := fncGlobal.FncGlobalMainprFlhour(getHourdf + "." + getMntedf)
-					if err == nil {
-						fllist.Flhour = floFlhour
-						nulFlhour = false
-					}
-				}
 			}
-		} else if getFlhour, ist := sycFlhour.Load(keyFlhour); ist {
-			if mtcFlhour, mtc := getFlhour.(mdlPsglst.MdlPsglstFlhourDtbase); mtc {
-				fllist.Flhour = mtcFlhour.Flhour
-				nulFlhour = false
+		}
+
+		// Get from syc flight hour if empty
+		if nulFlhour {
+			if getFlhour, ist := sycFlhour.Load(keyFlhour); ist {
+				if mtcFlhour, mtc := getFlhour.(mdlPsglst.MdlPsglstFlhourDtbase); mtc {
+					fllist.Flhour = mtcFlhour.Flhour
+					nulFlhour = false
+				}
 			}
 		}
 
