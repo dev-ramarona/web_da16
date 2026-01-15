@@ -393,12 +393,22 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 	// Looping again to push total ebt
 	for idx := range slcPsglst {
 		nowGroupc := slcPsglst[idx].Groupc
-		if val, ist := mapQntybt[nowGroupc]; ist {
-			slcPsglst[idx].Qtotbt = int32(val)
+		if nowGroupc == "" {
+			slcPsglst[idx].Qtotbt = 0
+			intQntybt, err := strconv.Atoi(slcPsglst[idx].Qntybt)
+			if err == nil {
+				slcPsglst[idx].Qtotbt = int32(intQntybt)
+			}
+			slcPsglst[idx].Wtotbt = slcPsglst[idx].Wghtbt
+		} else {
+			if val, ist := mapQntybt[nowGroupc]; ist {
+				slcPsglst[idx].Qtotbt = int32(val)
+			}
+			if val, ist := mapWghtbt[nowGroupc]; ist {
+				slcPsglst[idx].Wtotbt = int32(val)
+			}
 		}
-		if val, ist := mapWghtbt[nowGroupc]; ist {
-			slcPsglst[idx].Wtotbt = int32(val)
-		}
+
 	}
 
 	// Final return
