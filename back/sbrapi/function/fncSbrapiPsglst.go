@@ -162,6 +162,7 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Groupc = psglst.GroupCode
 		regTotpax := regexp.MustCompile(`\d+`)
 		rslTotpax := regTotpax.FindAllString(psglst.GroupCode, -1)
+		objPsglst.Totpax = 1
 		if len(rslTotpax) > 0 {
 			intTotpax, _ := strconv.Atoi(rslTotpax[0])
 			objPsglst.Totpax = int32(intTotpax)
