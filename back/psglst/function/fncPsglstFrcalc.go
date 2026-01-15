@@ -24,7 +24,7 @@ func FncPsglstFrcalcSplitd(psglst *mdlPsglst.MdlPsglstPsgdtlDtbase,
 	regDstrc4 := regexp.MustCompile(`(^I-.+)([A-Z]{3}$)`)
 	regDstrc5 := regexp.MustCompile(`(^\d{2}[A-Z]{3}\d{2})([A-Z]{3}$)`)
 	regCrrat1 := regexp.MustCompile(`(^ROE)(\d+\.\d+|\d+)`)
-	regCrrat2 := regexp.MustCompile(`\d+\.\d+|\d+`)
+	regCrrat2 := regexp.MustCompile(`^\d+\.\d+$|^\d+$`)
 	regAirlfl := regexp.MustCompile(`^[A-Z]{2}$`)
 	regFrend1 := regexp.MustCompile(`(^[A-Z]{3})(\d+\.\d{2}|\d+)([A-Z]{3})(\d+\.\d{2}|\d+)(END)`)
 	regFrend2 := regexp.MustCompile(`(^\d+\.\d{2}|^\d+)([A-Z]{3})(\d+\.\d{2}|\d+)(END)`)
