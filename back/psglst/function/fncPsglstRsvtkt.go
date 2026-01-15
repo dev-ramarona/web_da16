@@ -5,6 +5,7 @@ import (
 	mdlPsglst "back/psglst/model"
 	fncSbrapi "back/sbrapi/function"
 	mdlSbrapi "back/sbrapi/model"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -41,65 +42,99 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 	}
 
 	// Get ticketing from PNR
+	slcSbarea := []string{"ITINERARY", "RECORD_LOCATOR"}
 	if psglst.Tktnvc == "" {
+		slcSbarea = append(slcSbarea, "TICKETING")
+	}
 
-		// Get reservation
-		nowRsvpnr := mdlSbrapi.MdlSbrapiRsvpnrRsprsv{}
-		if istTcktng, ist := sycPnrcde.Load(pnrcde + airlfl); ist {
-			if mtcTcktng, mtc := istTcktng.(mdlSbrapi.MdlSbrapiRsvpnrRsprsv); mtc {
-				nowRsvpnr = mtcTcktng
-			}
-		} else {
-			slcSbarea := []string{"TICKETING", "ITINERARY", "RECORD_LOCATOR"}
-			getTcktng, err := fncSbrapi.FncSbrapiRsvpnrMainob(objtkn, pnrcde, slcSbarea)
-			if err != nil {
-				return
-			}
-			nowRsvpnr = getTcktng
-			sycPnrcde.Store(pnrcde+airlfl, getTcktng)
+	// Get reservation
+	nowRsvpnr := mdlSbrapi.MdlSbrapiRsvpnrRsprsv{}
+	if istTcktng, ist := sycPnrcde.Load(pnrcde + airlfl); ist {
+		if mtcTcktng, mtc := istTcktng.(mdlSbrapi.MdlSbrapiRsvpnrRsprsv); mtc {
+			nowRsvpnr = mtcTcktng
+		}
+	} else {
+		getTcktng, err := fncSbrapi.FncSbrapiRsvpnrMainob(objtkn, pnrcde, slcSbarea)
+		if err != nil {
+			return
+		}
+		nowRsvpnr = getTcktng
+		sycPnrcde.Store(pnrcde+airlfl, getTcktng)
+	}
+
+	// If data not null
+	if nowRsvpnr.BookingDetails.RecordLocator != "" {
+
+		// Date formating PNR book PNR Create date
+		varTimecr := nowRsvpnr.BookingDetails.SystemCreationTimestamp
+		if pnrTimecr, err := time.Parse("2006-01-02T15:04:05", varTimecr); err == nil {
+			rawTimerw, _ := strconv.Atoi(pnrTimecr.Format("0601021504"))
+			psglst.Timecr = int64(rawTimerw)
 		}
 
-		// If data not null
-		if nowRsvpnr.BookingDetails.RecordLocator != "" {
-
-			// Date formating PNR book PNR Create date
-			varTimecr := nowRsvpnr.BookingDetails.SystemCreationTimestamp
-			if pnrTimecr, err := time.Parse("2006-01-02T15:04:05", varTimecr); err == nil {
-				rawTimerw, _ := strconv.Atoi(pnrTimecr.Format("0601021504"))
-				psglst.Timecr = int64(rawTimerw)
+		// Get PNR interline
+		objPnritl := nowRsvpnr.POS.Source.TTYRecordLocator
+		slcPnrtil := strings.Split(psglst.Pnritl, "|")
+		if objPnritl.RecordLocator != "" {
+			nowPnritl := objPnritl.CRSCode + "*" + objPnritl.RecordLocator
+			if !strings.Contains(psglst.Pnritl+psglst.Pnrcde, objPnritl.RecordLocator) {
+				slcPnrtil = append(slcPnrtil, nowPnritl)
 			}
+		}
 
-			// Get PNR interline
-			objPnritl := nowRsvpnr.POS.Source.TTYRecordLocator
-			slcPnrtil := strings.Split(psglst.Pnritl, "|")
-			if objPnritl.RecordLocator != "" {
-				nowPnritl := objPnritl.CRSCode + "*" + objPnritl.RecordLocator
-				if !strings.Contains(psglst.Pnritl+psglst.Pnrcde, objPnritl.RecordLocator) {
-					slcPnrtil = append(slcPnrtil, nowPnritl)
+		// Get PNR interline and itinerary
+		slcItinry := nowRsvpnr.PassengerReservation.Segments.Segment
+		slcSegpnr := []string{}
+		slcRoutsg, lstArrivl := []string{}, ""
+		if len(slcItinry) != 0 {
+			for idx, itinry := range slcItinry {
+				if !slices.Contains([]string{"JT", "ID", "IW", "IU", "OD", "SL"},
+					itinry.Air.OperatingAirlineCode) {
+					continue
 				}
-			}
 
-			// Get PNR interline and itinerary
-			slcItinry := nowRsvpnr.PassengerReservation.Segments.Segment
-			if len(slcItinry) != 0 {
-				for _, itinry := range slcItinry {
-					if !slices.Contains([]string{"JT", "ID", "IW", "IU", "OD", "SL"},
-						itinry.Air.OperatingAirlineCode) {
-						continue
-					}
-
-					// PNR Interline
-					rawPnritl := itinry.Air.AirlineRefId
-					if len(rawPnritl) > 5 {
-						if !strings.Contains(psglst.Pnritl+psglst.Pnrcde, rawPnritl[5:]) {
-							slcPnrtil = append(slcPnrtil, rawPnritl[2:])
-						}
+				// PNR Interline
+				rawPnritl := itinry.Air.AirlineRefId
+				if len(rawPnritl) > 5 {
+					if !strings.Contains(psglst.Pnritl+psglst.Pnrcde, rawPnritl[5:]) {
+						slcPnrtil = append(slcPnrtil, rawPnritl[2:])
 					}
 				}
-			}
-			psglst.Pnritl = strings.Join(slcPnrtil, "|")
 
-			// Get ticketing detail for issued date
+				// Get time flown
+				rawTimefl := itinry.Air.DepartureDateTime
+				fmtTimefl, _ := time.Parse("2006-01-02T15:04:05", rawTimefl)
+				strTimefl := fmtTimefl.Format("0601021504")
+
+				// Itinerary segment
+				rawDepart := itinry.Air.DepartureAirport
+				rawArrivl := itinry.Air.ArrivalAirport
+				rawActncd := itinry.Air.ActionCode
+				mktAirlfl := itinry.Air.MarketingAirlineCode
+				optAirlfl := itinry.Air.OperatingAirlineCode
+				mktFlnbfl := itinry.Air.MarketingFlightNumber
+				optFlnbfl := itinry.Air.OperatingFlightNumber
+				mktClssfl := itinry.Air.MarketingClassOfService
+				optClssfl := itinry.Air.OperatingClassOfService
+				fmtSegpnr := fmt.Sprintf("%s-%s-%s-%s-MKT-%s-%s-%s-OPT-%s-%s-%s",
+					rawDepart, rawArrivl, rawActncd, strTimefl,
+					mktAirlfl, mktFlnbfl, mktClssfl,
+					optAirlfl, optFlnbfl, optClssfl)
+				lstArrivl = rawArrivl
+				if idx <= 1 || len(slcRoutsg) == 0 ||
+					slcRoutsg[len(slcRoutsg)-1] != rawDepart {
+					slcSegpnr = append(slcSegpnr, fmtSegpnr)
+					slcRoutsg = append(slcRoutsg, rawDepart)
+				}
+			}
+			slcRoutsg = append(slcRoutsg, lstArrivl)
+			psglst.Routsg = strings.Join(slcRoutsg, "-")
+			psglst.Segpnr = strings.Join(slcSegpnr, "|")
+		}
+		psglst.Pnritl = strings.Join(slcPnrtil, "|")
+
+		// Get ticketing detail for issued date
+		if slices.Contains(slcSbarea, "TICKETING") {
 			var slcTcktng = nowRsvpnr.PassengerReservation.TicketingInfo.TicketDetails
 			if len(slcTcktng) != 0 {
 				for _, tcktng := range slcTcktng {
@@ -125,6 +160,10 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 				}
 			}
 		}
+	}
+
+	if psglst.Pnritl == "" {
+		cekLstvar = true
 	}
 
 	// Get ticketing document

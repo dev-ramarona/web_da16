@@ -89,7 +89,7 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 	}
 
 	// Looping and scoring per coupon
-	slcSegmnt, slcRoutsg, lstArrivl := []string{}, []string{}, ""
+	slcSegtkt, slcRoutvf, lstArrivl := []string{}, []string{}, ""
 	for _, cpn := range getTktdoc.Ticket.ServiceCoupon {
 		nowDepart, nowArrivl := cpn.StartLocation, cpn.EndLocation
 		keyGettkt := nowDepart + nowArrivl + cpn.MarketingFlightNumber
@@ -138,18 +138,18 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 		mktAirlfl := cpn.MarketingProvider
 		mktFlnbfl := cpn.MarketingFlightNumber
 		mktClssfl := cpn.MarketingFlightNumber
-		fmtSegmnt := fmt.Sprintf("%s:%s-%s-%s-%s-%s-%s-%s",
+		fmtSegtkt := fmt.Sprintf("%s:%s-%s-%s-%s-%s-%s-%s",
 			strTimefl, strTimend, rawDepart, rawArrivl,
 			rawActncd, mktAirlfl, mktFlnbfl, mktClssfl)
 		lstArrivl = rawArrivl
-		slcSegmnt = append(slcSegmnt, fmtSegmnt)
-		slcRoutsg = append(slcRoutsg, rawDepart)
+		slcSegtkt = append(slcSegtkt, fmtSegtkt)
+		slcRoutvf = append(slcRoutvf, rawDepart)
 	}
 
 	// Push other data
-	slcRoutsg = append(slcRoutsg, lstArrivl)
-	psglst.Routsg = strings.Join(slcRoutsg, "-")
-	psglst.Segmnt = strings.Join(slcSegmnt, "|")
+	slcRoutvf = append(slcRoutvf, lstArrivl)
+	psglst.Routvf = strings.Join(slcRoutvf, "-")
+	psglst.Segtkt = strings.Join(slcSegtkt, "|")
 	psglst.Agtdie = getTktdoc.Agent.Duty + getTktdoc.Agent.Sine
 	psglst.Frcalc = getTktdoc.Ticket.FareCalculation
 	psglst.Curncy = getTktdoc.Ticket.Amounts.CurrencyCode

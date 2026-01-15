@@ -65,6 +65,7 @@ type MdlPsglstPsgdtlDtbase struct {
 	Arrivl string  `json:"arrivl" bson:"arrivl,omitempty"`
 	Routfl string  `json:"routfl" bson:"routfl,omitempty"`
 	Routvc string  `json:"routvc" bson:"routvc,omitempty"`
+	Routvf string  `json:"routvf" bson:"routvf,omitempty"`
 	Routac string  `json:"routac" bson:"routac,omitempty"`
 	Routmx string  `json:"routmx" bson:"routmx,omitempty"`
 	Routfr string  `json:"routfr" bson:"routfr,omitempty"`
@@ -76,7 +77,8 @@ type MdlPsglstPsgdtlDtbase struct {
 	Seatpx string  `json:"seatpx" bson:"seatpx,omitempty"`
 	Groupc string  `json:"groupc" bson:"groupc,omitempty"`
 	Totpax int32   `json:"totpax" bson:"totpax,omitempty"`
-	Segmnt string  `json:"segmnt" bson:"segmnt,omitempty"`
+	Segpnr string  `json:"segpnr" bson:"segpnr,omitempty"`
+	Segtkt string  `json:"segtkt" bson:"segtkt,omitempty"`
 	Psgrid string  `json:"psgrid" bson:"psgrid,omitempty"`
 	Tourcd string  `json:"tourcd" bson:"tourcd,omitempty"`
 	Staloc string  `json:"staloc" bson:"staloc,omitempty"`
