@@ -7,17 +7,19 @@ import {
 } from "../server/uixGlobalIconvc";
 
 export default function UixGlobalPagntnMainpg({
+  pgview,
   pgestr,
   totdta,
   pgenbr,
 }: {
+  pgview: number;
   pgestr: string;
   totdta: number;
   pgenbr: number;
 }) {
   const rplprm = FncGlobalParamsEdlink();
-  const maxpge = Math.ceil(totdta / 15);
-  const totpge = Math.min(Math.ceil(totdta / 15), 10);
+  const maxpge = Math.ceil(totdta / pgview);
+  const totpge = Math.min(Math.ceil(totdta / pgview), 10);
   return (
     <div className="w-full h-16 pt-1.5 flexbtw">
       <div
@@ -37,11 +39,10 @@ export default function UixGlobalPagntnMainpg({
         if (pgenow > maxpge) return null;
         return (
           <div
-            className={`w-4 md:w-7 min-w-fit h-4 md:h-7 flexctr  cursor-pointer text-[0.45rem] md:text-xs ${
-              pgenow == Number(pgenbr)
+            className={`w-4 md:w-7 min-w-fit h-4 md:h-7 flexctr  cursor-pointer text-[0.45rem] md:text-xs ${pgenow == Number(pgenbr)
                 ? "btnsbm ring-2 ring-sky-800"
                 : "hover:bg-slate-200 ring-2 ring-slate-400 rounded-md duration-300"
-            }`}
+              }`}
             key={pgenow}
             onClick={() => rplprm(pgestr, pgenow + "")}
           >

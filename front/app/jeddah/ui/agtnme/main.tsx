@@ -26,6 +26,7 @@ export default async function UixJeddahAgtnmeMainpg({
         <>
           <UixJeddahAgtnmeTablex agtnul={arrdta} cookie={cookie} />
           <UixGlobalPagntnMainpg
+            pgview={15}
             pgenbr={trtprm.pagenw_agtnme}
             pgestr="pagenw_agtnme"
             totdta={totdta}

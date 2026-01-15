@@ -34,6 +34,7 @@ export default async function UixPsglstDetailMainpg({
         </div>
       )}
       <UixGlobalPagntnMainpg
+        pgview={15}
         pgenbr={trtprm.pagenw_psgdtl}
         pgestr="pagenw_psgdtl"
         totdta={totdta}

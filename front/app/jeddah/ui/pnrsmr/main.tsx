@@ -36,6 +36,7 @@ export default async function UixJeddahPnrsmrMainpg({
         </div>
       )}
       <UixGlobalPagntnMainpg
+        pgview={15}
         pgenbr={trtprm.pagenw_pnrsmr}
         pgestr="pagenw_pnrsmr"
         totdta={totdta}

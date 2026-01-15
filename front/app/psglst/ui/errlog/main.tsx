@@ -16,6 +16,7 @@ export default async function UixPsglstErrlogMainpg({ trtprm }: { trtprm: MdlPsg
         <>
           <UixPsglstErrlogTablex errlog={errlog} />
           <UixGlobalPagntnMainpg
+            pgview={5}
             pgenbr={trtprm.pagenw_errlog}
             pgestr="pagenw_errlog"
             totdta={totdta}
