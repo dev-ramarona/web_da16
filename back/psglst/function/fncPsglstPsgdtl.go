@@ -329,6 +329,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.
 		"dstrxt",
 		"nmbrxt",
 	})
+	writer.Flush()
 
 	// Get All Match Data
 	pipeln := mongo.Pipeline{
@@ -475,6 +476,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.
 			slcDtaset.Dstrxt,
 			slcDtaset.Nmbrxt,
 		})
+		writer.Flush()
 	}
 }
 
