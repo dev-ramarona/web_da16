@@ -438,6 +438,8 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 	defer rawDtaset.Close(contxt)
 
 	// Store to slice from raw bson
+	mxflus := 5000
+	countr := 0
 	for rawDtaset.Next(contxt) {
 		var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
 		rawDtaset.Decode(&slcDtaset)
@@ -567,9 +569,13 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			slcDtaset.Paxsif,
 			slcDtaset.Airlxt,
 			slcDtaset.Dstrxt,
-			slcDtaset.Nmbrxt,
-		})
-		writer.Flush()
+			slcDtaset.Nmbrxt})
+
+		// Flush every 1000row
+		countr++
+		if countr%mxflus == 0 {
+			writer.Flush()
+		}
 	}
 }
 
