@@ -7,6 +7,7 @@ import (
 
 	"context"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -22,7 +23,6 @@ import (
 func FncPsglstPsgdtlGetall(c *gin.Context) {
 
 	// Bind JSON Body input to variable
-	istDownld := c.Param("downld")
 	csvFilenm := []string{time.Now().Format("02Jan06/15:04")}
 	var inputx mdlPsglst.MdlPsglstPsgdtlInputx
 	if err := c.BindJSON(&inputx); err != nil {
@@ -119,79 +119,172 @@ func FncPsglstPsgdtlGetall(c *gin.Context) {
 		mtchfn = bson.D{{Key: "$match", Value: bson.D{}}}
 	}
 
-	// Logic download data
-	if istDownld == "downld" {
-		FncPsglstPsgdtlDownld(c, csvFilenm, inputx, mtchfn, sortdt, tablex, contxt)
-	} else {
+	// Get Total Count Data
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		nowPillne := mongo.Pipeline{
+			mtchfn,
+			bson.D{{Key: "$count", Value: "totalCount"}},
+		}
 
-		// Get Total Count Data
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			nowPillne := mongo.Pipeline{
-				mtchfn,
-				bson.D{{Key: "$count", Value: "totalCount"}},
+		// Find user by username in database
+		rawDtaset, err := tablex.Aggregate(contxt, nowPillne)
+		if err != nil {
+			panic(err)
+		}
+		defer rawDtaset.Close(contxt)
+
+		// Store to slice from raw bson
+		var slcDtaset []bson.M
+		if err = rawDtaset.All(contxt, &slcDtaset); err != nil {
+			panic(err)
+		}
+
+		// Mengambil jumlah dokumen dari hasil
+		if len(slcDtaset) > 0 {
+			if count, ok := slcDtaset[0]["totalCount"].(int32); ok {
+				totidx = int(count)
 			}
+		}
+	}()
 
-			// Find user by username in database
-			rawDtaset, err := tablex.Aggregate(contxt, nowPillne)
-			if err != nil {
-				panic(err)
-			}
-			defer rawDtaset.Close(contxt)
+	// Get All Match Data
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		pipeln := mongo.Pipeline{
+			mtchfn,
+			sortdt,
+			bson.D{{Key: "$skip", Value: (max(inputx.Pagenw_psgdtl, 1) - 1) * inputx.Limitp_psgdtl}},
+			bson.D{{Key: "$limit", Value: inputx.Limitp_psgdtl}},
+		}
 
-			// Store to slice from raw bson
-			var slcDtaset []bson.M
-			if err = rawDtaset.All(contxt, &slcDtaset); err != nil {
-				panic(err)
-			}
+		// Find user by username in database
+		rawDtaset, err := tablex.Aggregate(contxt, pipeln)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		defer rawDtaset.Close(contxt)
 
-			// Mengambil jumlah dokumen dari hasil
-			if len(slcDtaset) > 0 {
-				if count, ok := slcDtaset[0]["totalCount"].(int32); ok {
-					totidx = int(count)
-				}
-			}
-		}()
+		// Store to slice from raw bson
+		for rawDtaset.Next(contxt) {
+			var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
+			rawDtaset.Decode(&slcDtaset)
+			slcobj = append(slcobj, slcDtaset)
+		}
+	}()
 
-		// Get All Match Data
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			pipeln := mongo.Pipeline{
-				mtchfn,
-				sortdt,
-				bson.D{{Key: "$skip", Value: (max(inputx.Pagenw_psgdtl, 1) - 1) * inputx.Limitp_psgdtl}},
-				bson.D{{Key: "$limit", Value: inputx.Limitp_psgdtl}},
-			}
+	// Waiting until all go done
+	wg.Wait()
 
-			// Find user by username in database
-			rawDtaset, err := tablex.Aggregate(contxt, pipeln)
-			if err != nil {
-				fmt.Println(err)
-				panic(err)
-			}
-			defer rawDtaset.Close(contxt)
-
-			// Store to slice from raw bson
-			for rawDtaset.Next(contxt) {
-				var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
-				rawDtaset.Decode(&slcDtaset)
-				slcobj = append(slcobj, slcDtaset)
-			}
-		}()
-
-		// Waiting until all go done
-		wg.Wait()
-
-		// Return final output
-		c.JSON(200, gin.H{"totdta": totidx, "arrdta": slcobj})
-	}
+	// Return final output
+	c.JSON(200, gin.H{"totdta": totidx, "arrdta": slcobj})
 }
 
 // Download PNR Detail all
-func FncPsglstPsgdtlDownld(c *gin.Context, csvFilenm []string, inputx mdlPsglst.MdlPsglstPsgdtlInputx,
-	mtchfn, sortdt bson.D, tablex *mongo.Collection, contxt context.Context) {
+func FncPsglstPsgdtlDownld(c *gin.Context) {
+
+	// Bind JSON Body input to variable
+	csvFilenm := []string{time.Now().Format("02Jan06/15:04")}
+	rawipt := c.PostForm("data")
+	if rawipt == "" {
+		c.String(400, "missing data")
+		return
+	}
+	var inputx mdlPsglst.MdlPsglstPsgdtlInputx
+	if err := json.Unmarshal([]byte(rawipt), &inputx); err != nil {
+		c.String(400, "invalid data")
+		return
+	}
+
+	// Treatment date number
+	intDatefl := 0
+	if inputx.Datefl_psgdtl != "" {
+		strDatefl, _ := time.Parse("2006-01-02", inputx.Datefl_psgdtl)
+		intDatefl, _ = strconv.Atoi(strDatefl.Format("060102"))
+	}
+
+	// Select db and context to do
+	tablex := fncGlobal.Client.Database(fncGlobal.Dbases).Collection("psglst_psgdtl")
+	contxt, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	// Pipeline get the data logic match
+	var mtchdt = bson.A{}
+	var sortdt = bson.D{{Key: "$sort", Value: bson.D{{Key: "prmkey", Value: 1}}}}
+
+	// Check if data Route all is isset
+	if inputx.Datefl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, strconv.Itoa(intDatefl))
+		mtchdt = append(mtchdt, bson.D{{Key: "datefl",
+			Value: intDatefl}})
+	}
+	if inputx.Airlfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Airlfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "airlfl",
+			Value: inputx.Airlfl_psgdtl}})
+	}
+	if inputx.Flnbfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Flnbfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "flnbfl",
+			Value: inputx.Flnbfl_psgdtl}})
+	}
+	if inputx.Depart_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Depart_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "depart",
+			Value: inputx.Depart_psgdtl}})
+	}
+	if inputx.Routfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Routfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "routfl",
+			Value: inputx.Routfl_psgdtl}})
+	}
+	if inputx.Pnrcde_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Pnrcde_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "pnrcde",
+			Value: inputx.Pnrcde_psgdtl}})
+	}
+	if inputx.Tktnfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Tktnfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "tktnfl",
+			Value: inputx.Tktnfl_psgdtl}})
+	}
+	if inputx.Tktnfl_psgdtl != "" {
+		csvFilenm = append(csvFilenm, inputx.Tktnfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "tktnfl",
+			Value: inputx.Tktnfl_psgdtl}})
+	}
+	if inputx.Isitfl_psgdtl != "" {
+		nowIsitfl := "F"
+		if inputx.Isitfl_psgdtl == "Not flown" {
+			nowIsitfl = "N"
+		}
+		csvFilenm = append(csvFilenm, inputx.Isitfl_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "isitfl",
+			Value: nowIsitfl}})
+	}
+	if inputx.Nclear_psgdtl != "ALL" {
+		var mtchor = bson.A{}
+		if inputx.Nclear_psgdtl == "MNFEST" || inputx.Nclear_psgdtl == "" {
+			mtchor = append(mtchor, bson.D{{Key: "mnfest", Value: "NOT CLEAR"}})
+		}
+		if inputx.Nclear_psgdtl == "SLSRPT" || inputx.Nclear_psgdtl == "" {
+			mtchor = append(mtchor, bson.D{{Key: "slsrpt", Value: "NOT CLEAR"}})
+		}
+		csvFilenm = append(csvFilenm, inputx.Nclear_psgdtl)
+		mtchdt = append(mtchdt, bson.D{{Key: "$or", Value: mtchor}})
+	}
+
+	// Final match pipeline
+	var mtchfn bson.D
+	if len(mtchdt) != 0 {
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{{Key: "$and", Value: mtchdt}}}}
+	} else {
+		fmt.Println("mtchblnk")
+		mtchfn = bson.D{{Key: "$match", Value: bson.D{}}}
+	}
 
 	// Set header untuk file CSV
 	fnlFilenm := strings.Join(csvFilenm, "_")

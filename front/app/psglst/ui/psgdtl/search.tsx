@@ -82,12 +82,31 @@ export default function UixPsglstDetailSearch({
 
   // Download csv summary pnr
   const [dwnrsp, dwnrspSet] = useState("Download");
-  const dwnapi = async () => {
-    dwnrspSet("Wait");
-    const rspdwn = await ApiPsglstPnrsmrDownld(params);
-    rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
-    setTimeout(() => dwnrspSet("Download"), 500);
-  };
+  // const dwnapi = async () => {
+  //   dwnrspSet("Wait");
+  //   const rspdwn = await ApiPsglstPnrsmrDownld(params);
+  //   rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
+  //   setTimeout(() => dwnrspSet("Download"), 500);
+  // };
+
+  // const dwnapi = (params: MdlPsglstPsgdtlSearch) => {
+  //   const test = `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`
+  //   console.log(test);
+
+  //   return (
+  //     <form
+  //       method="POST"
+  //       action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}
+  //     >
+  //       <input
+  //         type="hidden"
+  //         name="data"
+  //         value={JSON.stringify(params)}
+  //       />
+  //       <button type="submit">Download CSV</button>
+  //     </form>
+  //   );
+  // }
 
   // Reset function
   const resetx = () => {
@@ -246,11 +265,14 @@ export default function UixPsglstDetailSearch({
         />
       </div>
       <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <div className="afull p-1.5">
-          <div className="afull btnsbm flexctr" onClick={() => dwnapi()}>
+        <form className="afull p-1.5"
+          method="POST"
+          action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}>
+          <input type="hidden" name="data" value={JSON.stringify(params)} />
+          <button type="submit" className="afull btnsbm flexctr">
             {dwnrsp}
-          </div>
-        </div>
+          </button>
+        </form>
       </div>
       <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
         <div className="afull p-1.5">

@@ -65,7 +65,7 @@ func main() {
 	// Handle web link API Passangger list
 	r.POST("/psglst/prcess", fncPsglst.FncPsglstPrcessMainpg)
 	r.POST("/psglst/psgdtl/getall", fncPsglst.FncPsglstPsgdtlGetall)
-	r.POST("/psglst/psgdtl/getall/:downld", fncPsglst.FncPsglstPsgdtlGetall)
+	r.POST("/psglst/psgdtl/getall/downld", fncPsglst.FncPsglstPsgdtlDownld)
 	r.POST("/psglst/errlog/getall", fncPsglst.FncPsglstErrlogGetall)
 	r.GET("/psglst/actlog/getall", fncPsglst.FncPsglstActlogGetall)
 	r.GET("/psglst/acpedt/getall", fncPsglst.FncPsglstPsgdtlAcpedt)
