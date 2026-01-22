@@ -190,7 +190,9 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 				regDescae := regexp.MustCompile(`\d+K|\d+ K`)
 				rslDescae := regDescae.FindAllString(elm.CommercialName, -1)
 				if len(rslDescae) > 0 {
-					rawPaidbt := rslDescae[0][:len(rslDescae[0])-1]
+					regDescae := regexp.MustCompile(`\d+`)
+					rslDescae := regDescae.FindAllString(elm.CommercialName, -1)
+					rawPaidbt := rslDescae[0]
 					intPaidbt, _ := strconv.Atoi(rawPaidbt)
 					nowPaidbt = intPaidbt
 				}
