@@ -390,6 +390,8 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		totSmmary.Totnta += psglst.Ntafvc
 		totSmmary.Tottyq += psglst.Yqtxvc
 		totSmmary.Totpax += 1
+		totSmmary.Totfae += psglst.Fareae
+		totSmmary.Totqfr += psglst.Qsrcvc
 
 		// Push final to database
 		mgoPsgdtl = append(mgoPsgdtl, mongo.NewUpdateOneModel().

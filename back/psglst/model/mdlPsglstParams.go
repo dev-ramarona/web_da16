@@ -12,6 +12,8 @@ type MdlPsglstPsgsmrDtbase struct {
 	Totnta float64 `json:"totnta,omitempty" bson:"totnta,omitempty"`
 	Tottyq float64 `json:"tottyq,omitempty" bson:"tottyq,omitempty"`
 	Totpax int64   `json:"totpax,omitempty" bson:"totpax,omitempty"`
+	Totfae float64 `json:"totfae,omitempty" bson:"totfae,omitempty"`
+	Totqfr float64 `json:"Totqfr,omitempty" bson:"Totqfr,omitempty"`
 }
 
 type MdlPsglstFlnbflDtbase struct {
