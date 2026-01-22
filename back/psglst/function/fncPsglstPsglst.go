@@ -115,275 +115,289 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	mgoFlhour, mgoMilege := []mongo.WriteModel{}, []mongo.WriteModel{}
 	mgoPsgdtl, mgoPsgsmr := []mongo.WriteModel{}, []mongo.WriteModel{}
 	totClrpsg := 0
+	fnlPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
+	mapGroupc := map[string]int{}
 	sycClrpsg.Range(func(key, val any) bool {
 		if mtcPsglst, mtc := val.(mdlPsglst.MdlPsglstPsgdtlDtbase); mtc {
-
-			// Manage route
-			fnlRoutac := mtcPsglst.Routfl
-			for _, routll := range []string{mtcPsglst.Routvc, mtcPsglst.Routfr} {
-				if len(routll) >= 7 {
-					slcRoutmx := strings.Split(mtcPsglst.Routmx, "-")
-					slcRoutac := []string{}
-					varDeprfl, varDeprvc := mtcPsglst.Depart, ""
-					varArvlfl, varArvlvc := mtcPsglst.Arrivl, ""
-					if mtcPsglst.Isitfl == "F" && len(routll) >= 7 {
-						varDeprvc = routll[:3]
-						varArvlvc = routll[4:]
-					}
-					for _, dstrct := range slcRoutmx {
-						if varDeprfl == dstrct || varDeprvc == dstrct || len(slcRoutac) != 0 {
-							slcRoutac = append(slcRoutac, dstrct)
-						}
-						if dstrct == varArvlfl || dstrct == varArvlvc {
-							break
-						}
-					}
-					if len(fnlRoutac) >= len(strings.Join(slcRoutac, "-")) {
-						continue
-					}
-					fnlRoutac = strings.Join(slcRoutac, "-")
-					mtcPsglst.Routac = strings.Join(slcRoutac, "-")
-				}
-
-				// Get route actual
-				slcRoutac := strings.Split(fnlRoutac, "-")
-				if slcPstion := slices.Index(slcRoutac, mtcPsglst.Depart); slcPstion != -1 {
-					if slcPstion+1 < len(slcRoutac) {
-						mtcPsglst.Routfl = strings.Join(slcRoutac[slcPstion:slcPstion+2], "-")
-					}
-				}
-				if mtcPsglst.Routfl == "" {
-					mtcPsglst.Routfl = mtcPsglst.Depart + "-" + mtcPsglst.Arrivl
-				}
+			if mtcPsglst.Groupc != "" {
+				mapGroupc[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
 			}
-
-			// Get rout from fare calc and segment
-			slcRoutfr, cekRoutfr, lstRoutsg := []string{}, false, ""
-			if len(mtcPsglst.Routfr) >= 7 {
-				regRoutfr := regexp.MustCompile(fmt.Sprintf("%s.+%s", mtcPsglst.Routfr[:3],
-					mtcPsglst.Routfr[4:]))
-				if res := regRoutfr.MatchString(mtcPsglst.Routsg); res {
-
-					// Combine route
-					slcRoutmx := strings.Split(mtcPsglst.Routmx, "-")
-					nowRoutmx := slcRoutmx[0] + "-" + slcRoutmx[len(slcRoutmx)-1]
-					segFullrt := mtcPsglst.Routsg
-					if strings.Contains(mtcPsglst.Routsg, nowRoutmx) {
-						segFullrt = strings.Replace(mtcPsglst.Routsg, nowRoutmx, mtcPsglst.Routmx, 1)
-					}
-
-					// Looping full rout max
-					for _, routsg := range strings.Split(segFullrt, "-") {
-						if strings.Contains(mtcPsglst.Routfx, lstRoutsg+"-"+routsg) {
-							if len(slcRoutfr) > 0 && slcRoutfr[len(slcRoutfr)-1] == lstRoutsg {
-								slcRoutfr = slcRoutfr[:len(slcRoutfr)-1]
-								continue
-							}
-						}
-						if lstRoutsg+"-"+routsg == mtcPsglst.Routfr {
-							slcRoutfr = []string{lstRoutsg, routsg}
-							break
-						}
-						if mtcPsglst.Routfr[4:] == routsg && len(slcRoutfr) > 0 {
-							cekRoutfr = true
-							slcRoutfr = append(slcRoutfr, routsg)
-							break
-						}
-						lstRoutsg = routsg
-						if mtcPsglst.Routfr[:3] == routsg || len(slcRoutfr) > 0 {
-							slcRoutfr = append(slcRoutfr, routsg)
-						}
-					}
-
-					// Last push route actual from route fare
-					if cekRoutfr && len(slcRoutfr) >= 2 {
-						strRoutfr := strings.Join(slcRoutfr, "-")
-						if len(strRoutfr) > len(fnlRoutac) {
-							mtcPsglst.Routac = strRoutfr
-							fnlRoutac = strRoutfr
-						}
-					}
-				}
-			}
-
-			// Get flown farebase
-			mapRoutfb := map[string]string{"routfl": mtcPsglst.Airlfl + mtcPsglst.Routfl}
-			if mtcPsglst.Ntafvc == 0 && (mtcPsglst.Isitnr == "" || mtcPsglst.Frbcde == "HB") {
-				nowRoutvc := mtcPsglst.Routvc
-				if mtcPsglst.Routvc == "" {
-					nowRoutvc = mtcPsglst.Depart + "-" + mtcPsglst.Arrivl
-				}
-				if slices.Contains([]string{"JT", "ID", "IW", "IU", "OD", "SL"}, mtcPsglst.Airlvc) {
-					mapRoutfb["routvc"] = mtcPsglst.Airlvc + nowRoutvc
-				} else {
-					mapRoutfb["routvc"] = mtcPsglst.Airlfl + nowRoutvc
-				}
-			}
-			for key, val := range mapRoutfb {
-				for nky, nvl := range map[string]string{
-					"FRBCDE": val + mtcPsglst.Frbcde,
-					"CLSSFL": val + mtcPsglst.Clssfl} {
-					if len(val) < 7 || (key == "routfl" && nky == "FRBCDE") {
-						continue
-					}
-
-					// Reuse func frbase
-					fncFrbase := func() bool {
-						tmpFrbcde := []string{nvl}
-						if nky == "FRBCDE" && strings.Contains(nvl, "RT") && len(nvl) >= 9 {
-							tmpRoutnw := nvl[2:9]
-							newRoutnw := tmpRoutnw[4:] + "-" + tmpRoutnw[:3]
-							tmpFrbcde = append(tmpFrbcde, strings.ReplaceAll(nvl, tmpRoutnw, newRoutnw))
-						}
-						for _, nowFrbcde := range tmpFrbcde {
-							istFrbase, ist := sycFrbase.Load(nowFrbcde)
-							if mtcFrbase, mtc := istFrbase.(mdlPsglst.MdlPsglstFrbaseDtbase); mtc && ist {
-								mtcPsglst.Ntaffl = mtcFrbase.Frbnta
-								if key == "routfl" {
-									mtcPsglst.Ntaffl = mtcFrbase.Frbnta
-								} else {
-									mtcPsglst.Ntafvc = float64(mtcFrbase.Frbnta)
-									mtcPsglst.Isittf = nky
-								}
-								return true
-							}
-						}
-						return false
-					}
-
-					// Hit API Sabre if null data
-					if rspfnc := fncFrbase(); rspfnc {
-						break
-					} else {
-						objParams := mdlSbrapi.MdlSbrapiMsghdrApndix{
-							Airlfl: mtcPsglst.Airlfl, Depart: val[:3], Arrivl: val[4:], Routfl: val}
-
-						// Check indicator before hit API
-						if _, ist := idcFrbase.Load(val); !ist {
-							nowmgo, err := fncSbrapi.FncSbrapiFrbaseMainob(nowObjtkn, objParams, sycFrbase, mapClslvl)
-							if err == nil {
-								mgoFrbase = append(mgoFrbase, nowmgo...)
-								idcFrbase.Store(val, true)
-							}
-						}
-
-						// Get flown farebase
-						if rspfnc := fncFrbase(); rspfnc {
-							break
-						}
-					}
-				}
-			}
-
-			// Get all taxes
-			mapRouttx := map[string]string{"routfl": mtcPsglst.Airlfl + mtcPsglst.Routfl + mtcPsglst.Cbinfl}
-			if mtcPsglst.Isitnr != "CREW" {
-				mapRouttx["routvc"] = mtcPsglst.Airlfl + mtcPsglst.Routvc + mtcPsglst.Cbinvc
-			}
-			for key, val := range mapRouttx {
-				if len(val) < 7 {
-					continue
-				}
-
-				// Reuse func frtaxs
-				fncFrtaxs := func() bool {
-					istFrtaxs, ist := sycFrtaxs.Load(val)
-					if mtcFrtaxs, mtc := istFrtaxs.(mdlPsglst.MdlPsglstFrtaxsDtbase); mtc && ist {
-						if key == "routfl" {
-							mtcPsglst.Yqtxfl = mtcFrtaxs.Ftfuel
-						} else {
-							mtcPsglst.Yqtxvc = float64(mtcFrtaxs.Ftfuel)
-						}
-					}
-					return ist
-				}
-
-				// Hit API Sabre if null data
-				if rspfnc := fncFrtaxs(); !rspfnc && len(val) == 10 {
-					slcClscbn := []string{"Y", "C"}
-					tmpPrmkey := val[:9]
-					for _, clscbn := range slcClscbn {
-						nowPrmkey := tmpPrmkey + clscbn
-						objParams := mdlSbrapi.MdlSbrapiMsghdrApndix{Airlfl: mtcPsglst.Airlfl,
-							Depart: val[:3], Arrivl: val[4:], Routfl: val}
-
-						// Check indicator before hit API
-						if _, ist := idcFrtaxs.Load(nowPrmkey); !ist {
-							nowmgo, err := fncSbrapi.FncSbrapiFrtaxsMainob(nowObjtkn, objParams, sycFrtaxs, clscbn)
-							if err == nil {
-								mgoFrtaxs = append(mgoFrtaxs, nowmgo...)
-								idcFrtaxs.Store(nowPrmkey, true)
-							}
-						}
-					}
-
-					// Get all farebase
-					fncFrtaxs()
-				}
-			}
-
-			// Get final price
-			if fnlRoutac == "" {
-				fnlRoutac = mtcPsglst.Depart + "-" + mtcPsglst.Arrivl
-			}
-			slcRoutac, totMilege, nowMilege := strings.Split(fnlRoutac, "-"), float64(0), float64(0)
-			for i := 0; i < len(slcRoutac)-1; i++ {
-
-				// Reuse func milege
-				fncMilege := func(nowRoutac string) bool {
-					istMilege, ist := sycMilege.Load(nowRoutac)
-					if mtcMilege, mtc := istMilege.(mdlPsglst.MdlPsglstMilegeDtbase); mtc && ist {
-						if slcRoutac[i] == mtcPsglst.Depart {
-							nowMilege = float64(mtcMilege.Milege)
-						}
-						totMilege += float64(mtcMilege.Milege)
-					}
-					return ist
-				}
-
-				// Route milege hit API Sabre if null data
-				nowRoutac := slcRoutac[i] + "-" + slcRoutac[i+1]
-				if rspfnc := fncMilege(nowRoutac); !rspfnc {
-					rspMilege, err := fncSbrapi.FncSbrapiMilegeMainob(nowObjtkn, fnlRoutac)
-					if err == nil {
-						for _, milege := range rspMilege {
-							if _, ist := sycMilege.Load(milege.Routfl); !ist {
-								sycMilege.Store(milege.Routfl, milege)
-								mgoMilege = append(mgoMilege, mongo.NewUpdateOneModel().
-									SetFilter(bson.M{"routfl": milege.Routfl}).
-									SetUpdate(bson.M{"$set": milege}).SetUpsert(true))
-							}
-						}
-						fncMilege(nowRoutac)
-					}
-				}
-			}
-
-			// Final rate and price adjustment
-			mtcPsglst.Frrate = nowMilege / totMilege
-			valChrter := float64(1)
-			if mtcPsglst.Isitct == "CT" {
-				valChrter = 0
-			}
-			mtcPsglst.Ntaffl = int32(float64(mtcPsglst.Ntaffl) * valChrter)
-			mtcPsglst.Yqtxfl = int32(float64(mtcPsglst.Yqtxfl) * valChrter)
-			mtcPsglst.Ntafvc = float64(mtcPsglst.Ntafvc) * mtcPsglst.Frrate * valChrter
-			mtcPsglst.Yqtxvc = float64(mtcPsglst.Yqtxvc) * mtcPsglst.Frrate * valChrter
-
-			// Push summary
-			totSmmary.Totnta += mtcPsglst.Ntafvc
-			totSmmary.Tottyq += mtcPsglst.Yqtxvc
-			totSmmary.Totpax += 1
-
-			// Push final to database
-			mgoPsgdtl = append(mgoPsgdtl, mongo.NewUpdateOneModel().
-				SetFilter(bson.M{"prmkey": mtcPsglst.Prmkey}).
-				SetUpdate(bson.M{"$set": mtcPsglst}).
-				SetUpsert(true))
-			totClrpsg++
+			fnlPsglst = append(fnlPsglst, mtcPsglst)
 		}
 		return true
 	})
+
+	// Looping again final
+	for _, psglst := range fnlPsglst {
+		if val, ist := mapGroupc[psglst.Groupc]; ist {
+			psglst.Ptotbt = int32(val)
+		}
+
+		// Manage route
+		fnlRoutac := psglst.Routfl
+		for _, routll := range []string{psglst.Routvc, psglst.Routfr} {
+			if len(routll) >= 7 {
+				slcRoutmx := strings.Split(psglst.Routmx, "-")
+				slcRoutac := []string{}
+				varDeprfl, varDeprvc := psglst.Depart, ""
+				varArvlfl, varArvlvc := psglst.Arrivl, ""
+				if psglst.Isitfl == "F" && len(routll) >= 7 {
+					varDeprvc = routll[:3]
+					varArvlvc = routll[4:]
+				}
+				for _, dstrct := range slcRoutmx {
+					if varDeprfl == dstrct || varDeprvc == dstrct || len(slcRoutac) != 0 {
+						slcRoutac = append(slcRoutac, dstrct)
+					}
+					if dstrct == varArvlfl || dstrct == varArvlvc {
+						break
+					}
+				}
+				if len(fnlRoutac) >= len(strings.Join(slcRoutac, "-")) {
+					continue
+				}
+				fnlRoutac = strings.Join(slcRoutac, "-")
+				psglst.Routac = strings.Join(slcRoutac, "-")
+			}
+
+			// Get route actual
+			slcRoutac := strings.Split(fnlRoutac, "-")
+			if slcPstion := slices.Index(slcRoutac, psglst.Depart); slcPstion != -1 {
+				if slcPstion+1 < len(slcRoutac) {
+					psglst.Routfl = strings.Join(slcRoutac[slcPstion:slcPstion+2], "-")
+				}
+			}
+			if psglst.Routfl == "" {
+				psglst.Routfl = psglst.Depart + "-" + psglst.Arrivl
+			}
+		}
+
+		// Get rout from fare calc and segment
+		slcRoutfr, cekRoutfr, lstRoutsg := []string{}, false, ""
+		if len(psglst.Routfr) >= 7 {
+			regRoutfr := regexp.MustCompile(fmt.Sprintf("%s.+%s", psglst.Routfr[:3],
+				psglst.Routfr[4:]))
+			if res := regRoutfr.MatchString(psglst.Routsg); res {
+
+				// Combine route
+				slcRoutmx := strings.Split(psglst.Routmx, "-")
+				nowRoutmx := slcRoutmx[0] + "-" + slcRoutmx[len(slcRoutmx)-1]
+				segFullrt := psglst.Routsg
+				if strings.Contains(psglst.Routsg, nowRoutmx) {
+					segFullrt = strings.Replace(psglst.Routsg, nowRoutmx, psglst.Routmx, 1)
+				}
+
+				// Looping full rout max
+				for _, routsg := range strings.Split(segFullrt, "-") {
+					if strings.Contains(psglst.Routfx, lstRoutsg+"-"+routsg) {
+						if len(slcRoutfr) > 0 && slcRoutfr[len(slcRoutfr)-1] == lstRoutsg {
+							slcRoutfr = slcRoutfr[:len(slcRoutfr)-1]
+							continue
+						}
+					}
+					if lstRoutsg+"-"+routsg == psglst.Routfr {
+						slcRoutfr = []string{lstRoutsg, routsg}
+						break
+					}
+					if psglst.Routfr[4:] == routsg && len(slcRoutfr) > 0 {
+						cekRoutfr = true
+						slcRoutfr = append(slcRoutfr, routsg)
+						break
+					}
+					lstRoutsg = routsg
+					if psglst.Routfr[:3] == routsg || len(slcRoutfr) > 0 {
+						slcRoutfr = append(slcRoutfr, routsg)
+					}
+				}
+
+				// Last push route actual from route fare
+				if cekRoutfr && len(slcRoutfr) >= 2 {
+					strRoutfr := strings.Join(slcRoutfr, "-")
+					if len(strRoutfr) > len(fnlRoutac) {
+						psglst.Routac = strRoutfr
+						fnlRoutac = strRoutfr
+					}
+				}
+			}
+		}
+
+		// Get flown farebase
+		mapRoutfb := map[string]string{"routfl": psglst.Airlfl + psglst.Routfl}
+		if psglst.Ntafvc == 0 && (psglst.Isitnr == "" || psglst.Frbcde == "HB") {
+			nowRoutvc := psglst.Routvc
+			if psglst.Routvc == "" {
+				nowRoutvc = psglst.Depart + "-" + psglst.Arrivl
+			}
+			if slices.Contains([]string{"JT", "ID", "IW", "IU", "OD", "SL"}, psglst.Airlvc) {
+				mapRoutfb["routvc"] = psglst.Airlvc + nowRoutvc
+			} else {
+				mapRoutfb["routvc"] = psglst.Airlfl + nowRoutvc
+			}
+		}
+		for key, val := range mapRoutfb {
+			for nky, nvl := range map[string]string{
+				"FRBCDE": val + psglst.Frbcde,
+				"CLSSFL": val + psglst.Clssfl} {
+				if len(val) < 7 || (key == "routfl" && nky == "FRBCDE") {
+					continue
+				}
+
+				// Reuse func frbase
+				fncFrbase := func() bool {
+					tmpFrbcde := []string{nvl}
+					if nky == "FRBCDE" && strings.Contains(nvl, "RT") && len(nvl) >= 9 {
+						tmpRoutnw := nvl[2:9]
+						newRoutnw := tmpRoutnw[4:] + "-" + tmpRoutnw[:3]
+						tmpFrbcde = append(tmpFrbcde, strings.ReplaceAll(nvl, tmpRoutnw, newRoutnw))
+					}
+					for _, nowFrbcde := range tmpFrbcde {
+						istFrbase, ist := sycFrbase.Load(nowFrbcde)
+						if mtcFrbase, mtc := istFrbase.(mdlPsglst.MdlPsglstFrbaseDtbase); mtc && ist {
+							psglst.Ntaffl = mtcFrbase.Frbnta
+							if key == "routfl" {
+								psglst.Ntaffl = mtcFrbase.Frbnta
+							} else {
+								psglst.Ntafvc = float64(mtcFrbase.Frbnta)
+								psglst.Isittf = nky
+							}
+							return true
+						}
+					}
+					return false
+				}
+
+				// Hit API Sabre if null data
+				if rspfnc := fncFrbase(); rspfnc {
+					break
+				} else {
+					objParams := mdlSbrapi.MdlSbrapiMsghdrApndix{
+						Airlfl: psglst.Airlfl, Depart: val[:3], Arrivl: val[4:], Routfl: val}
+
+					// Check indicator before hit API
+					if _, ist := idcFrbase.Load(val); !ist {
+						nowmgo, err := fncSbrapi.FncSbrapiFrbaseMainob(nowObjtkn, objParams, sycFrbase, mapClslvl)
+						if err == nil {
+							mgoFrbase = append(mgoFrbase, nowmgo...)
+							idcFrbase.Store(val, true)
+						}
+					}
+
+					// Get flown farebase
+					if rspfnc := fncFrbase(); rspfnc {
+						break
+					}
+				}
+			}
+		}
+
+		// Get all taxes
+		mapRouttx := map[string]string{"routfl": psglst.Airlfl + psglst.Routfl + psglst.Cbinfl}
+		if psglst.Isitnr != "CREW" {
+			mapRouttx["routvc"] = psglst.Airlfl + psglst.Routvc + psglst.Cbinvc
+		}
+		for key, val := range mapRouttx {
+			if len(val) < 7 {
+				continue
+			}
+
+			// Reuse func frtaxs
+			fncFrtaxs := func() bool {
+				istFrtaxs, ist := sycFrtaxs.Load(val)
+				if mtcFrtaxs, mtc := istFrtaxs.(mdlPsglst.MdlPsglstFrtaxsDtbase); mtc && ist {
+					if key == "routfl" {
+						psglst.Yqtxfl = mtcFrtaxs.Ftfuel
+					} else {
+						psglst.Yqtxvc = float64(mtcFrtaxs.Ftfuel)
+					}
+				}
+				return ist
+			}
+
+			// Hit API Sabre if null data
+			if rspfnc := fncFrtaxs(); !rspfnc && len(val) == 10 {
+				slcClscbn := []string{"Y", "C"}
+				tmpPrmkey := val[:9]
+				for _, clscbn := range slcClscbn {
+					nowPrmkey := tmpPrmkey + clscbn
+					objParams := mdlSbrapi.MdlSbrapiMsghdrApndix{Airlfl: psglst.Airlfl,
+						Depart: val[:3], Arrivl: val[4:], Routfl: val}
+
+					// Check indicator before hit API
+					if _, ist := idcFrtaxs.Load(nowPrmkey); !ist {
+						nowmgo, err := fncSbrapi.FncSbrapiFrtaxsMainob(nowObjtkn, objParams, sycFrtaxs, clscbn)
+						if err == nil {
+							mgoFrtaxs = append(mgoFrtaxs, nowmgo...)
+							idcFrtaxs.Store(nowPrmkey, true)
+						}
+					}
+				}
+
+				// Get all farebase
+				fncFrtaxs()
+			}
+		}
+
+		// Get final price
+		if fnlRoutac == "" {
+			fnlRoutac = psglst.Depart + "-" + psglst.Arrivl
+		}
+		slcRoutac, totMilege, nowMilege := strings.Split(fnlRoutac, "-"), float64(0), float64(0)
+		for i := 0; i < len(slcRoutac)-1; i++ {
+
+			// Reuse func milege
+			fncMilege := func(nowRoutac string) bool {
+				istMilege, ist := sycMilege.Load(nowRoutac)
+				if mtcMilege, mtc := istMilege.(mdlPsglst.MdlPsglstMilegeDtbase); mtc && ist {
+					if slcRoutac[i] == psglst.Depart {
+						nowMilege = float64(mtcMilege.Milege)
+					}
+					totMilege += float64(mtcMilege.Milege)
+				}
+				return ist
+			}
+
+			// Route milege hit API Sabre if null data
+			nowRoutac := slcRoutac[i] + "-" + slcRoutac[i+1]
+			if rspfnc := fncMilege(nowRoutac); !rspfnc {
+				rspMilege, err := fncSbrapi.FncSbrapiMilegeMainob(nowObjtkn, fnlRoutac)
+				if err == nil {
+					for _, milege := range rspMilege {
+						if _, ist := sycMilege.Load(milege.Routfl); !ist {
+							sycMilege.Store(milege.Routfl, milege)
+							mgoMilege = append(mgoMilege, mongo.NewUpdateOneModel().
+								SetFilter(bson.M{"routfl": milege.Routfl}).
+								SetUpdate(bson.M{"$set": milege}).SetUpsert(true))
+						}
+					}
+					fncMilege(nowRoutac)
+				}
+			}
+		}
+
+		// Final rate and price adjustment
+		psglst.Frrate = nowMilege / totMilege
+		valChrter := float64(1)
+		if psglst.Isitct == "CT" {
+			valChrter = 0
+		}
+		psglst.Ntaffl = int32(float64(psglst.Ntaffl) * valChrter)
+		psglst.Yqtxfl = int32(float64(psglst.Yqtxfl) * valChrter)
+		psglst.Ntafvc = psglst.Ntafvc * psglst.Frrate * valChrter
+		psglst.Yqtxvc = psglst.Yqtxvc * psglst.Frrate * valChrter
+		psglst.Fareae = psglst.Fareae * psglst.Frrate * valChrter
+
+		// Push summary
+		totSmmary.Totnta += psglst.Ntafvc
+		totSmmary.Tottyq += psglst.Yqtxvc
+		totSmmary.Totpax += 1
+
+		// Push final to database
+		mgoPsgdtl = append(mgoPsgdtl, mongo.NewUpdateOneModel().
+			SetFilter(bson.M{"prmkey": psglst.Prmkey}).
+			SetUpdate(bson.M{"$set": psglst}).
+			SetUpsert(true))
+		totClrpsg++
+	}
 
 	// Cek different data
 	FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{

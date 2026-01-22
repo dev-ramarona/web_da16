@@ -61,6 +61,7 @@ export interface MdlPsglstPsgdtlFrntnd {
   arrivl: string;
   routfl: string;
   routvc: string;
+  routvf: string;
   routac: string;
   routmx: string;
   routfr: string;
@@ -71,8 +72,17 @@ export interface MdlPsglstPsgdtlFrntnd {
   typepx: string;
   seatpx: string;
   groupc: string;
-  segmnt: string;
+  totpax: number;
+  segpnr: string;
+  segtkt: string;
   psgrid: string;
+  tourcd: string;
+  staloc: string;
+  stanbr: string;
+  wrkloc: string;
+  hmeloc: string;
+  lniata: string;
+  emplid: string;
   nmefst: string;
   nmelst: string;
   cpnbfl: number;
@@ -83,7 +93,6 @@ export interface MdlPsglstPsgdtlFrntnd {
   cbinfl: string;
   cbinvc: string;
   agtdie: string;
-  agtdcr: string;
   codels: string;
   isitfl: string;
   isittx: string;
@@ -109,6 +118,11 @@ export interface MdlPsglstPsgdtlFrntnd {
   nmbrbt: string;
   qntybt: string;
   wghtbt: number;
+  vfbabt: string;
+  hfbabt: number;
+  qtotbt: number;
+  wtotbt: number;
+  excsbt: number;
   typebt: string;
   coment: string;
 

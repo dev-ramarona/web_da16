@@ -54,10 +54,11 @@ type MdlSbrapiRsvpnrRspget struct {
 	Reservation MdlSbrapiRsvpnrRsprsv `xml:"Reservation"`
 }
 type MdlSbrapiRsvpnrRsprsv struct {
-	BookingDetails       MdlSbrapiRsvpnrRspbok `xml:"BookingDetails"`
-	PassengerReservation MdlSbrapiRsvpnrRsppsg `xml:"PassengerReservation"`
-	Remarks              MdlSbrapiRsvpnrRsprmk `xml:"Remarks>Remark"`
-	POS                  MdlSbrapiRsvpnrRsppos `xml:"POS"`
+	BookingDetails          MdlSbrapiRsvpnrRspbok   `xml:"BookingDetails"`
+	PassengerReservation    MdlSbrapiRsvpnrRsppsg   `xml:"PassengerReservation"`
+	Remarks                 MdlSbrapiRsvpnrRsprmk   `xml:"Remarks>Remark"`
+	POS                     MdlSbrapiRsvpnrRsppos   `xml:"POS"`
+	OpenReservationElements []MdlSbrapiRsvpnrRspore `xml:"OpenReservationElements>OpenReservationElement>AncillaryProduct>XmlData>AncillaryServiceData"`
 }
 
 // Booking details (Details)
@@ -145,9 +146,9 @@ type MdlSbrapiRsvpnrRsptkd struct {
 
 // TPRICING_INFORMATION
 type MdlSbrapiRsvpnrRspitp struct {
-	PricedItinerary []MdlSbrapiRsvpnrRspti `xml:"PricedItinerary>AirItineraryPricingInfo"`
+	PricedItinerary []MdlSbrapiRsvpnrRsptir `xml:"PricedItinerary>AirItineraryPricingInfo"`
 }
-type MdlSbrapiRsvpnrRspti struct {
+type MdlSbrapiRsvpnrRsptir struct {
 	ItinTotalFare     MdlSbrapiRsvpnrRspitf `xml:"ItinTotalFare>Base"`
 	PTC_FareBreakdown MdlSbrapiRsvpnrRspptc `xml:"PTC_FareBreakdown"`
 }
@@ -178,3 +179,42 @@ type MdlSbrapiRsvpnrRspfls struct {
 	OperatingAirline  string `xml:"OperatingAirline"`
 	FareBasisCode     string `xml:"FareBasisCode"`
 }
+
+// ANCILLARY
+type MdlSbrapiRsvpnrRspore struct {
+	NameAssociationList    MdlSbrapiRsvpnrRspnal   `xml:"NameAssociationList>NameAssociationTag"`
+	SegmentAssociationList []MdlSbrapiRsvpnrRspsal `xml:"SegmentAssociationList>SegmentAssociationTag"`
+	CommercialName         string                  `xml:"CommercialName"`
+	RficCode               string                  `xml:"RficCode"`
+	RficSubcode            string                  `xml:"RficSubcode"`
+	EMDNumber              string                  `xml:"EMDNumber"`
+	OriginalBasePrice      MdlSbrapiRsvpnrRspobp   `xml:"OriginalBasePrice"`
+	// BagWeight              MdlSbrapiRsvpnrRspbgw   `xml:"BagWeight"`
+	NumberOfItems     int    `xml:"NumberOfItems"`
+	ActionCode        string `xml:"ActionCode"`
+	PurchaseTimestamp string `xml:"PurchaseTimestamp"`
+	GroupCode         string `xml:"GroupCode"`
+}
+type MdlSbrapiRsvpnrRspnal struct {
+	LastName    string `xml:"LastName"`
+	FirstName   string `xml:"FirstName"`
+	ReferenceId string `xml:"ReferenceId"`
+}
+type MdlSbrapiRsvpnrRspsal struct {
+	CarrierCode    string `xml:"CarrierCode"`
+	FlightNumber   string `xml:"FlightNumber"`
+	DepartureDate  string `xml:"DepartureDate"`
+	BoardPoint     string `xml:"BoardPoint"`
+	OffPoint       string `xml:"OffPoint"`
+	ClassOfService string `xml:"ClassOfService"`
+	BookingStatus  string `xml:"BookingStatus"`
+}
+type MdlSbrapiRsvpnrRspobp struct {
+	Price    float64 `xml:"Price"`
+	Currency string  `xml:"Currency"`
+}
+
+// type MdlSbrapiRsvpnrRspbgw struct {
+// 	Unit  string `xml:"Unit,attr"`
+// 	Value int    `xml:",chardata"`
+// }

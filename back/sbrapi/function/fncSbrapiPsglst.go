@@ -54,7 +54,7 @@ func FncSbrapiPsglstMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 				},
 				DisplayCodeRequest: mdlSbrapi.MdlSbrapiPsglstReqdcr{
 					Condition: "OR",
-					DisplayCodes: []string{"CM", "BT", "AE", "ET", "OB", "IB",
+					DisplayCodes: []string{"CM", "BT", "ET", "OB", "IB",
 						"ON", "SS", "IR", "IFET", "XT", "DOCS"},
 				},
 			},
@@ -168,34 +168,34 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 			objPsglst.Totpax = int32(intTotpax)
 		}
 
-		// Ancillary
-		func() {
+		// // Ancillary
+		// func() {
 
-			// Ancillary get price
-			nowPrcdtl := psglst.AEDetailsList.PriceDetails
-			nowAetotp := 0
-			for _, curncy := range []mdlSbrapi.MdlSbrapiPsglstRspprc{
-				nowPrcdtl.BasePrice, nowPrcdtl.EquivalentPrice, nowPrcdtl.TotalPrice} {
-				if curncy.CurrencyCode == "IDR" {
-					nowAetotp = int(curncy.Value)
-					break
-				}
-			}
-			if nowAetotp == 0 {
-				if val, ist := mapcur[nowPrcdtl.TotalPrice.CurrencyCode]; ist {
-					nowAetotp = int(val.Crrate * nowPrcdtl.TotalPrice.Value)
-				}
-			}
+		// 	// Ancillary get price
+		// 	nowPrcdtl := psglst.AEDetailsList.PriceDetails
+		// 	nowAetotp := 0
+		// 	for _, curncy := range []mdlSbrapi.MdlSbrapiPsglstRspprc{
+		// 		nowPrcdtl.BasePrice, nowPrcdtl.EquivalentPrice, nowPrcdtl.TotalPrice} {
+		// 		if curncy.CurrencyCode == "IDR" {
+		// 			nowAetotp = int(curncy.Value)
+		// 			break
+		// 		}
+		// 	}
+		// 	if nowAetotp == 0 {
+		// 		if val, ist := mapcur[nowPrcdtl.TotalPrice.CurrencyCode]; ist {
+		// 			nowAetotp = int(val.Crrate * nowPrcdtl.TotalPrice.Value)
+		// 		}
+		// 	}
 
-			// Ancillary store final
-			objPsglst.Aeitid = psglst.AEDetailsList.ItemID
-			objPsglst.Aegrcd = psglst.AEDetailsList.ATPCOGroupCode
-			objPsglst.Aesbcd = psglst.AEDetailsList.ATPCOSubCode
-			objPsglst.Aedesc = psglst.AEDetailsList.Description
-			objPsglst.Aeqtus = psglst.AEDetailsList.QuantityUsed
-			objPsglst.Aeqtbg = psglst.AEDetailsList.QuantityBought
-			objPsglst.Aetotp = int32(nowAetotp)
-		}()
+		// 	// Ancillary store final
+		// 	objPsglst.Aeitid = psglst.AEDetailsList.ItemID
+		// 	objPsglst.Aegrcd = psglst.AEDetailsList.ATPCOGroupCode
+		// 	objPsglst.Aesbcd = psglst.AEDetailsList.ATPCOSubCode
+		// 	objPsglst.Aedesc = psglst.AEDetailsList.Description
+		// 	objPsglst.Aeqtus = psglst.AEDetailsList.QuantityUsed
+		// 	objPsglst.Aeqtbg = psglst.AEDetailsList.QuantityBought
+		// 	objPsglst.Aetotp = int32(nowAetotp)
+		// }()
 
 		// Get all code list
 		objPsglst.Codels = strings.Join(psglst.EditCodeList, "|")
@@ -278,13 +278,13 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 					objPsglst.Typebt = partsl[3]
 				}
 
-			// Ancillary
-			case "AE":
-				emdRegexp := regexp.MustCompile(`EMD-?(\d{13})`)
-				mtcRegexp := emdRegexp.FindStringSubmatch(freetx.TextLine)
-				if len(mtcRegexp) >= 2 {
-					objPsglst.Aemdnb = mtcRegexp[1]
-				}
+			// // Ancillary
+			// case "AE":
+			// 	emdRegexp := regexp.MustCompile(`EMD-?(\d{13})`)
+			// 	mtcRegexp := emdRegexp.FindStringSubmatch(freetx.TextLine)
+			// 	if len(mtcRegexp) >= 2 {
+			// 		objPsglst.Aemdnb = mtcRegexp[1]
+			// 	}
 
 			// Comment
 			case "CM":

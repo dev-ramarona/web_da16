@@ -97,36 +97,38 @@ type MdlPsglstPsgdtlDtbase struct {
 	Cbinfl string  `json:"cbinfl" bson:"cbinfl,omitempty"`
 	Cbinvc string  `json:"cbinvc" bson:"cbinvc,omitempty"`
 	Agtdie string  `json:"agtdie" bson:"agtdie,omitempty"`
-	// Agtdcr string  `json:"agtdcr" bson:"agtdcr,omitempty"`
-	Codels string `json:"codels" bson:"codels,omitempty"`
-	Isitfl string `json:"isitfl" bson:"isitfl,omitempty"`
-	Isittx string `json:"isittx" bson:"isittx,omitempty"`
-	Isitir string `json:"isitir" bson:"isitir,omitempty"`
-	Isitct string `json:"isitct" bson:"isitct,omitempty"`
-	Isittf string `json:"isittf" bson:"isittf,omitempty"`
-	Isitnr string `json:"isitnr" bson:"isitnr,omitempty"`
-	Noteup string `json:"noteup" bson:"noteup,omitempty"`
-	Updtby string `json:"updtby" bson:"updtby,omitempty"`
-	Prmkey string `json:"prmkey" bson:"prmkey,omitempty"`
+	Codels string  `json:"codels" bson:"codels,omitempty"`
+	Isitfl string  `json:"isitfl" bson:"isitfl,omitempty"`
+	Isittx string  `json:"isittx" bson:"isittx,omitempty"`
+	Isitir string  `json:"isitir" bson:"isitir,omitempty"`
+	Isitct string  `json:"isitct" bson:"isitct,omitempty"`
+	Isittf string  `json:"isittf" bson:"isittf,omitempty"`
+	Isitnr string  `json:"isitnr" bson:"isitnr,omitempty"`
+	Noteup string  `json:"noteup" bson:"noteup,omitempty"`
+	Updtby string  `json:"updtby" bson:"updtby,omitempty"`
+	Prmkey string  `json:"prmkey" bson:"prmkey,omitempty"`
 
 	// Ancillary
-	Aeitid string `json:"aeitid" bson:"aeitid,omitempty"`
-	Aegrcd string `json:"aegrcd" bson:"aegrcd,omitempty"`
-	Aesbcd string `json:"aesbcd" bson:"aesbcd,omitempty"`
-	Aedesc string `json:"aedesc" bson:"aedesc,omitempty"`
-	Aeqtus int32  `json:"aeqtus" bson:"aeqtus,omitempty"`
-	Aeqtbg int32  `json:"aeqtbg" bson:"aeqtbg,omitempty"`
-	Aetotp int32  `json:"aetotp" bson:"aetotp,omitempty"`
-	Aemdnb string `json:"aemdnb" bson:"aemdnb,omitempty"`
+	Gpcdae string  `json:"gpcdae" bson:"gpcdae,omitempty"`
+	Sbcdae string  `json:"sbcdae" bson:"sbcdae,omitempty"`
+	Descae string  `json:"descae" bson:"descae,omitempty"`
+	Wgbgae int32   `json:"wgbgae" bson:"wgbgae,omitempty"`
+	Qtbgae int32   `json:"qtbgae" bson:"qtbgae,omitempty"`
+	Routae string  `json:"routae" bson:"routae,omitempty"`
+	Fareae float64 `json:"fareae" bson:"fareae,omitempty"`
+	Currae string  `json:"currae" bson:"currae,omitempty"`
+	Emdnae string  `json:"emdnae" bson:"emdnae,omitempty"`
 
 	// Bagtag
 	Nmbrbt string `json:"nmbrbt" bson:"nmbrbt,omitempty"`
 	Qntybt string `json:"qntybt" bson:"qntybt,omitempty"`
 	Wghtbt int32  `json:"wghtbt" bson:"wghtbt,omitempty"`
+	Paidbt int32  `json:"paidbt" bson:"paidbt,omitempty"`
 	Vfbabt string `json:"vfbabt" bson:"vfbabt,omitempty"`
 	Hfbabt int32  `json:"hfbabt" bson:"hfbabt,omitempty"`
 	Qtotbt int32  `json:"qtotbt" bson:"qtotbt,omitempty"`
 	Wtotbt int32  `json:"wtotbt" bson:"wtotbt,omitempty"`
+	Ptotbt int32  `json:"ptotbt" bson:"ptotbt,omitempty"`
 	Excsbt int32  `json:"excsbt" bson:"excsbt,omitempty"`
 	Typebt string `json:"typebt" bson:"typebt,omitempty"`
 	Coment string `json:"coment" bson:"coment,omitempty"`

@@ -6,6 +6,7 @@ import (
 	fncSbrapi "back/sbrapi/function"
 	mdlSbrapi "back/sbrapi/model"
 	"fmt"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -42,10 +43,7 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 	}
 
 	// Get ticketing from PNR
-	slcSbarea := []string{"ITINERARY", "RECORD_LOCATOR"}
-	if psglst.Tktnvc == "" {
-		slcSbarea = append(slcSbarea, "TICKETING")
-	}
+	slcSbarea := []string{"ITINERARY", "RECORD_LOCATOR", "ANCILLARY", "TICKETING"}
 
 	// Get reservation
 	nowRsvpnr := mdlSbrapi.MdlSbrapiRsvpnrRsprsv{}
@@ -134,31 +132,111 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 		psglst.Pnritl = strings.Join(slcPnrtil, "|")
 
 		// Get ticketing detail for issued date
-		if slices.Contains(slcSbarea, "TICKETING") {
-			var slcTcktng = nowRsvpnr.PassengerReservation.TicketingInfo.TicketDetails
-			if len(slcTcktng) != 0 {
-				for _, tcktng := range slcTcktng {
+		var slcTcktng = nowRsvpnr.PassengerReservation.TicketingInfo.TicketDetails
+		var mapEmdnae = map[string]bool{}
+		if len(slcTcktng) != 0 {
+			for _, tcktng := range slcTcktng {
 
-					// Logical gate for ticket number
-					nowLogicg := tcktng.TicketNumber[:13] == psglst.Tktnfl
-					if psglst.Tktnfl == "" {
-						strFmtnme := (psglst.Nmelst + "     ")[:5]
-						strLstnme := (psglst.Nmefst + " ")[:1]
-						cncFulln1 := strFmtnme + "/" + strLstnme
-						cncFulln2 := psglst.Nmelst + "/" + strLstnme
-						if (cncFulln1 == tcktng.PassengerName ||
-							cncFulln2 == tcktng.PassengerName) &&
-							tcktng.TicketNumber[3:4] != "4" {
-							nowLogicg = true
+				// Logical gate for ticket number
+				if psglst.Tktnfl == "" {
+					strFmtnme := (psglst.Nmelst + "     ")[:5]
+					strLstnme := (psglst.Nmefst + " ")[:1]
+					cncFulln1 := strFmtnme + "/" + strLstnme
+					cncFulln2 := psglst.Nmelst + "/" + strLstnme
+					if cncFulln1 == tcktng.PassengerName ||
+						cncFulln2 == tcktng.PassengerName {
+
+						// Get ticket number blank and emd
+						if psglst.Tktnvc == "" && tcktng.TicketNumber[3:4] != "4" {
+							psglst.Tktnvc = tcktng.TicketNumber[:13]
+						} else if tcktng.TicketNumber[3:4] == "4" {
+							mapEmdnae[tcktng.TicketNumber[:13]] = true
 						}
-					}
-
-					// Get ticket number blank
-					if psglst.Tktnvc == "" && nowLogicg {
-						psglst.Tktnvc = tcktng.TicketNumber[:13]
 					}
 				}
 			}
+		}
+
+		// Get ancillary
+		if len(nowRsvpnr.OpenReservationElements) > 0 {
+			for _, elm := range nowRsvpnr.OpenReservationElements {
+				delete(mapEmdnae, psglst.Emdnae)
+				if elm.EMDNumber == "" || elm.ActionCode != "HI" ||
+					elm.NameAssociationList.FirstName != psglst.Nmefst ||
+					elm.NameAssociationList.LastName != psglst.Nmelst {
+					continue
+				}
+
+				// Looping segment assoc
+				nowRoutae := ""
+				for _, cpn := range elm.SegmentAssociationList {
+					nowDepart, nowArrivl := cpn.BoardPoint, cpn.OffPoint
+
+					// Compare to flown data
+					if nowDepart == psglst.Depart || nowArrivl == psglst.Arrivl {
+						nowRoutae = cpn.BoardPoint + "-" + cpn.OffPoint
+					}
+
+					// Compare to route vcr
+					if len(psglst.Routvc) >= 7 {
+						if nowDepart == psglst.Routvc[:3] || nowArrivl == psglst.Routvc[4:] {
+							nowRoutae = cpn.BoardPoint + "-" + cpn.OffPoint
+						}
+					}
+				}
+
+				// Push final data if assoc
+				nowPaidbt := 1
+				regDescae := regexp.MustCompile(`\d+K|\d+ K`)
+				rslDescae := regDescae.FindAllString(elm.CommercialName, -1)
+				if len(rslDescae) > 0 {
+					rawPaidbt := rslDescae[0][:len(rslDescae[0])-1]
+					intPaidbt, _ := strconv.Atoi(rawPaidbt)
+					nowPaidbt = intPaidbt
+				}
+
+				// If get route assoc
+				if nowRoutae != "" {
+					fncGlobal.FncGlobalMainprNoterr(&psglst.Gpcdae, elm.GroupCode)
+					fncGlobal.FncGlobalMainprNoterr(&psglst.Sbcdae, elm.RficSubcode)
+					fncGlobal.FncGlobalMainprNoterr(&psglst.Descae, elm.CommercialName)
+					psglst.Wgbgae += int32(nowPaidbt)
+					psglst.Qtbgae += int32(elm.NumberOfItems)
+					psglst.Routae = nowRoutae
+					fncGlobal.FncGlobalMainprNoterr(&psglst.Emdnae, elm.EMDNumber)
+
+					// Fare manage
+					psglst.Currae = elm.OriginalBasePrice.Currency
+					if psglst.Currae != "IDR" {
+						if vlx, ist := mapCurrcv[psglst.Currae]; ist {
+							cnvFareae := elm.OriginalBasePrice.Price / vlx.Crrate
+							psglst.Fareae += cnvFareae
+						}
+					} else {
+						psglst.Fareae += elm.OriginalBasePrice.Price
+					}
+
+					// Check group code
+					fstGroupc := elm.GroupCode == "BG"
+					scdGroupc := elm.GroupCode == "UP"
+					trdGroupc := elm.GroupCode == "TS" && psglst.Airlfl != "SL"
+					if fstGroupc || scdGroupc || trdGroupc {
+						if len(rslDescae) > 0 {
+							psglst.Paidbt += int32(nowPaidbt)
+						} else {
+							psglst.Paidbt += int32(elm.NumberOfItems)
+						}
+					}
+
+				}
+			}
+
+			// Cek emd non exist
+			if len(mapEmdnae) > 0 {
+				fncGlobal.FncGlobalMainprNoterr(&psglst.Noterr, "EMD DETAIL NIL")
+			}
+		} else if len(mapEmdnae) > 0 {
+			fncGlobal.FncGlobalMainprNoterr(&psglst.Noterr, "EMD DETAIL NIL")
 		}
 	}
 
@@ -217,7 +295,6 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 				if suberr == "MNFEST" {
 					psglst.Mnfest = "NOT CLEAR"
 				}
-
 			}
 		}
 		sycClrpsg.Store(psglst.Prmkey, psglst)

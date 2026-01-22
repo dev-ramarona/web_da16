@@ -335,7 +335,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		"arrivl",
 		"routfl",
 		"routvc",
-		"Routvf",
+		"routvf",
 		"routac",
 		"routmx",
 		"routfr",
@@ -377,40 +377,54 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		"noteup",
 		"updtby",
 		"prmkey",
-		"aeitid",
-		"aegrcd",
-		"aesbcd",
-		"aedesc",
-		"aeqtus",
-		"aeqtbg",
-		"aetotp",
-		"aemdnb",
+
+		// Ancillary
+		"gpcdae",
+		"sbcdae",
+		"descae",
+		"wgbgae",
+		"qtbgae",
+		"routae",
+		"fareae",
+		"emdnae",
+
+		// Bagtag
 		"nmbrbt",
 		"qntybt",
 		"wghtbt",
+		"paidbt",
 		"vfbabt",
 		"hfbabt",
 		"qtotbt",
 		"wtotbt",
+		"ptotbt",
 		"excsbt",
 		"typebt",
 		"coment",
+
+		// Outbound
 		"airlob",
 		"flnbob",
 		"clssob",
 		"routob",
 		"dateob",
 		"timeob",
+
+		// Inbound
 		"airlib",
 		"flnbib",
 		"clssib",
 		"dstrib",
 		"dateib",
 		"timeib",
+
+		// Ireg
 		"codeir",
 		"airlir",
 		"flnbir",
 		"dateir",
+
+		// Infant
 		"tktnif",
 		"cpnbif",
 		"dateif",
@@ -418,6 +432,8 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		"routif",
 		"statif",
 		"paxsif",
+
+		// Cancel bagtag
 		"airlxt",
 		"dstrxt",
 		"nmbrxt",
@@ -515,7 +531,6 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			slcDtaset.Cbinfl,
 			slcDtaset.Cbinvc,
 			slcDtaset.Agtdie,
-			// slcDtaset. //, Agtdcr
 			slcDtaset.Codels,
 			slcDtaset.Isitfl,
 			slcDtaset.Isittx,
@@ -526,40 +541,54 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			slcDtaset.Noteup,
 			slcDtaset.Updtby,
 			slcDtaset.Prmkey,
-			slcDtaset.Aeitid,
-			slcDtaset.Aegrcd,
-			slcDtaset.Aesbcd,
-			slcDtaset.Aedesc,
-			fmt.Sprintf("%v", slcDtaset.Aeqtus),
-			fmt.Sprintf("%v", slcDtaset.Aeqtbg),
-			fmt.Sprintf("%v", slcDtaset.Aetotp),
-			slcDtaset.Aemdnb,
+
+			// Ancillary
+			slcDtaset.Gpcdae,
+			slcDtaset.Sbcdae,
+			slcDtaset.Descae,
+			fmt.Sprintf("%v", slcDtaset.Wgbgae),
+			fmt.Sprintf("%v", slcDtaset.Qtbgae),
+			slcDtaset.Routae,
+			fmt.Sprintf("%v", slcDtaset.Fareae),
+			slcDtaset.Emdnae,
+
+			// Bagtag
 			slcDtaset.Nmbrbt,
 			slcDtaset.Qntybt,
 			fmt.Sprintf("%v", slcDtaset.Wghtbt),
+			fmt.Sprintf("%v", slcDtaset.Paidbt),
 			slcDtaset.Vfbabt,
 			fmt.Sprintf("%v", slcDtaset.Hfbabt),
 			fmt.Sprintf("%v", slcDtaset.Qtotbt),
 			fmt.Sprintf("%v", slcDtaset.Wtotbt),
+			fmt.Sprintf("%v", slcDtaset.Ptotbt),
 			fmt.Sprintf("%v", slcDtaset.Excsbt),
 			slcDtaset.Typebt,
 			slcDtaset.Coment,
+
+			// Outbound
 			slcDtaset.Airlob,
 			slcDtaset.Flnbob,
 			slcDtaset.Clssob,
 			slcDtaset.Routob,
 			fmt.Sprintf("%v", slcDtaset.Dateob),
 			fmt.Sprintf("%v", slcDtaset.Timeob),
+
+			// Inbound
 			slcDtaset.Airlib,
 			slcDtaset.Flnbib,
 			slcDtaset.Clssib,
 			slcDtaset.Dstrib,
 			fmt.Sprintf("%v", slcDtaset.Dateib),
 			fmt.Sprintf("%v", slcDtaset.Timeib),
+
+			// Ireg
 			slcDtaset.Codeir,
 			slcDtaset.Airlir,
 			slcDtaset.Flnbir,
 			fmt.Sprintf("%v", slcDtaset.Dateir),
+
+			// Infant
 			slcDtaset.Tktnif,
 			fmt.Sprintf("%v", slcDtaset.Cpnbif),
 			fmt.Sprintf("%v", slcDtaset.Dateif),
@@ -567,9 +596,12 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			slcDtaset.Routif,
 			slcDtaset.Statif,
 			slcDtaset.Paxsif,
+
+			// Cancel bagtag
 			slcDtaset.Airlxt,
 			slcDtaset.Dstrxt,
-			slcDtaset.Nmbrxt})
+			slcDtaset.Nmbrxt,
+		})
 
 		// Flush every 1000row
 		countr++
