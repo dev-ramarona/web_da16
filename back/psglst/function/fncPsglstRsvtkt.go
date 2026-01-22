@@ -191,10 +191,10 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 				rslDescae := regDescae.FindAllString(elm.CommercialName, -1)
 				if len(rslDescae) > 0 {
 					regDescae := regexp.MustCompile(`\d+`)
-					rslDescae := regDescae.FindAllString(elm.CommercialName, -1)
+					rslDescae := regDescae.FindAllString(rslDescae[0], -1)
 					rawPaidbt := rslDescae[0]
 					intPaidbt, _ := strconv.Atoi(rawPaidbt)
-					nowPaidbt = intPaidbt
+					nowPaidbt = intPaidbt * elm.NumberOfItems
 				}
 
 				// If get route assoc
