@@ -256,7 +256,32 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 			// Bagage
 			case "BT":
 				partsl := strings.Fields(freetx.TextLine)
-				if len(partsl) == 3 {
+				if len(partsl) == 3 { /////////////////////////////NANTI UPDATE INI KARENA TEXT KG NYAMBUN SM ANGKA JADI JADI KAYA 4 KARAKTER
+					// Quantity
+					if partsl[0] != "" {
+						objPsglst.Qntybt = partsl[0]
+						regQntybt := regexp.MustCompile(`\d+`)
+						rslQntybt := regQntybt.FindAllString(partsl[0], -1)
+						if len(rslQntybt) > 0 {
+							intQntybt, _ := strconv.Atoi(rslQntybt[0])
+							mapQntybt[objPsglst.Groupc] += intQntybt
+						}
+					}
+
+					// Weight
+					if partsl[2] != "" {
+						objPsglst.Qntybt = partsl[2]
+						regBtwght := regexp.MustCompile(`\d+`)
+						rslBtwght := regBtwght.FindAllString(partsl[2], -1)
+						if len(rslBtwght) > 0 {
+							intBtwght, _ := strconv.Atoi(rslBtwght[0])
+							objPsglst.Wghtbt = int32(intBtwght)
+							mapWghtbt[objPsglst.Groupc] += int(intBtwght)
+							objPsglst.Typebt = "KG"
+						}
+					}
+
+				} else if len(partsl) == 3 {
 					objPsglst.Nmbrbt = partsl[2]
 				} else if len(partsl) == 4 {
 
