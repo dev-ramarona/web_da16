@@ -5,6 +5,7 @@ import (
 	mdlPsglst "back/psglst/model"
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -217,15 +218,20 @@ func FncPsglstActlogGetall(c *gin.Context) {
 
 	// Append to slice
 	var slices = []mdlPsglst.MdlPsglstActlogDtbase{}
+	var intDatefl = []int{}
 	var slcDatefl = []string{}
 	for datarw.Next(contxt) {
 		var object mdlPsglst.MdlPsglstActlogDtbase
 		if err := datarw.Decode(&object); err == nil {
 			slices = append(slices, object)
-			fmtDatefl, _ := time.Parse("060102", strconv.Itoa(int(object.Datefl)))
-			strDatefl := fmtDatefl.Format("2006-01-02")
-			slcDatefl = append(slcDatefl, strDatefl)
+			intDatefl = append(intDatefl, int(object.Datefl))
 		}
+	}
+	sort.Ints(intDatefl)
+	for _, datefl := range intDatefl {
+		fmtDatefl, _ := time.Parse("060102", strconv.Itoa(int(datefl)))
+		strDatefl := fmtDatefl.Format("2006-01-02")
+		slcDatefl = append(slcDatefl, strDatefl)
 	}
 
 	// Send token to frontend
