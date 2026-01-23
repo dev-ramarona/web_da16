@@ -256,7 +256,7 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 			// Bagage
 			case "BT":
 				partsl := strings.Fields(freetx.TextLine)
-				if len(partsl) == 3 { /////////////////////////////NANTI UPDATE INI KARENA TEXT KG NYAMBUN SM ANGKA JADI JADI KAYA 4 KARAKTER
+				if len(partsl) == 3 && strings.Contains(freetx.TextLine, "KG") { /////////////////////////////NANTI UPDATE INI KARENA TEXT KG NYAMBUN SM ANGKA JADI JADI KAYA 4 KARAKTER
 					// Quantity
 					if partsl[0] != "" {
 						objPsglst.Qntybt = partsl[0]
