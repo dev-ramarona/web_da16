@@ -116,11 +116,17 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	mgoPsgdtl, mgoPsgsmr := []mongo.WriteModel{}, []mongo.WriteModel{}
 	totClrpsg := 0
 	fnlPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
-	mapGroupc := map[string]int{}
+	mapPaidbt := map[string]int{}
+	mapQntybt := map[string]int{}
+	mapWghtbt := map[string]int{}
+	mapFbavbt := map[string]int{}
 	sycClrpsg.Range(func(key, val any) bool {
 		if mtcPsglst, mtc := val.(mdlPsglst.MdlPsglstPsgdtlDtbase); mtc {
 			if mtcPsglst.Groupc != "" {
-				mapGroupc[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
+				mapPaidbt[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
+				mapQntybt[mtcPsglst.Groupc] += int(mtcPsglst.Qntybt)
+				mapWghtbt[mtcPsglst.Groupc] += int(mtcPsglst.Wghtbt)
+				mapFbavbt[mtcPsglst.Groupc] += int(mtcPsglst.Fbavbt)
 			}
 			fnlPsglst = append(fnlPsglst, mtcPsglst)
 		}
@@ -129,7 +135,16 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 	// Looping again final
 	for _, psglst := range fnlPsglst {
-		if val, ist := mapGroupc[psglst.Groupc]; ist {
+		if val, ist := mapPaidbt[psglst.Groupc]; ist {
+			psglst.Ptotbt = int32(val)
+		}
+		if val, ist := mapQntybt[psglst.Groupc]; ist {
+			psglst.Qtotbt = int32(val)
+		}
+		if val, ist := mapWghtbt[psglst.Groupc]; ist {
+			psglst.Wtotbt = int32(val)
+		}
+		if val, ist := mapFbavbt[psglst.Groupc]; ist {
 			psglst.Ptotbt = int32(val)
 		}
 

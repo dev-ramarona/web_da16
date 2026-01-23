@@ -121,14 +121,15 @@ type MdlPsglstPsgdtlDtbase struct {
 
 	// Bagtag
 	Nmbrbt string `json:"nmbrbt" bson:"nmbrbt,omitempty"`
-	Qntybt string `json:"qntybt" bson:"qntybt,omitempty"`
+	Qntybt int32  `json:"qntybt" bson:"qntybt,omitempty"`
 	Wghtbt int32  `json:"wghtbt" bson:"wghtbt,omitempty"`
 	Paidbt int32  `json:"paidbt" bson:"paidbt,omitempty"`
-	Vfbabt string `json:"vfbabt" bson:"vfbabt,omitempty"`
+	Fbavbt int32  `json:"fbavbt" bson:"fbavbt,omitempty"`
 	Hfbabt int32  `json:"hfbabt" bson:"hfbabt,omitempty"`
 	Qtotbt int32  `json:"qtotbt" bson:"qtotbt,omitempty"`
 	Wtotbt int32  `json:"wtotbt" bson:"wtotbt,omitempty"`
 	Ptotbt int32  `json:"ptotbt" bson:"ptotbt,omitempty"`
+	Ftotbt int32  `json:"ftotbt" bson:"ftotbt,omitempty"`
 	Excsbt int32  `json:"excsbt" bson:"excsbt,omitempty"`
 	Typebt string `json:"typebt" bson:"typebt,omitempty"`
 	Coment string `json:"coment" bson:"coment,omitempty"`

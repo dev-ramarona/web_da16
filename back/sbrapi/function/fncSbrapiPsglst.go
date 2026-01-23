@@ -134,8 +134,8 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 
 	// Looping all passangger list
 	slcPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
-	mapQntybt := map[string]int{}
-	mapWghtbt := map[string]int{}
+	// mapQntybt := map[string]int{}
+	// mapWghtbt := map[string]int{}
 	for _, psglst := range rawxml.PassengerInfoList {
 		objPsglst := tmpPsglst
 
@@ -156,7 +156,13 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Clssvc = psglst.BookingClass
 		objPsglst.Cbinfl = psglst.Cabin
 		objPsglst.Cbinvc = psglst.Cabin
-		objPsglst.Qntybt = psglst.BagCount
+
+		// Bagageg quantity
+		if intQntybt, err := strconv.Atoi(psglst.BagCount); err == nil {
+			objPsglst.Qntybt = int32(intQntybt)
+		} else {
+			objPsglst.Qntybt = 0
+		}
 
 		// Get group code and totpax
 		objPsglst.Groupc = psglst.GroupCode
@@ -167,35 +173,6 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 			intTotpax, _ := strconv.Atoi(rslTotpax[0])
 			objPsglst.Totpax = int32(intTotpax)
 		}
-
-		// // Ancillary
-		// func() {
-
-		// 	// Ancillary get price
-		// 	nowPrcdtl := psglst.AEDetailsList.PriceDetails
-		// 	nowAetotp := 0
-		// 	for _, curncy := range []mdlSbrapi.MdlSbrapiPsglstRspprc{
-		// 		nowPrcdtl.BasePrice, nowPrcdtl.EquivalentPrice, nowPrcdtl.TotalPrice} {
-		// 		if curncy.CurrencyCode == "IDR" {
-		// 			nowAetotp = int(curncy.Value)
-		// 			break
-		// 		}
-		// 	}
-		// 	if nowAetotp == 0 {
-		// 		if val, ist := mapcur[nowPrcdtl.TotalPrice.CurrencyCode]; ist {
-		// 			nowAetotp = int(val.Crrate * nowPrcdtl.TotalPrice.Value)
-		// 		}
-		// 	}
-
-		// 	// Ancillary store final
-		// 	objPsglst.Aeitid = psglst.AEDetailsList.ItemID
-		// 	objPsglst.Aegrcd = psglst.AEDetailsList.ATPCOGroupCode
-		// 	objPsglst.Aesbcd = psglst.AEDetailsList.ATPCOSubCode
-		// 	objPsglst.Aedesc = psglst.AEDetailsList.Description
-		// 	objPsglst.Aeqtus = psglst.AEDetailsList.QuantityUsed
-		// 	objPsglst.Aeqtbg = psglst.AEDetailsList.QuantityBought
-		// 	objPsglst.Aetotp = int32(nowAetotp)
-		// }()
 
 		// Get all code list
 		objPsglst.Codels = strings.Join(psglst.EditCodeList, "|")
@@ -256,60 +233,28 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 			// Bagage
 			case "BT":
 				partsl := strings.Fields(freetx.TextLine)
-				if len(partsl) == 3 && strings.Contains(freetx.TextLine, "KG") { /////////////////////////////NANTI UPDATE INI KARENA TEXT KG NYAMBUN SM ANGKA JADI JADI KAYA 4 KARAKTER
-					// Quantity
-					if partsl[0] != "" {
-						objPsglst.Qntybt = partsl[0]
-						regQntybt := regexp.MustCompile(`\d+`)
-						rslQntybt := regQntybt.FindAllString(partsl[0], -1)
-						if len(rslQntybt) > 0 {
-							intQntybt, _ := strconv.Atoi(rslQntybt[0])
-							mapQntybt[objPsglst.Groupc] += intQntybt
+				regmkg := regexp.MustCompile(`KG$`)
+				if rslmkg := regmkg.FindAllString(freetx.TextLine, -1); len(rslmkg) > 0 {
+					istQtycek := true
+					objPsglst.Typebt = "KG"
+					for _, prt := range partsl {
+						regmnb := regexp.MustCompile(`\d+`)
+						if rslmmb := regmnb.FindAllString(prt, -1); len(rslmmb) > 0 {
+							if istQtycek {
+								istQtycek = false
+								intQntybt, _ := strconv.Atoi(rslmmb[0])
+								// mapQntybt[objPsglst.Groupc] += intQntybt
+								objPsglst.Qntybt = int32(intQntybt)
+							} else {
+								intWghtbt, _ := strconv.Atoi(rslmmb[0])
+								objPsglst.Wghtbt = int32(intWghtbt)
+								// mapWghtbt[objPsglst.Groupc] += int(intWghtbt)
+							}
 						}
 					}
-
-					// Weight
-					if partsl[2] != "" {
-						objPsglst.Qntybt = partsl[2]
-						regBtwght := regexp.MustCompile(`\d+`)
-						rslBtwght := regBtwght.FindAllString(partsl[2], -1)
-						if len(rslBtwght) > 0 {
-							intBtwght, _ := strconv.Atoi(rslBtwght[0])
-							objPsglst.Wghtbt = int32(intBtwght)
-							mapWghtbt[objPsglst.Groupc] += int(intBtwght)
-							objPsglst.Typebt = "KG"
-						}
-					}
-
 				} else if len(partsl) == 3 {
-					objPsglst.Nmbrbt = partsl[2]
-				} else if len(partsl) == 4 {
-
-					// Quantity
-					if partsl[0] != "" {
-						objPsglst.Qntybt = partsl[0]
-						regQntybt := regexp.MustCompile(`\d+`)
-						rslQntybt := regQntybt.FindAllString(partsl[0], -1)
-						if len(rslQntybt) > 0 {
-							intQntybt, _ := strconv.Atoi(rslQntybt[0])
-							mapQntybt[objPsglst.Groupc] += intQntybt
-						}
-					}
-
-					// Weight
-					intBtwght, _ := strconv.Atoi(partsl[2])
-					objPsglst.Wghtbt = int32(intBtwght)
-					mapWghtbt[objPsglst.Groupc] += int(intBtwght)
-					objPsglst.Typebt = partsl[3]
+					fncGlobal.FncGlobalMainprNoterr(&objPsglst.Nmbrbt, partsl[2])
 				}
-
-			// // Ancillary
-			// case "AE":
-			// 	emdRegexp := regexp.MustCompile(`EMD-?(\d{13})`)
-			// 	mtcRegexp := emdRegexp.FindStringSubmatch(freetx.TextLine)
-			// 	if len(mtcRegexp) >= 2 {
-			// 		objPsglst.Aemdnb = mtcRegexp[1]
-			// 	}
 
 			// Comment
 			case "CM":
@@ -415,26 +360,21 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		slcPsglst = append(slcPsglst, objPsglst)
 	}
 
-	// Looping again to push total ebt
-	for idx := range slcPsglst {
-		nowGroupc := slcPsglst[idx].Groupc
-		if nowGroupc == "" {
-			slcPsglst[idx].Qtotbt = 0
-			intQntybt, err := strconv.Atoi(slcPsglst[idx].Qntybt)
-			if err == nil {
-				slcPsglst[idx].Qtotbt = int32(intQntybt)
-			}
-			slcPsglst[idx].Wtotbt = slcPsglst[idx].Wghtbt
-		} else {
-			if val, ist := mapQntybt[nowGroupc]; ist {
-				slcPsglst[idx].Qtotbt = int32(val)
-			}
-			if val, ist := mapWghtbt[nowGroupc]; ist {
-				slcPsglst[idx].Wtotbt = int32(val)
-			}
-		}
-
-	}
+	// // Looping again to push total ebt
+	// for idx := range slcPsglst {
+	// 	nowGroupc := slcPsglst[idx].Groupc
+	// 	if nowGroupc == "" {
+	// 		slcPsglst[idx].Qtotbt = slcPsglst[idx].Qntybt
+	// 		slcPsglst[idx].Wtotbt = slcPsglst[idx].Wghtbt
+	// 	} else {
+	// 		if val, ist := mapQntybt[nowGroupc]; ist {
+	// 			slcPsglst[idx].Qtotbt = int32(val)
+	// 		}
+	// 		if val, ist := mapWghtbt[nowGroupc]; ist {
+	// 			slcPsglst[idx].Wtotbt = int32(val)
+	// 		}
+	// 	}
+	// }
 
 	// Final return
 	return slcPsglst

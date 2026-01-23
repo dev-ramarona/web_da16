@@ -116,16 +116,28 @@ func FncSbrapiPsgdtaTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsgdtaRsppdr,
 				psgdta.Statvc = partsl[5]
 			}
 
-		// Bagage
+			// Bagage
 		case "BT":
 			partsl := strings.Fields(freetx.TextLine)
-			if len(partsl) == 3 {
-				psgdta.Nmbrbt = partsl[2]
-			} else if len(partsl) == 4 {
-				psgdta.Qntybt = partsl[0]
-				btwght, _ := strconv.Atoi(partsl[2])
-				psgdta.Wghtbt = int32(btwght)
-				psgdta.Typebt = partsl[3]
+			regmkg := regexp.MustCompile(`KG$`)
+			if rslmkg := regmkg.FindAllString(partsl[0], -1); len(rslmkg) > 0 {
+				istQtycek := true
+				psgdta.Typebt = "KG"
+				for _, prt := range partsl {
+					regmnb := regexp.MustCompile(`\d+`)
+					if rslmmb := regmnb.FindAllString(prt, -1); len(rslmmb) > 0 {
+						if istQtycek {
+							istQtycek = false
+							intQntybt, _ := strconv.Atoi(rslmmb[0])
+							psgdta.Qntybt = int32(intQntybt)
+						} else {
+							intWghtbt, _ := strconv.Atoi(rslmmb[0])
+							psgdta.Wghtbt = int32(intWghtbt)
+						}
+					}
+				}
+			} else if len(partsl) == 3 {
+				fncGlobal.FncGlobalMainprNoterr(&psgdta.Nmbrbt, partsl[2])
 			}
 
 		// // Ancillary

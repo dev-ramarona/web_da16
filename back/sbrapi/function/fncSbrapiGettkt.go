@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -175,9 +176,13 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 	if getFlsgmn, ist := mapGettkt[hghest.key]; ist {
 		psglst.Flnbvc = getFlsgmn.MarketingFlightNumber
 		psglst.Airlvc = getFlsgmn.MarketingProvider
-		psglst.Vfbabt = getFlsgmn.BagAllowance
 		psglst.Frbcde = getFlsgmn.FareBasis
 		psglst.Statvc = getFlsgmn.CurrentStatus
+		regmnb := regexp.MustCompile(`\d+`)
+		if rslmmb := regmnb.FindAllString(getFlsgmn.BagAllowance, -1); len(rslmmb) > 0 {
+			intVfbabt, _ := strconv.Atoi(rslmmb[0])
+			psglst.Ftotbt = int32(intVfbabt)
+		}
 		if psglst.Frbcde == "CHARTER" {
 			psglst.Isitct = "CT"
 		}
