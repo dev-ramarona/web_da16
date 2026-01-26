@@ -386,6 +386,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		"qtbgae",
 		"routae",
 		"fareae",
+		"currae",
 		"emdnae",
 
 		// Bagtag
@@ -393,12 +394,12 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		"qntybt",
 		"wghtbt",
 		"paidbt",
-		"Fbavbt",
+		"fbavbt",
 		"hfbabt",
 		"qtotbt",
 		"wtotbt",
 		"ptotbt",
-		"fbavbt",
+		"ftotbt",
 		"excsbt",
 		"typebt",
 		"coment",
@@ -551,6 +552,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			fmt.Sprintf("%v", slcDtaset.Qtbgae),
 			slcDtaset.Routae,
 			fmt.Sprintf("%v", slcDtaset.Fareae),
+			slcDtaset.Currae,
 			slcDtaset.Emdnae,
 
 			// Bagtag
@@ -563,7 +565,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			fmt.Sprintf("%v", slcDtaset.Qtotbt),
 			fmt.Sprintf("%v", slcDtaset.Wtotbt),
 			fmt.Sprintf("%v", slcDtaset.Ptotbt),
-			fmt.Sprintf("%v", slcDtaset.Fbavbt),
+			fmt.Sprintf("%v", slcDtaset.Ftotbt),
 			fmt.Sprintf("%v", slcDtaset.Excsbt),
 			slcDtaset.Typebt,
 			slcDtaset.Coment,
