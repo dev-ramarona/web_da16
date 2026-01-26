@@ -161,7 +161,7 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 		if len(nowRsvpnr.OpenReservationElements) > 0 {
 			for _, elm := range nowRsvpnr.OpenReservationElements {
 				delete(mapEmdnae, psglst.Emdnae)
-				if elm.EMDNumber == "" || elm.ActionCode != "HI" ||
+				if elm.ActionCode != "HI" ||
 					elm.NameAssociationList.FirstName != psglst.Nmefst ||
 					elm.NameAssociationList.LastName != psglst.Nmelst {
 					continue
@@ -205,7 +205,16 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 					psglst.Wgbgae += int32(nowPaidbt)
 					psglst.Qtbgae += int32(elm.NumberOfItems)
 					psglst.Routae = nowRoutae
+
+					// Get emd number
 					fncGlobal.FncGlobalMainprNoterr(&psglst.Emdnae, elm.EMDNumber)
+					if elm.EMDNumber != "" {
+						for _, tps := range elm.TravelPortions {
+							if tps.BoardPoint+"-"+tps.OffPoint == nowRoutae {
+								fncGlobal.FncGlobalMainprNoterr(&psglst.Emdnae, tps.EMDNumber)
+							}
+						}
+					}
 
 					// Fare manage
 					psglst.Currae = elm.OriginalBasePrice.Currency
