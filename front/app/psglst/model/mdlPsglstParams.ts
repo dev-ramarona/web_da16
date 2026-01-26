@@ -105,23 +105,27 @@ export interface MdlPsglstPsgdtlFrntnd {
   prmkey: string;
 
   // Ancillary
-  aeitid: string;
-  aegrcd: string;
-  aesbcd: string;
-  aedesc: string;
-  aeqtus: number;
-  aeqtbg: number;
-  aetotp: number;
-  aemdnb: string;
+  gpcdae: string;
+  sbcdae: string;
+  descae: string;
+  wgbgae: number;
+  qtbgae: number;
+  routae: string;
+  fareae: number;
+  currae: string;
+  emdnae: string;
 
   // Bagtag
   nmbrbt: string;
-  qntybt: string;
+  qntybt: number;
   wghtbt: number;
-  vfbabt: string;
+  paidbt: number;
+  fbavbt: number;
   hfbabt: number;
   qtotbt: number;
   wtotbt: number;
+  ptotbt: number;
+  ftotbt: number;
   excsbt: number;
   typebt: string;
   coment: string;
@@ -162,6 +166,8 @@ export interface MdlPsglstPsgdtlFrntnd {
   dstrxt: string;
   nmbrxt: string;
 }
+
+// Search param
 export interface MdlPsglstPsgdtlSearch {
   update_psgdtl: string;
   mnthfl_psgdtl: string;

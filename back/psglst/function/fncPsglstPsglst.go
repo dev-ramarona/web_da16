@@ -145,7 +145,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 			psglst.Wtotbt = int32(val)
 		}
 		if val, ist := mapFbavbt[psglst.Groupc]; ist {
-			psglst.Ptotbt = int32(val)
+			psglst.Ftotbt = int32(val)
 		}
 
 		// Manage route

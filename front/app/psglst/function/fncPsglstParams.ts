@@ -3,7 +3,7 @@ import { MdlPsglstSrcprmAllprm } from "../model/mdlPsglstParams";
 // Treatment function params
 export function FncPsglstDetailParams(
   params: MdlPsglstSrcprmAllprm,
-  actdte: string[]
+  actdte: string[],
 ) {
   return {
     update_psgdtl: params.update_psgdtl || "",
