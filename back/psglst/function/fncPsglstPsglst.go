@@ -137,15 +137,23 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	for _, psglst := range fnlPsglst {
 		if val, ist := mapPaidbt[psglst.Groupc]; ist {
 			psglst.Ptotbt = int32(val)
+		} else {
+			psglst.Ptotbt = psglst.Paidbt
 		}
 		if val, ist := mapQntybt[psglst.Groupc]; ist {
 			psglst.Qtotbt = int32(val)
+		} else {
+			psglst.Qtotbt = psglst.Qntybt
 		}
 		if val, ist := mapWghtbt[psglst.Groupc]; ist {
 			psglst.Wtotbt = int32(val)
+		} else {
+			psglst.Wtotbt = psglst.Wghtbt
 		}
 		if val, ist := mapFbavbt[psglst.Groupc]; ist {
 			psglst.Ftotbt = int32(val)
+		} else {
+			psglst.Ftotbt = psglst.Fbavbt
 		}
 
 		// Manage route

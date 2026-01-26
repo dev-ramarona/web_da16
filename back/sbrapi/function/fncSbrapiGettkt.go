@@ -181,7 +181,7 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 		regmnb := regexp.MustCompile(`\d+`)
 		if rslmmb := regmnb.FindAllString(getFlsgmn.BagAllowance, -1); len(rslmmb) > 0 {
 			intVfbabt, _ := strconv.Atoi(rslmmb[0])
-			psglst.Ftotbt = int32(intVfbabt)
+			psglst.Fbavbt = int32(intVfbabt)
 		}
 		if psglst.Frbcde == "CHARTER" {
 			psglst.Isitct = "CT"
