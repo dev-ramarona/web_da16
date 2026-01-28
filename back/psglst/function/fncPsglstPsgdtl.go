@@ -187,7 +187,7 @@ func FncPsglstPsgdtlGetall(c *gin.Context) {
 func FncPsglstPsgdtlDownld(c *gin.Context) {
 
 	// Bind JSON Body input to variable
-	csvFilenm := []string{time.Now().Format("02Jan06/15:04")}
+	csvFilenm := []string{time.Now().Format("0601021504")}
 	rawipt := c.PostForm("data")
 	if rawipt == "" {
 		c.String(400, "missing data")
@@ -217,7 +217,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 
 	// Check if data Route all is isset
 	if inputx.Datefl_psgdtl != "" {
-		csvFilenm = append(csvFilenm, strconv.Itoa(intDatefl))
+		csvFilenm = append(csvFilenm, inputx.Datefl_psgdtl)
 		mtchdt = append(mtchdt, bson.D{{Key: "datefl",
 			Value: intDatefl}})
 	}
@@ -273,8 +273,14 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		if inputx.Nclear_psgdtl == "SLSRPT" || inputx.Nclear_psgdtl == "" {
 			mtchor = append(mtchor, bson.D{{Key: "slsrpt", Value: "NOT CLEAR"}})
 		}
-		csvFilenm = append(csvFilenm, inputx.Nclear_psgdtl)
+		if inputx.Nclear_psgdtl == "" {
+			csvFilenm = append(csvFilenm, "ALL_NOT_CLEAR")
+		} else {
+			csvFilenm = append(csvFilenm, inputx.Nclear_psgdtl+"_NOT_CLEAR")
+		}
 		mtchdt = append(mtchdt, bson.D{{Key: "$or", Value: mtchor}})
+	} else {
+		csvFilenm = append(csvFilenm, "ALL_CLEAR")
 	}
 
 	// Final match pipeline
