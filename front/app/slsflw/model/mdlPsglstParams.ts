@@ -1,5 +1,5 @@
 // Global
-export interface MdlPsglstSrcprmAllprm {
+export interface MdlSlsflwSrcprmAllprm {
   update_psgdtl: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
@@ -21,7 +21,7 @@ export interface MdlPsglstSrcprmAllprm {
 }
 
 // Passangger list detail
-export interface MdlPsglstPsgdtlFrntnd {
+export interface MdlSlsflwPsgdtlFrntnd {
   mnfest: string;
   slsrpt: string;
   noterr: string;
@@ -169,7 +169,7 @@ export interface MdlPsglstPsgdtlFrntnd {
 }
 
 // Search param
-export interface MdlPsglstPsgdtlSearch {
+export interface MdlSlsflwPsgdtlSearch {
   update_psgdtl: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
@@ -186,13 +186,13 @@ export interface MdlPsglstPsgdtlSearch {
   pagenw_psgdtl: number;
   limitp_psgdtl: number;
 }
-export interface MdlPsglstAcpedtDtbase {
+export interface MdlSlsflwAcpedtDtbase {
   params: string;
   length: number;
 }
 
 // Log action
-export interface MdlPsglstActlogDtbase {
+export interface MdlSlsflwActlogDtbase {
   timeup: number;
   dateup: number;
   datefl: number;
@@ -200,7 +200,7 @@ export interface MdlPsglstActlogDtbase {
 }
 
 // Log error
-export interface MdlPsglstErrlogDtbase {
+export interface MdlSlsflwErrlogDtbase {
   prmkey: string;
   erstat: string;
   erpart: string;

@@ -136,6 +136,7 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Arrivl = psglst.Destination
 		objPsglst.Routmx = fllist.Routmx
 		objPsglst.Linenb = int32(psglst.LineNumber)
+		objPsglst.Ckinnb = int32(psglst.CheckInInfo.CheckInNumber)
 		objPsglst.Seatpx = psglst.Seat
 		objPsglst.Pnrcde = psglst.PNRLocator
 		objPsglst.Tktnfl = psglst.VCRInfo.VCRData.SerialNumber

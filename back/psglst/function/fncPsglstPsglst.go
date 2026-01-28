@@ -178,6 +178,9 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 				// Get highest fba
 				strSegtkt := strings.Join(slcSegtkt, "|")
 				slcMaxfba := []int{}
+				if mtcPsglst.Tktnfl == "9902198578637" {
+					fmt.Println(strSegtkt)
+				}
 				for _, nowSegtkt := range slcSegtkt {
 					for _, hfbalv := range slcHfbalv {
 
@@ -188,7 +191,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 						// Regex class flown
 						nowClssfl := hfbalv.Clssfl
-						regClssfl := regexp.MustCompile(`-` + nowClssfl + `$`)
+						regClssfl := regexp.MustCompile(`-(` + nowClssfl + `)$`)
 						lgcClssfl := nowClssfl == "ALL" || regClssfl.MatchString(nowSegtkt)
 
 						// Regex route flown
@@ -205,6 +208,10 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 						// Final result
 						if lgcAirlfl && lgcClssfl && lgcRoutfl {
+							if mtcPsglst.Tktnfl == "9902198578637" {
+								fmt.Println(lgcAirlfl, "&&", lgcClssfl, "&&", lgcRoutfl, "-", nowSegtkt)
+								fmt.Println(hfbalv.Levelr, hfbalv.Airlfl, hfbalv.Clssfl, hfbalv.Routfl, regClssfl)
+							}
 							slcMaxfba = append(slcMaxfba, int(hfbalv.Hfbabt))
 							if hfbalv.Source == "VCR" {
 								mtcPsglst.Hfbabt = mtcPsglst.Fbavbt
@@ -212,6 +219,9 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 							continue
 						}
 					}
+				}
+				if mtcPsglst.Tktnfl == "9902198578637" {
+					fmt.Println(slcMaxfba)
 				}
 				if mtcPsglst.Hfbabt == 0 && len(slcMaxfba) > 0 {
 					mtcPsglst.Hfbabt = int32(slices.Max(slcMaxfba))

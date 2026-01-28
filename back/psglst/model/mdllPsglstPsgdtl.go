@@ -72,6 +72,7 @@ type MdlPsglstPsgdtlDtbase struct {
 	Routfx string  `json:"routfx" bson:"routfx,omitempty"`
 	Routsg string  `json:"routsg" bson:"routsg,omitempty"`
 	Linenb int32   `json:"linenb" bson:"linenb,omitempty"`
+	Ckinnb int32   `json:"ckinnb" bson:"ckinnb,omitempty"`
 	Gender string  `json:"gender" bson:"gender,omitempty"`
 	Typepx string  `json:"typepx" bson:"typepx,omitempty"`
 	Seatpx string  `json:"seatpx" bson:"seatpx,omitempty"`

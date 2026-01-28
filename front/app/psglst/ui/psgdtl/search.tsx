@@ -2,14 +2,12 @@
 import { useEffect, useState } from "react";
 
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
-import { mdlGlobalAlluserFilter } from "@/app/global/model/mdlGlobalPrimer";
 import {
   FncGlobalFormatFilter,
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { MdlPsglstPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
-import { ApiPsglstPnrsmrDownld } from "../../api/apiPsglstPsgdtl";
 
 export default function UixPsglstDetailSearch({
   trtprm,
