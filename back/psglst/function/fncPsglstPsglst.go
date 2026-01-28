@@ -19,7 +19,9 @@ import (
 
 func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	nowObjtkn mdlSbrapi.MdlSbrapiMsghdrParams, objParams mdlSbrapi.MdlSbrapiMsghdrApndix,
-	sycPnrcde, sycChrter, sycFrbase, sycFrtaxs, sycFlhour, sycMilege, idcFrbase, idcFrtaxs, sycErrlog *sync.Map,
+	sycPnrcde, sycChrter, sycFrbase, sycFrtaxs, sycFlhour, sycMilege,
+	idcFrbase, idcFrtaxs, sycErrlog *sync.Map,
+	slcHfbalv []mdlPsglst.MdlPsglstHfbalvDtbase,
 	mapCurrcv map[string]mdlPsglst.MdlPsglstCurrcvDtbase,
 	mapClslvl map[string]mdlPsglst.MdlPsglstClsslvDtbase, nowErignr string) (
 	[]mongo.WriteModel, []mongo.WriteModel, []mongo.WriteModel,
@@ -103,7 +105,16 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		fncSbrapi.FncSbrapiClsssnMainob(newObjtkn)
 	}
 
-	// FInal loop and push to database
+	// Declare empty variable final
+	totClrpsg := 0
+	mgoFrbase, mgoFrtaxs := []mongo.WriteModel{}, []mongo.WriteModel{}
+	mgoFlhour, mgoMilege := []mongo.WriteModel{}, []mongo.WriteModel{}
+	mgoPsgdtl, mgoPsgsmr := []mongo.WriteModel{}, []mongo.WriteModel{}
+	fnlPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
+	mapPaidbt := map[string]int{}
+	mapQntybt := map[string]int{}
+	mapWghtbt := map[string]int{}
+	mapFbavbt := map[string]int{}
 	totSmmary := mdlPsglst.MdlPsglstPsgsmrDtbase{
 		Mnthfl: objParams.Mnthfl, Datefl: objParams.Datefl,
 		Ndayfl: objParams.Ndayfl, Depart: objParams.Depart,
@@ -111,22 +122,100 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		Prmkey: objParams.Airlfl + objParams.Flnbfl + objParams.Depart +
 			strconv.Itoa(int(objParams.Datefl)),
 	}
-	mgoFrbase, mgoFrtaxs := []mongo.WriteModel{}, []mongo.WriteModel{}
-	mgoFlhour, mgoMilege := []mongo.WriteModel{}, []mongo.WriteModel{}
-	mgoPsgdtl, mgoPsgsmr := []mongo.WriteModel{}, []mongo.WriteModel{}
-	totClrpsg := 0
-	fnlPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
-	mapPaidbt := map[string]int{}
-	mapQntybt := map[string]int{}
-	mapWghtbt := map[string]int{}
-	mapFbavbt := map[string]int{}
+
+	// Semi final loop and push to final
 	sycClrpsg.Range(func(key, val any) bool {
 		if mtcPsglst, mtc := val.(mdlPsglst.MdlPsglstPsgdtlDtbase); mtc {
+
+			// Total group summary bg and ae
 			if mtcPsglst.Groupc != "" {
 				mapPaidbt[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
 				mapQntybt[mtcPsglst.Groupc] += int(mtcPsglst.Qntybt)
 				mapWghtbt[mtcPsglst.Groupc] += int(mtcPsglst.Wghtbt)
 				mapFbavbt[mtcPsglst.Groupc] += int(mtcPsglst.Fbavbt)
+			}
+
+			// Get segment now
+			if mtcPsglst.Segtkt != "" {
+				prvTimefl, prvRoutfl, slcSegtkt, mtcSegtkt := "", "", []string{}, false
+				sptSegtkt := strings.Split(mtcPsglst.Segtkt, "|")
+				fstDepart := strings.Split(sptSegtkt[0], "-")[1]
+				lstArrivl := strings.Split(sptSegtkt[len(sptSegtkt)-1], "-")[2]
+				istRoutpp := fstDepart == lstArrivl
+				for _, segtkt := range sptSegtkt {
+					cpntkt := strings.Split(segtkt, "-")
+					timecp := strings.Split(cpntkt[0], ":")
+					if intime, _ := strconv.Atoi(timecp[0]); int64(intime) == mtcPsglst.Timefl {
+						mtcSegtkt = true
+					}
+
+					// Gate logic
+					if prvTimefl == "" {
+						slcSegtkt = append(slcSegtkt, segtkt)
+					} else {
+						fmtprv, _ := time.Parse("0601021504", prvTimefl)
+						fmtnow, _ := time.Parse("0601021504", timecp[0])
+						fmtdif := fmtprv.Sub(fmtnow)
+						if fmtdif.Hours() > 24 || (prvRoutfl == cpntkt[1]+"-"+cpntkt[2] && istRoutpp) {
+							if mtcSegtkt {
+								continue
+							}
+							slcSegtkt = []string{}
+						} else {
+							slcSegtkt = append(slcSegtkt, segtkt)
+						}
+
+					}
+
+					// Prev time flight or arrival
+					prvRoutfl = cpntkt[2] + "-" + cpntkt[1]
+					prvTimefl = timecp[0]
+					if timecp[1] != "0101010000" {
+						prvTimefl = timecp[1]
+					}
+				}
+
+				// Get highest fba
+				strSegtkt := strings.Join(slcSegtkt, "|")
+				slcMaxfba := []int{}
+				for _, nowSegtkt := range slcSegtkt {
+					for _, hfbalv := range slcHfbalv {
+
+						// Regex Airline
+						nowAirlfl := hfbalv.Airlfl
+						regAirlfl := regexp.MustCompile("-(" + nowAirlfl + ")-")
+						lgcAirlfl := nowAirlfl == "ALL" || regAirlfl.MatchString(nowSegtkt)
+
+						// Regex class flown
+						nowClssfl := hfbalv.Clssfl
+						regClssfl := regexp.MustCompile(`-` + nowClssfl + `$`)
+						lgcClssfl := nowClssfl == "ALL" || regClssfl.MatchString(nowSegtkt)
+
+						// Regex route flown
+						fncRoutrg := func(dstrct string) string {
+							if dstrct != "ALL" {
+								return "-(" + dstrct + ")"
+							}
+							return "-[A-Z]{3}"
+						}
+						slcRoutfl := strings.Split(hfbalv.Routfl, "-")
+						strRoutrg := fncRoutrg(slcRoutfl[0]) + ".+" + fncRoutrg(slcRoutfl[1])
+						regRoutfl := regexp.MustCompile(strRoutrg)
+						lgcRoutfl := regRoutfl.MatchString(strSegtkt)
+
+						// Final result
+						if lgcAirlfl && lgcClssfl && lgcRoutfl {
+							slcMaxfba = append(slcMaxfba, int(hfbalv.Hfbabt))
+							if hfbalv.Source == "VCR" {
+								mtcPsglst.Hfbabt = mtcPsglst.Fbavbt
+							}
+							continue
+						}
+					}
+				}
+				if mtcPsglst.Hfbabt == 0 && len(slcMaxfba) > 0 {
+					mtcPsglst.Hfbabt = int32(slices.Max(slcMaxfba))
+				}
 			}
 			fnlPsglst = append(fnlPsglst, mtcPsglst)
 		}

@@ -138,7 +138,7 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 		rawActncd := cpn.CurrentStatus
 		mktAirlfl := cpn.MarketingProvider
 		mktFlnbfl := cpn.MarketingFlightNumber
-		mktClssfl := cpn.MarketingFlightNumber
+		mktClssfl := cpn.ClassOfService
 		fmtSegtkt := fmt.Sprintf("%s:%s-%s-%s-%s-%s-%s-%s",
 			strTimefl, strTimend, rawDepart, rawArrivl,
 			rawActncd, mktAirlfl, mktFlnbfl, mktClssfl)

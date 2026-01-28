@@ -311,16 +311,16 @@ brk:
 		// Logic match frbase
 		case len(regFrbse9.FindStringSubmatch(slc)) >= 1:
 			rsl := regFrbse9.FindStringSubmatch(slc)
+			nowFrbase[idxCountd-1].Frbase = rsl[1]
 			if slices.Contains([]string{"JT", "ID", "IW", "IU", "OD", "SL"}, rsl[2]) {
 				nowFrbase[idxCountd].Airlfl = rsl[2]
 				nowFrbase[idxCountd].Routfl = nowDstrct + "-" + rsl[3]
 				nowFrbase[idxCountd].Cpnbfl = int32(idxCountd)
 				nowFrbase[idxCountd].Depart = nowDstrct
 				nowFrbase[idxCountd].Arrivl = rsl[3]
-				idxCountd++
 				nowDstrct = rsl[3]
+				idxCountd++
 			}
-			nowFrbase[idxCountd-1].Frbase = rsl[1]
 
 		// Logic match frbase
 		case len(regFrbs10.FindStringSubmatch(slc)) >= 1:
@@ -421,8 +421,8 @@ brk:
 
 		// Default
 		default:
-			// fmt.Println("default", slc, "|", idxCountd, "|", psglst.Prmkey,
-			// 	"|", psglst.Pnrcde, "|", psglst.Tktnfl, "|", psglst.Frcalc)
+			fmt.Println("default", slc, "|", idxCountd, "|", psglst.Prmkey,
+				"|", psglst.Pnrcde, "|", psglst.Tktnfl, "|", psglst.Frcalc)
 		}
 	}
 
@@ -617,7 +617,7 @@ brk:
 			if getFlsgmn.Isitpr == "PRORTE" {
 				psglst.Isittf = "PRCALC"
 			}
-			cekNonrev = getFlsgmn.Isitit == "" && allNonrev
+			cekNonrev = (getFlsgmn.Isitit == "" && allNonrev) || psglst.Ntafvc == 0
 			psglst.Routfx = strings.ReplaceAll(strings.Join(slcRoutfr, "|"), getFlsgmn.Routfl, "")
 		}
 	}

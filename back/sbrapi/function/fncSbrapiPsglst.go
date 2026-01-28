@@ -92,11 +92,6 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 	getDatedp := rawxml.ItineraryInfo.DepartureArrival_Dates
 
 	// Treatment date
-	// rawDatefl, _ := time.Parse("2006-01-02", getDatedp.ScheduledDepartureDate)
-	// strDatefl := rawDatefl.Format("060102")
-	// strNdayfl := rawDatefl.Format("Mon")
-	// intDatefl, _ := strconv.Atoi(strDatefl)
-	// intMnthfl, _ := strconv.Atoi(strDatefl[:4])
 	rawDaterv, _ := time.Parse("2006-01-02", getDatedp.ScheduledDepartureDate)
 	strDaterv := rawDaterv.Format("060102")
 	intDaterv, _ := strconv.Atoi(strDaterv)
@@ -134,8 +129,6 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 
 	// Looping all passangger list
 	slcPsglst := []mdlPsglst.MdlPsglstPsgdtlDtbase{}
-	// mapQntybt := map[string]int{}
-	// mapWghtbt := map[string]int{}
 	for _, psglst := range rawxml.PassengerInfoList {
 		objPsglst := tmpPsglst
 
@@ -265,7 +258,7 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 				partsl, rawtme, strdte := strings.Fields(freetx.TextLine), "", ""
 				for _, prdata := range partsl {
 					switch {
-					case regexp.MustCompile(`^[A-Z]{2}|\*[A-Z]{2}$`).MatchString(prdata):
+					case regexp.MustCompile(`^[A-Z]{2}$|\*[A-Z]{2}$`).MatchString(prdata):
 						objPsglst.Airlob = strings.ReplaceAll(prdata, "*", "")
 					case regexp.MustCompile(`^\d{1,2}[A-Z]{3}(\d{0,2})?$`).MatchString(prdata):
 						if len(prdata) >= 6 {
@@ -359,22 +352,6 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 		objPsglst.Prmkey = strDatefl + strFlnbfl + strDepart + strSeatpx + strPsgrid
 		slcPsglst = append(slcPsglst, objPsglst)
 	}
-
-	// // Looping again to push total ebt
-	// for idx := range slcPsglst {
-	// 	nowGroupc := slcPsglst[idx].Groupc
-	// 	if nowGroupc == "" {
-	// 		slcPsglst[idx].Qtotbt = slcPsglst[idx].Qntybt
-	// 		slcPsglst[idx].Wtotbt = slcPsglst[idx].Wghtbt
-	// 	} else {
-	// 		if val, ist := mapQntybt[nowGroupc]; ist {
-	// 			slcPsglst[idx].Qtotbt = int32(val)
-	// 		}
-	// 		if val, ist := mapWghtbt[nowGroupc]; ist {
-	// 			slcPsglst[idx].Wtotbt = int32(val)
-	// 		}
-	// 	}
-	// }
 
 	// Final return
 	return slcPsglst

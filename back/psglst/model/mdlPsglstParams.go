@@ -54,6 +54,15 @@ type MdlPsglstClsslvDtbase struct {
 	Clssdc float64 `json:"clssdc,omitempty" bson:"clssdc,omitempty"`
 }
 
+type MdlPsglstHfbalvDtbase struct {
+	Airlfl string `json:"airlfl,omitempty" bson:"airlfl,omitempty"`
+	Clssfl string `json:"clssfl,omitempty" bson:"clssfl,omitempty"`
+	Routfl string `json:"routfl,omitempty" bson:"routfl,omitempty"`
+	Levelr int32  `json:"levelr,omitempty" bson:"levelr,omitempty"`
+	Hfbabt int32  `json:"hfbabt,omitempty" bson:"hfbabt,omitempty"`
+	Source string `json:"source,omitempty" bson:"source,omitempty"`
+}
+
 type MdlPsglstDepartDtbase struct {
 	Depart string `json:"depart,omitempty" bson:"depart,omitempty"`
 }

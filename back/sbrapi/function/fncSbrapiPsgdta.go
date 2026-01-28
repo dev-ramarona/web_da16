@@ -140,14 +140,6 @@ func FncSbrapiPsgdtaTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsgdtaRsppdr,
 				fncGlobal.FncGlobalMainprNoterr(&psgdta.Nmbrbt, partsl[2])
 			}
 
-		// // Ancillary
-		// case "AE":
-		// 	emdRegexp := regexp.MustCompile(`EMD-?(\d{13})`)
-		// 	mtcRegexp := emdRegexp.FindStringSubmatch(freetx.TextLine)
-		// 	if len(mtcRegexp) >= 2 {
-		// 		psgdta.Aemdnb = mtcRegexp[1]
-		// 	}
-
 		// Comment
 		case "CM":
 			fncGlobal.FncGlobalMainprNoterr(&psgdta.Coment, freetx.TextLine)
