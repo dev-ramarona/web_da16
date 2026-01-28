@@ -280,7 +280,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 		}
 		mtchdt = append(mtchdt, bson.D{{Key: "$or", Value: mtchor}})
 	} else {
-		csvFilenm = append(csvFilenm, "ALL_CLEAR")
+		csvFilenm = append(csvFilenm, "ALL")
 	}
 
 	// Final match pipeline
