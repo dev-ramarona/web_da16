@@ -68,6 +68,7 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 		if pnrTimecr, err := time.Parse("2006-01-02T15:04:05", varTimecr); err == nil {
 			rawTimerw, _ := strconv.Atoi(pnrTimecr.Format("0601021504"))
 			psglst.Timecr = int64(rawTimerw)
+			psglst.Agtdcr = nowRsvpnr.BookingDetails.CreationAgentID
 		}
 
 		// Get PNR interline

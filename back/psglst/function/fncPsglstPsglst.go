@@ -145,7 +145,8 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 				for _, segtkt := range sptSegtkt {
 					cpntkt := strings.Split(segtkt, "-")
 					timecp := strings.Split(cpntkt[0], ":")
-					if intime, _ := strconv.Atoi(timecp[0]); int64(intime) == mtcPsglst.Timefl {
+					if intime, _ := strconv.Atoi(timecp[0]); int64(intime) == mtcPsglst.Timefl ||
+						(mtcPsglst.Routvc == cpntkt[1]+"-"+cpntkt[2] && mtcPsglst.Flnbfl == cpntkt[5]) {
 						mtcSegtkt = true
 					}
 
@@ -177,7 +178,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 				// Get highest fba
 				strSegtkt := strings.Join(slcSegtkt, "|")
-				slcMaxfba := []int{}
+				slcMaxfba := []int{int(mtcPsglst.Fbavbt)}
 				for _, nowSegtkt := range slcSegtkt {
 					for _, hfbalv := range slcHfbalv {
 
@@ -206,9 +207,6 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 						// Final result
 						if lgcAirlfl && lgcClssfl && lgcRoutfl {
 							slcMaxfba = append(slcMaxfba, int(hfbalv.Hfbabt))
-							if hfbalv.Source == "vcr" {
-								slcMaxfba = append(slcMaxfba, int(mtcPsglst.Fbavbt))
-							}
 							continue
 						}
 					}

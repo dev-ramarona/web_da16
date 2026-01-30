@@ -98,6 +98,7 @@ type MdlPsglstPsgdtlDtbase struct {
 	Cbinfl string  `json:"cbinfl" bson:"cbinfl,omitempty"`
 	Cbinvc string  `json:"cbinvc" bson:"cbinvc,omitempty"`
 	Agtdie string  `json:"agtdie" bson:"agtdie,omitempty"`
+	Agtdcr string  `json:"agtdcr" bson:"agtdcr,omitempty"`
 	Codels string  `json:"codels" bson:"codels,omitempty"`
 	Isitfl string  `json:"isitfl" bson:"isitfl,omitempty"`
 	Isittx string  `json:"isittx" bson:"isittx,omitempty"`
