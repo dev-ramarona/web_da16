@@ -179,6 +179,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 				// Get highest fba
 				strSegtkt := strings.Join(slcSegtkt, "|")
 				slcMaxfba := []int{int(mtcPsglst.Fbavbt)}
+				bolStpsrc := true
 				for _, nowSegtkt := range slcSegtkt {
 					for _, hfbalv := range slcHfbalv {
 
@@ -205,8 +206,12 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 						lgcRoutfl := regRoutfl.MatchString(strSegtkt)
 
 						// Final result
-						if lgcAirlfl && lgcClssfl && lgcRoutfl {
+						if lgcAirlfl && lgcClssfl && lgcRoutfl && bolStpsrc {
 							slcMaxfba = append(slcMaxfba, int(hfbalv.Hfbabt))
+							if hfbalv.Source == "VCR" {
+								bolStpsrc = false
+								slcMaxfba = []int{int(mtcPsglst.Fbavbt)}
+							}
 							continue
 						}
 					}

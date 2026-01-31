@@ -17,28 +17,28 @@ export async function ApiGlobalStatusPrcess() {
       const rawstr: MdlGlobalStatusPrcess = await rspnse.data;
       const fnlstr: MdlGlobalStatusPrcess = {
         action: Number(rawstr.action.toFixed(2)),
-        sbrapi: Number(rawstr.sbrapi.toFixed(2))
-      }
+        sbrapi: Number(rawstr.sbrapi.toFixed(2)),
+      };
       return fnlstr;
     }
   } catch (error) {
     console.log(error);
   }
-  const tmpstr: MdlGlobalStatusPrcess = { action: 0, sbrapi: 0, }
-  return tmpstr
+  const tmpstr: MdlGlobalStatusPrcess = { action: 0, sbrapi: 0 };
+  return tmpstr;
 }
 
 // Hit status api with interval time
 export async function ApiGlobalStatusIntrvl(
   statfnSet: (v: string) => void,
   intrvlSet: (v: NodeJS.Timeout | null) => void,
-  strVarble: "action" | "sbrapi"
+  strVarble: "action" | "sbrapi",
 ) {
   const strtiv = setInterval(async () => {
     const status = await ApiGlobalStatusPrcess();
-    const rawval = (strVarble == "action") ? status.action : status.sbrapi
+    const rawval = strVarble == "action" ? status.action : status.sbrapi;
     const nowval = Number(rawval.toFixed(2));
-    const nowstr = (nowval == 0) ? "Done" : `Wait ${nowval}%`
+    const nowstr = nowval == 0 ? "Done" : `Wait ${nowval}%`;
     statfnSet(nowstr);
     if (nowstr === "Done") {
       clearInterval(strtiv);

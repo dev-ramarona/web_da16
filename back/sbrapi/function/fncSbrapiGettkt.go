@@ -179,9 +179,14 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 		psglst.Frbcde = getFlsgmn.FareBasis
 		psglst.Statvc = getFlsgmn.CurrentStatus
 		regmnb := regexp.MustCompile(`\d+`)
-		if rslmmb := regmnb.FindAllString(getFlsgmn.BagAllowance, -1); len(rslmmb) > 0 {
-			intVfbabt, _ := strconv.Atoi(rslmmb[0])
-			psglst.Fbavbt = int32(intVfbabt)
+		if strfba := getFlsgmn.BagAllowance; strfba != "" {
+			if rslmmb := regmnb.FindAllString(strfba, -1); len(rslmmb) > 0 {
+				intVfbabt, _ := strconv.Atoi(rslmmb[0])
+				psglst.Fbavbt = int32(intVfbabt)
+				if strings.Contains(strfba, "PC") {
+					psglst.Fbavbt = int32(intVfbabt) * 23
+				}
+			}
 		}
 		if psglst.Frbcde == "CHARTER" {
 			psglst.Isitct = "CT"
