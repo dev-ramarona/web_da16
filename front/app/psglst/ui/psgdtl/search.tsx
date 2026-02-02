@@ -8,6 +8,7 @@ import {
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { MdlPsglstPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
+import { UixGlobalIconvcRfresh } from "@/app/global/ui/server/uixGlobalIconvc";
 
 export default function UixPsglstDetailSearch({
   trtprm,
@@ -35,7 +36,9 @@ export default function UixPsglstDetailSearch({
   });
 
   // Monitor change
+  const [chnged, chngedSet] = useState<boolean>(false);
   useEffect(() => {
+    chngedSet(false);
     paramsSet({
       update_psgdtl: trtprm.update_psgdtl || "",
       mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
@@ -58,6 +61,7 @@ export default function UixPsglstDetailSearch({
   // Replace params
   const rplprm = FncGlobalParamsEdlink();
   const repprm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    chngedSet(true);
     const namefl = e.currentTarget.id;
     let valuef = e.currentTarget.value;
     if (["isittx_psgdtl", "isitfl_psgdtl", "isitir_psgdtl"].includes(namefl))
@@ -77,34 +81,6 @@ export default function UixPsglstDetailSearch({
     });
     rplprm([namefl, "pagenw_psgdtl"], [valuef, ""]);
   };
-
-  // Download csv summary pnr
-  const [dwnrsp, dwnrspSet] = useState("Download");
-  // const dwnapi = async () => {
-  //   dwnrspSet("Wait");
-  //   const rspdwn = await ApiPsglstPnrsmrDownld(params);
-  //   rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
-  //   setTimeout(() => dwnrspSet("Download"), 500);
-  // };
-
-  // const dwnapi = (params: MdlPsglstPsgdtlSearch) => {
-  //   const test = `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`
-  //   console.log(test);
-
-  //   return (
-  //     <form
-  //       method="POST"
-  //       action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}
-  //     >
-  //       <input
-  //         type="hidden"
-  //         name="data"
-  //         value={JSON.stringify(params)}
-  //       />
-  //       <button type="submit">Download CSV</button>
-  //     </form>
-  //   );
-  // }
 
   // Reset function
   const resetx = () => {
@@ -129,153 +105,159 @@ export default function UixPsglstDetailSearch({
     );
   };
   return (
-    <div className="w-full h-20 min-h-fit pb-1.5 flexctr flex-wrap gap-y-3">
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"nclear_psgdtl"}
-          params={params.nclear_psgdtl}
-          plchdr="Not Clear"
-          repprm={repprm}
-          labelx=""
-        />
+    <div className="w-full h-20 min-h-fit pb-1.5 flexctr relative">
+      <div className={`${chnged ? "w-16 h-10 translate-y-0" : "w-0 h-0 opacity-0 -translate-y-10"} z-10 absolute bg-white ring-2 ring-sky-300 px-5 py-2 rounded-xl flexctr duration-300`}>
+        <div>Wait</div>
+        <div className="animate-spin"><UixGlobalIconvcRfresh bold={2} color="black" size={1} /></div>
       </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"month"}
-          length={undefined}
-          queryx={"mnthfl_psgdtl"}
-          params={params.mnthfl_psgdtl}
-          plchdr="Flight Month"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"date"}
-          length={datefl}
-          queryx={"datefl_psgdtl"}
-          params={params.datefl_psgdtl}
-          plchdr="Flight Date"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"airlfl_psgdtl"}
-          params={params.airlfl_psgdtl}
-          plchdr="Airline"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"flnbfl_psgdtl"}
-          params={params.flnbfl_psgdtl}
-          plchdr="Flight Number"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"depart_psgdtl"}
-          params={params.depart_psgdtl}
-          plchdr="Departure"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"routfl_psgdtl"}
-          params={params.routfl_psgdtl}
-          plchdr="Route"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"pnrcde_psgdtl"}
-          params={params.pnrcde_psgdtl}
-          plchdr="PNR Code"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"tktnfl_psgdtl"}
-          params={params.tktnfl_psgdtl}
-          plchdr="Ticket Number"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"isitfl_psgdtl"}
-          params={params.isitfl_psgdtl}
-          plchdr="Flown Only"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"isittx_psgdtl"}
-          params={params.isittx_psgdtl}
-          plchdr="Transit Only"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <UixGlobalInputxFormdt
-          typipt={"text"}
-          length={undefined}
-          queryx={"isitir_psgdtl"}
-          params={params.isitir_psgdtl}
-          plchdr="Irreg Only"
-          repprm={repprm}
-          labelx=""
-        />
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <form className="afull p-1.5"
-          method="POST"
-          action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}>
-          <input type="hidden" name="data" value={JSON.stringify(params)} />
-          <button type="submit" className="afull btnsbm flexctr">
-            {dwnrsp}
-          </button>
-        </form>
-      </div>
-      <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
-        <div className="afull p-1.5">
-          <div className="afull btnwrn flexctr" onClick={() => resetx()}>
-            Reset
+      <div className={`afull flexctr flex-wrap gap-y-3 ${chnged ? "animate-pulse select-none" : ""} duration-300`}>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"nclear_psgdtl"}
+            params={params.nclear_psgdtl}
+            plchdr="Not Clear"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"month"}
+            length={undefined}
+            queryx={"mnthfl_psgdtl"}
+            params={params.mnthfl_psgdtl}
+            plchdr="Flight Month"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"date"}
+            length={datefl}
+            queryx={"datefl_psgdtl"}
+            params={params.datefl_psgdtl}
+            plchdr="Flight Date"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"airlfl_psgdtl"}
+            params={params.airlfl_psgdtl}
+            plchdr="Airline"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"flnbfl_psgdtl"}
+            params={params.flnbfl_psgdtl}
+            plchdr="Flight Number"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"depart_psgdtl"}
+            params={params.depart_psgdtl}
+            plchdr="Departure"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"routfl_psgdtl"}
+            params={params.routfl_psgdtl}
+            plchdr="Route"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"pnrcde_psgdtl"}
+            params={params.pnrcde_psgdtl}
+            plchdr="PNR Code"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"tktnfl_psgdtl"}
+            params={params.tktnfl_psgdtl}
+            plchdr="Ticket Number"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"isitfl_psgdtl"}
+            params={params.isitfl_psgdtl}
+            plchdr="Flown Only"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"isittx_psgdtl"}
+            params={params.isittx_psgdtl}
+            plchdr="Transit Only"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"isitir_psgdtl"}
+            params={params.isitir_psgdtl}
+            plchdr="Irreg Only"
+            repprm={repprm}
+            labelx=""
+          />
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <form className="afull p-1.5"
+            method="POST"
+            action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}>
+            <input type="hidden" name="data" value={JSON.stringify(params)} />
+            <button type="submit" className="afull btnsbm flexctr">
+              Download
+            </button>
+          </form>
+        </div>
+        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+          <div className="afull p-1.5">
+            <div className="afull btnwrn flexctr" onClick={() => resetx()}>
+              Reset
+            </div>
           </div>
         </div>
       </div>

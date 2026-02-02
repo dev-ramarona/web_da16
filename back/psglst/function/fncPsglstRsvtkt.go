@@ -6,6 +6,7 @@ import (
 	fncSbrapi "back/sbrapi/function"
 	mdlSbrapi "back/sbrapi/model"
 	"fmt"
+	"math"
 	"regexp"
 	"slices"
 	"strconv"
@@ -162,9 +163,11 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 		if len(nowRsvpnr.OpenReservationElements) > 0 {
 			for _, elm := range nowRsvpnr.OpenReservationElements {
 				delete(mapEmdnae, psglst.Emdnae)
+				minNmefst := math.Min(20, float64(len(elm.NameAssociationList.FirstName)))
+				minNmelst := math.Min(30, float64(len(elm.NameAssociationList.LastName)))
 				if elm.ActionCode != "HI" ||
-					elm.NameAssociationList.FirstName != psglst.Nmefst ||
-					elm.NameAssociationList.LastName != psglst.Nmelst {
+					elm.NameAssociationList.FirstName[:int(minNmefst)] != psglst.Nmefst ||
+					elm.NameAssociationList.LastName[:int(minNmelst)] != psglst.Nmelst {
 					continue
 				}
 
@@ -172,15 +175,18 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 				nowRoutae := ""
 				for _, cpn := range elm.SegmentAssociationList {
 					nowDepart, nowArrivl := cpn.BoardPoint, cpn.OffPoint
+					cpnTimefl, _ := time.Parse("2006-01-02", cpn.DepartureDate)
+					nowTimefl, _ := time.Parse("0601021504", strconv.Itoa(int(psglst.Timefl)))
+					difTimefl := math.Abs(cpnTimefl.Sub(nowTimefl).Hours() / 24)
 
 					// Compare to flown data
-					if nowDepart == psglst.Depart || nowArrivl == psglst.Arrivl {
+					if (nowDepart == psglst.Depart || nowArrivl == psglst.Arrivl) && difTimefl < 1 {
 						nowRoutae = cpn.BoardPoint + "-" + cpn.OffPoint
 					}
 
 					// Compare to route vcr
 					if len(psglst.Routvc) >= 7 {
-						if nowDepart == psglst.Routvc[:3] || nowArrivl == psglst.Routvc[4:] {
+						if (nowDepart == psglst.Routvc[:3] || nowArrivl == psglst.Routvc[4:]) && difTimefl < 1 {
 							nowRoutae = cpn.BoardPoint + "-" + cpn.OffPoint
 						}
 					}
