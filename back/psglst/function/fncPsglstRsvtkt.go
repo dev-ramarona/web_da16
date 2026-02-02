@@ -149,7 +149,7 @@ func FncPslgstRsvpnrMainpg(psglst mdlPsglst.MdlPsglstPsgdtlDtbase,
 						cncFulln2 == tcktng.PassengerName {
 
 						// Get ticket number blank and emd
-						if psglst.Tktnvc == "" && tcktng.TicketNumber[3:4] != "4" {
+						if tcktng.TicketNumber[3:4] != "4" {
 							psglst.Tktnvc = tcktng.TicketNumber[:13]
 						} else if tcktng.TicketNumber[3:4] == "4" {
 							mapEmdnae[tcktng.TicketNumber[:13]] = true

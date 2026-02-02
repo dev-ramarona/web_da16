@@ -40,7 +40,7 @@ func FncSbrapiGettktMainob(unqhdr mdlSbrapi.MdlSbrapiMsghdrParams,
 				SearchParameters: mdlSbrapi.MdlSbrapiGettktReqspm{
 					ResultType:        "C",
 					TicketingProvider: airlfl,
-					DocumentNumber:    psglst.Tktnfl,
+					DocumentNumber:    psglst.Tktnvc,
 					CustomResponseDetails: []string{
 						"ServiceCoupon",
 						"FareCalculation",
