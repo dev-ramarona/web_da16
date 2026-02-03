@@ -132,7 +132,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 				mapPaidbt[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
 				mapQntybt[mtcPsglst.Groupc] += int(mtcPsglst.Qntybt)
 				mapWghtbt[mtcPsglst.Groupc] += int(mtcPsglst.Wghtbt)
-				mapFbavbt[mtcPsglst.Groupc] += int(mtcPsglst.Fbavbt)
+				mapFbavbt[mtcPsglst.Groupc] += int(mtcPsglst.Hfbabt)
 			}
 
 			// Get segment now
@@ -159,7 +159,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 						fmtdif := fmtprv.Sub(fmtnow)
 						if fmtdif.Hours() > 24 || (prvRoutfl == cpntkt[1]+"-"+cpntkt[2] && istRoutpp) {
 							if mtcSegtkt {
-								continue
+								break
 							}
 							slcSegtkt = []string{}
 						} else {
@@ -194,14 +194,21 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 						lgcClssfl := nowClssfl == "ALL" || regClssfl.MatchString(nowSegtkt)
 
 						// Regex route flown
-						fncRoutrg := func(dstrct string) string {
-							if dstrct != "ALL" {
-								return "(" + dstrct + ")"
+						strRoutrg := func(routfl string) string {
+							fnlRoutfl, slcRoutfl := "", strings.Split(routfl, "-")
+							for _, dstrct := range slcRoutfl {
+								if dstrct == "ALL" {
+									fnlRoutfl += "-[A-Z]{3}"
+									continue
+								}
+								fnlRoutfl += "-(" + dstrct + ")"
 							}
-							return "[A-Z]{3}"
-						}
-						slcRoutfl := strings.Split(hfbalv.Routfl, "-")
-						strRoutrg := fncRoutrg(slcRoutfl[0]) + ".+" + fncRoutrg(slcRoutfl[1])
+							if !strings.Contains(routfl, "ALL") {
+								fnlRoutfl += "-|-(" + slcRoutfl[0] + ")-[A-Z]{3}-.+"
+								fnlRoutfl += "-[A-Z]{3}-(" + slcRoutfl[1] + ")"
+							}
+							return fnlRoutfl + "-"
+						}(hfbalv.Routfl)
 						regRoutfl := regexp.MustCompile(strRoutrg)
 						lgcRoutfl := regRoutfl.MatchString(strSegtkt)
 
@@ -212,7 +219,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 								bolStpsrc = false
 								slcMaxfba = []int{int(mtcPsglst.Fbavbt)}
 							}
-							continue
+							break
 						}
 					}
 				}

@@ -370,12 +370,12 @@ func FncPsglstPrcessWorker(
 			SetFilter(bson.M{"prmkey": fllist.Prmkey}).
 			SetUpdate(bson.M{"$set": fllist}).
 			SetUpsert(true))
-		// FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-		// 	Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
-		// 	Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-		// 	Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 5, Erignr: nowErignr,
-		// 	Depart: dbsDepart,
-		// }, fllist.Flstat == "PDC", sycErrlog)
+		FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
+			Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
+			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
+			Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 5, Erignr: nowErignr,
+			Depart: dbsDepart,
+		}, fllist.Flstat != "PDC" && fllist.Flstat != "CANCEL", sycErrlog)
 
 		// Handle PDC flight
 		if fllist.Flstat == "PDC" {

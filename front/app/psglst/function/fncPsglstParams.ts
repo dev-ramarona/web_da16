@@ -19,6 +19,7 @@ export function FncPsglstDetailParams(
     isittx_psgdtl: params.isittx_psgdtl || "",
     isitir_psgdtl: params.isitir_psgdtl || "",
     nclear_psgdtl: params.nclear_psgdtl || "",
+    format_psgdtl: params.format_psgdtl || "",
     pagenw_psgdtl: Number(params.pagenw_psgdtl) || 1,
     limitp_psgdtl: Number(params.limitp_psgdtl) || 15,
     erdvsn_errlog: params.erdvsn_errlog || "",

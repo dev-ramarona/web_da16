@@ -13,11 +13,12 @@ export interface MdlPsglstSrcprmAllprm {
   isittx_psgdtl: string;
   isitir_psgdtl: string;
   nclear_psgdtl: string;
+  format_psgdtl: string;
   pagenw_psgdtl: number;
   limitp_psgdtl: number;
-  erdvsn_errlog: string;
   pagenw_errlog: number;
   limitp_errlog: number;
+  erdvsn_errlog: string;
 }
 
 // Passangger list detail
@@ -183,6 +184,7 @@ export interface MdlPsglstPsgdtlSearch {
   isittx_psgdtl: string;
   isitir_psgdtl: string;
   nclear_psgdtl: string;
+  format_psgdtl: string;
   pagenw_psgdtl: number;
   limitp_psgdtl: number;
 }

@@ -18,6 +18,7 @@ type MdlPsglstPsgdtlInputx struct {
 	Isittx_psgdtl string `json:"isittx_psgdtl,omitempty" bson:"isittx_psgdtl,omitempty"`
 	Isitir_psgdtl string `json:"isitir_psgdtl,omitempty" bson:"isitir_psgdtl,omitempty"`
 	Nclear_psgdtl string `json:"nclear_psgdtl,omitempty" bson:"nclear_psgdtl,omitempty"`
+	Format_psgdtl string `json:"format_psgdtl,omitempty" bson:"format_psgdtl,omitempty"`
 	Pagenw_psgdtl int    `json:"pagenw_psgdtl,omitempty" bson:"pagenw_psgdtl,omitempty"`
 	Limitp_psgdtl int    `json:"limitp_psgdtl,omitempty" bson:"limitp_psgdtl,omitempty"`
 	Pagenw_errlog int    `json:"pagenw_errlog,omitempty" bson:"pagenw_errlog,omitempty"`

@@ -31,6 +31,7 @@ export default function UixPsglstDetailSearch({
     isittx_psgdtl: trtprm.isittx_psgdtl || "",
     isitir_psgdtl: trtprm.isitir_psgdtl || "",
     nclear_psgdtl: trtprm.nclear_psgdtl || "",
+    format_psgdtl: trtprm.format_psgdtl || "",
     pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
     limitp_psgdtl: trtprm.limitp_psgdtl || 15,
   });
@@ -53,6 +54,7 @@ export default function UixPsglstDetailSearch({
       isittx_psgdtl: trtprm.isittx_psgdtl || "",
       isitir_psgdtl: trtprm.isitir_psgdtl || "",
       nclear_psgdtl: trtprm.nclear_psgdtl || "",
+      format_psgdtl: trtprm.format_psgdtl || "",
       pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
       limitp_psgdtl: trtprm.limitp_psgdtl || 15,
     });
@@ -71,6 +73,10 @@ export default function UixPsglstDetailSearch({
       [{ keywrd: "a", output: "ALL" },
       { keywrd: "spt", output: "SLSRPT" },
       { keywrd: "mnf", output: "MNFEST" }]);
+    else if (namefl == "format_psgdtl") valuef = FncGlobalFormatFilter(valuef,
+      [{ keywrd: "d", output: "DFAULT" },
+      { keywrd: "e", output: "EBTFMT" },
+      { keywrd: "t", output: "TKTFMT" }]);
     else if (["flnbfl_psgdtl", "tktnfl_psgdtl"].includes(namefl))
       valuef = valuef.replace(/[^0-9]/g, "");
     else if (namefl == "routfl_psgdtl") valuef = FncGlobalFormatRoutfl(valuef);
@@ -87,7 +93,6 @@ export default function UixPsglstDetailSearch({
     rplprm(
       [
         "prmkey_psgdtl",
-        "nclear_psgdtl",
         "mnthfl_psgdtl",
         "datefl_psgdtl",
         "airlfl_psgdtl",
@@ -99,6 +104,8 @@ export default function UixPsglstDetailSearch({
         "isitfl_psgdtl",
         "isittx_psgdtl",
         "isitir_psgdtl",
+        "nclear_psgdtl",
+        "format_psgdtl",
         "pagenw_psgdtl",
       ],
       ""
@@ -111,7 +118,7 @@ export default function UixPsglstDetailSearch({
         <div className="animate-spin"><UixGlobalIconvcRfresh bold={2} color="black" size={1} /></div>
       </div>
       <div className={`afull flexctr flex-wrap gap-y-3 ${chnged ? "animate-pulse select-none" : ""} duration-300`}>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -119,10 +126,10 @@ export default function UixPsglstDetailSearch({
             params={params.nclear_psgdtl}
             plchdr="Not Clear"
             repprm={repprm}
-            labelx=""
+            labelx={'a:"ALL"(All Data)|SPT:"SLSRPT"(Sales Report)|MNF:"MNFEST"(Manifest)'}
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"month"}
             length={undefined}
@@ -133,7 +140,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"date"}
             length={datefl}
@@ -144,7 +151,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -155,7 +162,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -166,7 +173,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -177,7 +184,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -188,7 +195,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -199,7 +206,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -210,7 +217,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -221,7 +228,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -232,7 +239,7 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <UixGlobalInputxFormdt
             typipt={"text"}
             length={undefined}
@@ -243,7 +250,18 @@ export default function UixPsglstDetailSearch({
             labelx=""
           />
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
+          <UixGlobalInputxFormdt
+            typipt={"text"}
+            length={undefined}
+            queryx={"format_psgdtl"}
+            params={params.format_psgdtl}
+            plchdr="Format data"
+            repprm={repprm}
+            labelx={'D:"DFAULT"(Default format)|E:"EBTFMT"(EBT format)|T:"TKTFMT"(TKT format)'}
+          />
+        </div>
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <form className="afull p-1.5"
             method="POST"
             action={`${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall/downld`}>
@@ -253,7 +271,7 @@ export default function UixPsglstDetailSearch({
             </button>
           </form>
         </div>
-        <div className="w-1/2 md:w-[6.5rem] h-10 flexctr relative">
+        <div className="w-1/2 md:w-[7rem] h-10 flexctr relative">
           <div className="afull p-1.5">
             <div className="afull btnwrn flexctr" onClick={() => resetx()}>
               Reset

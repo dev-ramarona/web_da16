@@ -160,6 +160,9 @@ func FncSbrapiPsglstTrtmnt(rawxml mdlSbrapi.MdlSbrapiPsglstRspgpl,
 
 		// Get group code and totpax
 		objPsglst.Groupc = psglst.GroupCode
+		if psglst.GroupCode == "" {
+			objPsglst.Groupc = "-"
+		}
 		regTotpax := regexp.MustCompile(`\d+`)
 		rslTotpax := regTotpax.FindAllString(psglst.GroupCode, -1)
 		objPsglst.Totpax = 1

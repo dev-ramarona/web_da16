@@ -10,7 +10,7 @@ export default function UixGlobalInputxFormdt({
   repprm,
 }: {
   typipt: "text" | "date" | "month" | "number" | "file" | "datetime-local";
-  labelx: "hidden" | "";
+  labelx: "hidden" | string;
   length: number | undefined | string[];
   queryx: string;
   params: string;
@@ -20,7 +20,7 @@ export default function UixGlobalInputxFormdt({
   const refdte = useRef<HTMLInputElement>(null);
   const pckrdt = () => refdte.current?.showPicker();
   return (
-    <div className="afull py-1.5 px-1 flexstr relative text-[0.6rem] md:text-[0.66rem]">
+    <div className="afull py-1.5 px-1 flexstr relative text-[0.6rem] md:text-[0.66rem] z-0 hover:z-10">
       {typipt == "file" ? (
         // Input type file
         <>
@@ -80,10 +80,23 @@ export default function UixGlobalInputxFormdt({
               }`
               : `text-slate-400 peer-focus:h-1/2 peer-focus:-translate-y-full peer-focus:mb-1 ${labelx == "hidden" ? "peer-focus:opacity-0" : ""
               }`
-              } duration-300`}
+              } group/fst duration-300`}
             htmlFor={queryx}
           >
-            {plchdr}
+            <div className="flexctr">
+              <div className="px-1">{plchdr}</div>
+              {labelx != "hidden" && labelx != "" ? (
+                <div className="rounded-full flexctr ring w-3 h-3 opacity-0 group-hover/fst:opacity-100 duration-300 pl-[0.6px] cursor-pointer group/scd">
+                  <div>?</div>
+                  <div className="absolute -right-1 translate-x-full opacity-0 group-hover/scd:opacity-100 w-0 group-hover/scd:w-28 h-0 group-hover/scd:h-12 bg-white ring-2 duration-300 p-1.5 rounded-md overflow-auto">
+                    {labelx.split("|").map((lbl, idx) => (
+                      <div key={idx} className="text-[0.6rem] text-slate-700 font-mono">
+                        {lbl}
+                      </div>
+                    ))}
+                  </div>
+                </div>) : ""}
+            </div>
           </label>
         </>
       )}
