@@ -512,6 +512,20 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 	for rawDtaset.Next(contxt) {
 		var slcDtaset mdlPsglst.MdlPsglstPsgdtlDtbase
 		rawDtaset.Decode(&slcDtaset)
+		// fmtTimefl, _ := time.Parse("0601021504", strconv.Itoa(int(slcDtaset.Timefl)))
+		// strTimefl := fmtTimefl.Format("02-Jan-2006 15:04")
+		// fmtTimerv, _ := time.Parse("0601021504", strconv.Itoa(int(slcDtaset.Timerv)))
+		// strTimerv := fmtTimerv.Format("02-Jan-2006 15:04")
+		// fmtTimecr, _ := time.Parse("0601021504", strconv.Itoa(int(slcDtaset.Timecr)))
+		// strTimecr := fmtTimecr.Format("02-Jan-2006 15:04")
+		fmtTimeis, _ := time.Parse("0601021504", strconv.Itoa(int(slcDtaset.Timeis)))
+		strTimeis := fmtTimeis.Format("02-Jan-2006 15:04")
+		fmtDatefl, _ := time.Parse("060102", strconv.Itoa(int(slcDtaset.Datefl)))
+		strDatefl := fmtDatefl.Format("02-Jan-2006")
+		// fmtDatevc, _ := time.Parse("060102", strconv.Itoa(int(slcDtaset.Datevc)))
+		// strDatevc := fmtDatevc.Format("02-Jan-2006")
+		// fmtDaterv, _ := time.Parse("060102", strconv.Itoa(int(slcDtaset.Daterv)))
+		// strDaterv := fmtDaterv.Format("02-Jan-2006")
 
 		// Write to CSV
 		if inputx.Format_psgdtl == "EBTFMT" {
@@ -521,7 +535,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 				slcDtaset.Isittx,
 				slcDtaset.Airlfl,
 				slcDtaset.Flnbfl,
-				fmt.Sprintf("%v", slcDtaset.Datefl),
+				strDatefl,
 				slcDtaset.Routfl,
 				slcDtaset.Nmelst,
 				slcDtaset.Nmefst,
@@ -530,7 +544,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 				slcDtaset.Routfl,
 				slcDtaset.Seatpx,
 				slcDtaset.Tktnvc,
-				fmt.Sprintf("%v", slcDtaset.Cpnbvc),
+				fmt.Sprintf("C%02d", slcDtaset.Cpnbvc),
 				slcDtaset.Clssvc,
 				fmt.Sprintf("%v", slcDtaset.Qtotbt),
 				fmt.Sprintf("%v", slcDtaset.Wtotbt),
@@ -545,7 +559,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 				"",
 				slcDtaset.Pnrcde,
 				slcDtaset.Pnritl,
-				fmt.Sprintf("%v", slcDtaset.Timeis),
+				strTimeis,
 				slcDtaset.Hmeloc + slcDtaset.Agtdcr[int(math.Max(float64(len(slcDtaset.Agtdcr)-3), 0)):],
 				"",
 				"",
@@ -618,8 +632,8 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 				slcDtaset.Emplid,
 				slcDtaset.Nmefst,
 				slcDtaset.Nmelst,
-				fmt.Sprintf("%v", slcDtaset.Cpnbfl),
-				fmt.Sprintf("%v", slcDtaset.Cpnbvc),
+				fmt.Sprintf("C%02d", slcDtaset.Cpnbfl),
+				fmt.Sprintf("C%02d", slcDtaset.Cpnbvc),
 				slcDtaset.Clssfl,
 				slcDtaset.Clssvc,
 				slcDtaset.Statvc,
