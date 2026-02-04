@@ -61,7 +61,7 @@ export default async function Page(props: {
             <UixGlobalIconvcSeting color="gray" size={1.3} bold={3} />
           </div>
           <Suspense fallback={<UixGlobalLoadngAnmate />}>
-            <UixPsglstPrcessMainpg />
+            <UixPsglstPrcessMainpg cookie={cookie} />
           </Suspense>
         </div>
       </div>

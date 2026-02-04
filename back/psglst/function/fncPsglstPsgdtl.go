@@ -306,7 +306,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 	defer writer.Flush()
 	if inputx.Format_psgdtl == "EBTFMT" {
 		writer.Write([]string{
-			"",
+			"CEK GROUP",
 			"Isitfl",
 			"Isittx",
 			"Airlfl",
@@ -329,10 +329,11 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 			"Ptotbt",
 			"Shopay",
 			"Coment",
-			"",
+			"Comment Staff",
 			"Agtdcr",
-			"",
-			"",
+			"Name Staff",
+			"Currency",
+			"Total",
 			"Pnrcde",
 			"Pnritl",
 			"Timeis",
@@ -555,6 +556,7 @@ func FncPsglstPsgdtlDownld(c *gin.Context) {
 				fmt.Sprintf("%v", slcDtaset.Coment),
 				"",
 				slcDtaset.Agtdcr,
+				"",
 				"",
 				"",
 				slcDtaset.Pnrcde,

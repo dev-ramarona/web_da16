@@ -7,9 +7,10 @@ import { ApiPsglstPrcessManual } from "../../api/apiPsglstPrcess";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { FncGlobalParamsEdlink, FncGlobalParamsHminfr } from "@/app/global/function/fncGlobalParams";
 import { FncGlobalFormatDatefm } from "@/app/global/function/fncGlobalFormat";
+import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 
 
-export default function UixPsglstPrcessManual() {
+export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAllusrCookie }) {
 
   // Get status first
   const rplprm = FncGlobalParamsEdlink();
@@ -27,6 +28,8 @@ export default function UixPsglstPrcessManual() {
   const [statfn, statfnSet] = useState("Done");
   const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
+    console.log(cookie);
+
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
@@ -61,9 +64,16 @@ export default function UixPsglstPrcessManual() {
             nowParams.worker = 8;
         }
       }
-      statfnSet("Wait");
-      ApiPsglstPrcessManual(nowParams);
-      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+
+      // Cek is admin or not
+      if ((cookie.keywrd && (cookie.keywrd).includes("psglst")) || nowParams.worker == 1) {
+        statfnSet("Wait");
+        ApiPsglstPrcessManual(nowParams);
+        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+      } else {
+        statfnSet("Only admin can process ALL, Please process spesific flight only");
+        return setTimeout(() => statfnSet("Done"), 2000);
+      }
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };
 
@@ -115,7 +125,9 @@ export default function UixPsglstPrcessManual() {
         {hminfr.map((val, idx) => (
           <div className="afull max-w-64 px-1.5 flexctr" key={idx}>
             <button
-              className={`w-full h-full md:h-1/2 flexctr ${nwhour > 11 && idx == hminfr.length - 1 ? "btnoff select-none pointer-events-none" : "btnsbm"}`}
+              className={`w-full h-full md:h-1/2 flexctr 
+                ${nwhour > 11 && idx == hminfr.length - 1 ? "btnoff select-none pointer-events-none" : "btnsbm"} 
+                ${statfn.includes("admin") ? "shkeit btncxl" : ""}`}
               onClick={() => prcess({ ...params, datefl: val })}
             >
               {statfn == "Done" ? `Process Manual ${FncGlobalFormatDatefm(String(val))}` : statfn}
