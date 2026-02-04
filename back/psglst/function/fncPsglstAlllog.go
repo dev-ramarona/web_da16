@@ -158,9 +158,7 @@ func FncPsglstErrlogManage(errlog mdlPsglst.MdlPsglstErrlogDtbase,
 	switch erpart {
 	case "sssion":
 		errlog.Prmkey = erpart + airlfl + datefl
-	case "fllist":
-		errlog.Prmkey = erpart + airlfl + depart + datefl
-	case "fldtil", "flhour", "psglst", "psgdtl":
+	case "fldtil", "flhour", "psglst", "psgdtl", "fllist":
 		errlog.Prmkey = erpart + airlfl + flnbfl + routfl + datefl
 		depart = errlog.Routfl[:3]
 	case "frbase", "frtaxs":

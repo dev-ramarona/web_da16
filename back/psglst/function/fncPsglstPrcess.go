@@ -374,7 +374,7 @@ func FncPsglstPrcessWorker(
 			Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
 			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 			Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 5, Erignr: nowErignr,
-			Depart: dbsDepart,
+			Depart: dbsDepart, Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl,
 		}, fllist.Flstat != "PDC" && fllist.Flstat != "CANCEL", sycErrlog)
 
 		// Handle PDC flight
