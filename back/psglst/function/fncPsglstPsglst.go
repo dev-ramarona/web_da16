@@ -128,7 +128,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		if mtcPsglst, mtc := val.(mdlPsglst.MdlPsglstPsgdtlDtbase); mtc {
 
 			// Total group summary bg and ae
-			if mtcPsglst.Groupc != "" {
+			if mtcPsglst.Groupc != "-" && mtcPsglst.Groupc != "" {
 				mapPaidbt[mtcPsglst.Groupc] += int(mtcPsglst.Paidbt)
 				mapQntybt[mtcPsglst.Groupc] += int(mtcPsglst.Qntybt)
 				mapWghtbt[mtcPsglst.Groupc] += int(mtcPsglst.Wghtbt)
