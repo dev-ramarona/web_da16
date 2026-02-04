@@ -139,7 +139,7 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 				mdlSbrapi.MdlSbrapiMsghdrApndix{Datefl: int32(intDatefl),
 					Airlfl: airlfl, Depart: depart})
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-				Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
+				Erpart: "fllstl", Ersrce: "sbrapi", Erdvsn: "mnfest",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5, Erignr: nowErignr,
 				Depart: depart,
