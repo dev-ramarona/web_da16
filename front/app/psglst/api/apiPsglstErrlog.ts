@@ -11,7 +11,7 @@ export async function ApiPsglstErrlogDtbase(params: MdlPsglstSrcprmAllprm) {
   try {
     const rspnse = await ApiGlobalAxiospParams.post(
       "/psglst/errlog/getall",
-      params
+      params,
     );
     if (rspnse.status === 200) {
       fnlrsl = await rspnse.data;
