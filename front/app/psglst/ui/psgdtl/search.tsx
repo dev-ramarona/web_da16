@@ -7,33 +7,33 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { MdlPsglstPsgdtlSearch, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
+import { MdlPsglstPsgdtlSearch, MdlPsglstPsgdtlSrcprm } from "../../model/mdlPsglstParams";
 import { UixGlobalIconvcRfresh } from "@/app/global/ui/server/uixGlobalIconvc";
 
 export default function UixPsglstDetailSearch({
-  trtprm,
+  prmPsgdtl,
   datefl,
 }: {
-  trtprm: MdlPsglstSrcprmAllprm;
+  prmPsgdtl: MdlPsglstPsgdtlSrcprm;
   datefl: string[];
 }) {
   const [params, paramsSet] = useState<MdlPsglstPsgdtlSearch>({
-    update_psgdtl: trtprm.update_psgdtl || "",
-    mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
-    datefl_psgdtl: trtprm.datefl_psgdtl || "",
-    airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
-    flnbfl_psgdtl: trtprm.flnbfl_psgdtl || "",
-    depart_psgdtl: trtprm.depart_psgdtl || "",
-    routfl_psgdtl: trtprm.routfl_psgdtl || "",
-    pnrcde_psgdtl: trtprm.pnrcde_psgdtl || "",
-    tktnfl_psgdtl: trtprm.tktnfl_psgdtl || "",
-    isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
-    isittx_psgdtl: trtprm.isittx_psgdtl || "",
-    isitir_psgdtl: trtprm.isitir_psgdtl || "",
-    nclear_psgdtl: trtprm.nclear_psgdtl || "",
-    format_psgdtl: trtprm.format_psgdtl || "",
-    pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
-    limitp_psgdtl: trtprm.limitp_psgdtl || 15,
+    update_psgdtl: prmPsgdtl.update_psgdtl || "",
+    mnthfl_psgdtl: prmPsgdtl.mnthfl_psgdtl || "",
+    datefl_psgdtl: prmPsgdtl.datefl_psgdtl || "",
+    airlfl_psgdtl: prmPsgdtl.airlfl_psgdtl || "",
+    flnbfl_psgdtl: prmPsgdtl.flnbfl_psgdtl || "",
+    depart_psgdtl: prmPsgdtl.depart_psgdtl || "",
+    routfl_psgdtl: prmPsgdtl.routfl_psgdtl || "",
+    pnrcde_psgdtl: prmPsgdtl.pnrcde_psgdtl || "",
+    tktnfl_psgdtl: prmPsgdtl.tktnfl_psgdtl || "",
+    isitfl_psgdtl: prmPsgdtl.isitfl_psgdtl || "",
+    isittx_psgdtl: prmPsgdtl.isittx_psgdtl || "",
+    isitir_psgdtl: prmPsgdtl.isitir_psgdtl || "",
+    nclear_psgdtl: prmPsgdtl.nclear_psgdtl || "",
+    format_psgdtl: prmPsgdtl.format_psgdtl || "",
+    pagenw_psgdtl: prmPsgdtl.pagenw_psgdtl || 1,
+    limitp_psgdtl: prmPsgdtl.limitp_psgdtl || 15,
   });
 
   // Monitor change
@@ -41,24 +41,24 @@ export default function UixPsglstDetailSearch({
   useEffect(() => {
     chngedSet(false);
     paramsSet({
-      update_psgdtl: trtprm.update_psgdtl || "",
-      mnthfl_psgdtl: trtprm.mnthfl_psgdtl || "",
-      datefl_psgdtl: trtprm.datefl_psgdtl || "",
-      airlfl_psgdtl: trtprm.airlfl_psgdtl || "",
-      flnbfl_psgdtl: trtprm.flnbfl_psgdtl || "",
-      depart_psgdtl: trtprm.depart_psgdtl || "",
-      routfl_psgdtl: trtprm.routfl_psgdtl || "",
-      pnrcde_psgdtl: trtprm.pnrcde_psgdtl || "",
-      tktnfl_psgdtl: trtprm.tktnfl_psgdtl || "",
-      isitfl_psgdtl: trtprm.isitfl_psgdtl || "",
-      isittx_psgdtl: trtprm.isittx_psgdtl || "",
-      isitir_psgdtl: trtprm.isitir_psgdtl || "",
-      nclear_psgdtl: trtprm.nclear_psgdtl || "",
-      format_psgdtl: trtprm.format_psgdtl || "",
-      pagenw_psgdtl: trtprm.pagenw_psgdtl || 1,
-      limitp_psgdtl: trtprm.limitp_psgdtl || 15,
+      update_psgdtl: prmPsgdtl.update_psgdtl || "",
+      mnthfl_psgdtl: prmPsgdtl.mnthfl_psgdtl || "",
+      datefl_psgdtl: prmPsgdtl.datefl_psgdtl || "",
+      airlfl_psgdtl: prmPsgdtl.airlfl_psgdtl || "",
+      flnbfl_psgdtl: prmPsgdtl.flnbfl_psgdtl || "",
+      depart_psgdtl: prmPsgdtl.depart_psgdtl || "",
+      routfl_psgdtl: prmPsgdtl.routfl_psgdtl || "",
+      pnrcde_psgdtl: prmPsgdtl.pnrcde_psgdtl || "",
+      tktnfl_psgdtl: prmPsgdtl.tktnfl_psgdtl || "",
+      isitfl_psgdtl: prmPsgdtl.isitfl_psgdtl || "",
+      isittx_psgdtl: prmPsgdtl.isittx_psgdtl || "",
+      isitir_psgdtl: prmPsgdtl.isitir_psgdtl || "",
+      nclear_psgdtl: prmPsgdtl.nclear_psgdtl || "",
+      format_psgdtl: prmPsgdtl.format_psgdtl || "",
+      pagenw_psgdtl: prmPsgdtl.pagenw_psgdtl || 1,
+      limitp_psgdtl: prmPsgdtl.limitp_psgdtl || 15,
     });
-  }, [trtprm]);
+  }, [prmPsgdtl]);
 
   // Replace params
   const rplprm = FncGlobalParamsEdlink();

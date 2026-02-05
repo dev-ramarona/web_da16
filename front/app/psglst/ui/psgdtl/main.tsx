@@ -3,29 +3,29 @@ import { ApiPsglstAcpedtDtbase } from "../../api/apiPsglstAcpedt";
 import { ApiPsglstPsgdtlGetall } from "../../api/apiPsglstPsgdtl";
 import {
   MdlPsglstAcpedtDtbase,
-  MdlPsglstSrcprmAllprm,
   MdlPsglstPsgdtlFrntnd,
+  MdlPsglstPsgdtlSrcprm,
 } from "../../model/mdlPsglstParams";
 import UixPsglstDetailSearch from "./search";
 import UixPsglstDetailTablex from "./tablex";
 import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 
 export default async function UixPsglstDetailMainpg({
-  trtprm,
+  prmPsgdtl,
   datefl,
   cookie,
 }: {
-  trtprm: MdlPsglstSrcprmAllprm;
+  prmPsgdtl: MdlPsglstPsgdtlSrcprm;
   datefl: string[];
   cookie: mdlGlobalAllusrCookie;
 }) {
-  const psgdtl = await ApiPsglstPsgdtlGetall(trtprm);
+  const psgdtl = await ApiPsglstPsgdtlGetall(prmPsgdtl);
   const arrdta: MdlPsglstPsgdtlFrntnd[] = psgdtl.arrdta;
   const totdta: number = psgdtl.totdta;
   const acpedt: MdlPsglstAcpedtDtbase[] = await ApiPsglstAcpedtDtbase();
   return (
     <>
-      <UixPsglstDetailSearch trtprm={trtprm} datefl={datefl} />
+      <UixPsglstDetailSearch prmPsgdtl={prmPsgdtl} datefl={datefl} />
       {arrdta.length > 0 ? (
         <UixPsglstDetailTablex detail={arrdta} acpedt={acpedt} cookie={cookie} />
       ) : (
@@ -35,7 +35,7 @@ export default async function UixPsglstDetailMainpg({
       )}
       <UixGlobalPagntnMainpg
         pgview={15}
-        pgenbr={trtprm.pagenw_psgdtl}
+        pgenbr={prmPsgdtl.pagenw_psgdtl}
         pgestr="pagenw_psgdtl"
         totdta={totdta}
       />

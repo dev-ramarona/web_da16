@@ -1,5 +1,5 @@
 // Global
-export interface MdlPsglstSrcprmAllprm {
+export interface MdlPsglstGlobalSrcprm {
   update_psgdtl: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
@@ -16,6 +16,29 @@ export interface MdlPsglstSrcprmAllprm {
   format_psgdtl: string;
   pagenw_psgdtl: number;
   limitp_psgdtl: number;
+  pagenw_errlog: number;
+  limitp_errlog: number;
+  erdvsn_errlog: string;
+}
+export interface MdlPsglstPsgdtlSrcprm {
+  update_psgdtl: string;
+  mnthfl_psgdtl: string;
+  datefl_psgdtl: string;
+  airlfl_psgdtl: string;
+  flnbfl_psgdtl: string;
+  depart_psgdtl: string;
+  routfl_psgdtl: string;
+  pnrcde_psgdtl: string;
+  tktnfl_psgdtl: string;
+  isitfl_psgdtl: string;
+  isittx_psgdtl: string;
+  isitir_psgdtl: string;
+  nclear_psgdtl: string;
+  format_psgdtl: string;
+  pagenw_psgdtl: number;
+  limitp_psgdtl: number;
+}
+export interface MdlPsglstErrlogSrcprm {
   pagenw_errlog: number;
   limitp_errlog: number;
   erdvsn_errlog: string;

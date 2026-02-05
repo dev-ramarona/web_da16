@@ -1,13 +1,12 @@
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
 import { ApiPsglstErrlogDtbase } from "../../api/apiPsglstErrlog";
-import { MdlPsglstErrlogDtbase, MdlPsglstSrcprmAllprm } from "../../model/mdlPsglstParams";
+import { MdlPsglstErrlogDtbase, MdlPsglstErrlogSrcprm } from "../../model/mdlPsglstParams";
 import UixPsglstErrlogTablex from "./tablex";
 
 
 
-export default async function UixPsglstErrlogMainpg({ trtprm }: { trtprm: MdlPsglstSrcprmAllprm }) {
-  // await new Promise((r) => setTimeout(r, 2000));
-  const rslobj = await ApiPsglstErrlogDtbase(trtprm);
+export default async function UixPsglstErrlogMainpg({ prmErrlog }: { prmErrlog: MdlPsglstErrlogSrcprm }) {
+  const rslobj = await ApiPsglstErrlogDtbase(prmErrlog);
   const errlog: MdlPsglstErrlogDtbase[] = rslobj.arrdta
   const totdta: number = rslobj.totdta
   return (
@@ -17,7 +16,7 @@ export default async function UixPsglstErrlogMainpg({ trtprm }: { trtprm: MdlPsg
           <UixPsglstErrlogTablex errlog={errlog} />
           <UixGlobalPagntnMainpg
             pgview={5}
-            pgenbr={trtprm.pagenw_errlog}
+            pgenbr={prmErrlog.pagenw_errlog}
             pgestr="pagenw_errlog"
             totdta={totdta}
           />
