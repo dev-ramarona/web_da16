@@ -1,24 +1,20 @@
 import { Suspense } from "react";
-import { ApiGlobalCookieGetdta } from "../global/api/apiCookieParams";
 import { UixGlobalIconvcSeting } from "../global/ui/server/uixGlobalIconvc";
 import UixGlobalLoadngAnmate from "../global/ui/server/UixGlobalLoadng";
 import UixPsglstActlogMainpg from "../psglst/ui/actlog/main";
 import { ApiPsglstActlogDtbase } from "../psglst/api/apiPsglstActlog";
 import { MdlPsglstActlogDtbase, MdlPsglstGlobalSrcprm } from "../psglst/model/mdlPsglstParams";
 import UixPsglstErrlogMainpg from "./ui/errlog/main";
-import { FncPsglstErrlogSrcprm, FncPsglstPsgdtlSrcprm } from "../psglst/function/fncPsglstParams";
+import { FncPsglstErrlogSrcprm } from "../psglst/function/fncPsglstParams";
 
 
 export default async function Page(props: {
   searchParams: Promise<MdlPsglstGlobalSrcprm>;
 }) {
-  const cookie = await ApiGlobalCookieGetdta();
   const qryprm = await props.searchParams;
   const actobj = await ApiPsglstActlogDtbase();
   const actlog: MdlPsglstActlogDtbase[] = actobj.actlog;
-  const actdte: string[] = actobj.datefl;
   const prmErrlog = FncPsglstErrlogSrcprm(qryprm);
-  const prmPsgdtl = FncPsglstPsgdtlSrcprm(qryprm, actdte);
   return (
     <div className="afull flex justify-start items-start flex-wrap p-1.5 md:p-6">
       <div className="w-full md:w-[10rem] min-w-1/5 h-[15rem] md:h-[20rem] max-h-fit p-3">

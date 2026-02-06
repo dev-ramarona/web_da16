@@ -45,7 +45,7 @@ export default function UixJeddahFlnbflInputx({
             { keywrd: "INC", output: "Incoming" },
             { keywrd: "OJD", output: "Non Jeddah" },
         ];
-        let nameid = e.currentTarget.id;
+        const nameid = e.currentTarget.id;
         let valuex = e.currentTarget.value;
         if (nameid == "flnbfl") valuex = valuex.replace(/[^0-9]/g, "");
         else if (nameid == "routfl") valuex = FncGlobalFormatRoutfl(valuex);

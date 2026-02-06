@@ -50,7 +50,7 @@ export default function UixJeddahAgtnmeTablex({
     let valuef = e.currentTarget.value;
     if (nameid[0] == "rtlsrs") valuef = FncGlobalFormatFilter(valuef, filter);
     else valuef = valuef.toUpperCase();
-    prmkey != agtnme.prmkey ? agtnmeSet(defagt) : "";
+    if (prmkey != agtnme.prmkey) agtnmeSet(defagt)
     agtnmeSet((prv) => ({ ...prv, prmkey: prmkey, [nameid[0]]: valuef }));
   };
 

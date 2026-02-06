@@ -6,7 +6,7 @@ import { MdlGlobalAllusrParams } from "../model/mdlGlobalPrimer";
 // API Login
 export async function ApiGlobalAllusrLogin(
   prvstt: object | null | void,
-  formdt: FormData
+  formdt: FormData,
 ) {
   const usrnme = formdt.get("usrnme") as string;
   const psswrd = formdt.get("psswrd") as string;
@@ -22,13 +22,9 @@ export async function ApiGlobalAllusrLogin(
   if (!usrnme || !psswrd) return errorObject;
   else
     try {
-      const rspnse = await ApiGlobalAxiospParams.post(
-        "/allusr/loginx",
-        dataInput,
-        {
-          withCredentials: true,
-        }
-      );
+      await ApiGlobalAxiospParams.post("/allusr/loginx", dataInput, {
+        withCredentials: true,
+      });
       window.location.href = "/home";
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -44,7 +40,6 @@ export async function ApiGlobalAllusrLogin(
       } else {
         errorObject.rspnse = "An unknown error occurred";
       }
-
       return errorObject;
     }
 }
@@ -52,12 +47,12 @@ export async function ApiGlobalAllusrLogin(
 // API Logout
 export async function ApiGlobalAllusrLogout() {
   try {
-    const rspnse = await ApiGlobalAxiospParams.get("/allusr/logout", {
+    ApiGlobalAxiospParams.get("/allusr/logout", {
       withCredentials: true,
     });
     window.location.href = "/log";
   } catch (error) {
-    console.log("Error logout");
+    console.log("Error logout", error);
   }
 }
 

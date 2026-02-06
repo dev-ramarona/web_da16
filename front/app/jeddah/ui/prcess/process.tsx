@@ -11,13 +11,12 @@ import { MdlJeddahParamsActlog } from "../../model/mdlJeddahMainpr";
 export default function UixJeddahPrcessManual() {
   // Get status first
   const [statfn, statfnSet] = useState("Upload");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
       if (status.sbrapi != 0) {
-        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+        await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
       } else statfnSet("Upload");
     };
     gtstat();
@@ -36,7 +35,7 @@ export default function UixJeddahPrcessManual() {
         statdt: "",
       }
       ApiJeddahPrcessManual(params);
-      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+      await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };
 

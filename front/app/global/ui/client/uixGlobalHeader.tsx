@@ -20,7 +20,7 @@ export default function UixGlobalHeaderClient({
         dtlpthSet(app.detail);
       }
     });
-  }, [pthnme]);
+  }, [pthnme, applst]);
   if (nowpth == "" || nowpth == "global") return;
   return (
     <>

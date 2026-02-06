@@ -16,16 +16,15 @@ export default function UixHoldstPrcessManual() {
   const dfault: MdlHoldstErrlogDtbase = {
     depart: "", worker: 3, datefl: 1
   }
-  const [nwhour, nwhourSet] = useState((Number(new Date().getHours().toString().padStart(2, '0'))))
+  const nwhour = (Number(new Date().getHours().toString().padStart(2, '0')));
   const [params, paramsSet] = useState<MdlHoldstErrlogDtbase>(dfault)
   const [statfn, statfnSet] = useState("Done");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
       if (status.sbrapi != 0) {
-        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+        await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
       } else statfnSet("Done");
     };
     gtstat();
@@ -45,11 +44,11 @@ export default function UixHoldstPrcessManual() {
   // Hit the database and get interval status
   const prcess = async (params: MdlHoldstErrlogDtbase) => {
     const status = await ApiGlobalStatusPrcess();
-    let nowParams = { ...params };
+    const nowParams = { ...params };
     if (status.sbrapi == 0) {
       statfnSet("Wait");
       ApiHoldstPrcessManual(nowParams);
-      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+      await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };
 

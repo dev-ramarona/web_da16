@@ -6,11 +6,6 @@ export default function UixJeddahActlogTablex({
 }: {
   logact: MdlJeddahParamsActlog[];
 }) {
-  const header = {
-    datenb: "Date Flown",
-    dateup: "Date Upload",
-    statdt: "Status Data",
-  };
   return (
     <>
       <div className="afull max-h-fit overflow-auto rounded-lg ring-2 ring-sky-800">

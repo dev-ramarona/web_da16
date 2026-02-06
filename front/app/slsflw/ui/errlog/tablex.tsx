@@ -20,10 +20,9 @@ export default function UixPsglstErrlogTablex({
   const rplprm = FncGlobalParamsEdlink();
   const [statfn, statfnSet] = useState("Done");
   const [onpkey, onpkeySet] = useState("Done");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   const prcess = async (params: MdlPsglstErrlogDtbase) => {
     const status = await ApiGlobalStatusPrcess();
-    let nowParams = { ...params };
+    const nowParams = { ...params };
     if (status.sbrapi == 0) {
       if (params.flnbfl == "") {
         nowParams.worker = 3;
@@ -36,7 +35,7 @@ export default function UixPsglstErrlogTablex({
       statfnSet("Wait");
       onpkeySet(params.prmkey);
       ApiPsglstPrcessManual(nowParams);
-      await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+      await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };
 
@@ -45,7 +44,7 @@ export default function UixPsglstErrlogTablex({
     if (statfn == "Process Done") setTimeout(() => {
       rplprm(["update_psgdtl"], String(Math.random()));
     }, 1000);
-  }, [statfn])
+  }, [statfn, rplprm])
 
   return (
     <>

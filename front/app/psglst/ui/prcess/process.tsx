@@ -23,17 +23,16 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
     flnbfl: "", Paxdif: "", flstat: "",
     flhour: 0, routfl: "", updtby: "", worker: 1,
   }
-  const [nwhour, nwhourSet] = useState((Number(new Date().getHours().toString().padStart(2, '0'))))
+  const nwhour = (Number(new Date().getHours().toString().padStart(2, '0')))
   const [params, paramsSet] = useState<MdlPsglstErrlogDtbase>(dfault)
   const [statfn, statfnSet] = useState("Done");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     console.log(cookie);
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
       if (status.sbrapi != 0) {
-        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+        await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
       } else statfnSet("Done");
     };
     gtstat();
@@ -53,7 +52,7 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
   // Hit the database and get interval status
   const prcess = async (params: MdlPsglstErrlogDtbase) => {
     const status = await ApiGlobalStatusPrcess();
-    let nowParams = { ...params };
+    const nowParams = { ...params };
     if (status.sbrapi == 0) {
       if (params.flnbfl == "") {
         nowParams.worker = 3;
@@ -68,7 +67,7 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
       if ((cookie.keywrd && (cookie.keywrd).includes("psglst")) || nowParams.worker == 1) {
         statfnSet("Wait");
         ApiPsglstPrcessManual(nowParams);
-        await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
+        await ApiGlobalStatusIntrvl(statfnSet, "sbrapi");
       } else {
         statfnSet("Only admin can process ALL, Please process spesific flight only");
         return setTimeout(() => statfnSet("Done"), 2000);
@@ -81,7 +80,7 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
     if (statfn == "Process Done") setTimeout(() => {
       rplprm(["update_psgdtl"], String(Math.random()));
     }, 1000);
-  }, [statfn])
+  }, [statfn, rplprm])
 
   return (
     <div className="afull flexctr flex-col">

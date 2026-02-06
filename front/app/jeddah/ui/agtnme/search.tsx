@@ -1,7 +1,6 @@
 "use client";
 import {
   FncGlobalFormatFilter,
-  FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
@@ -33,7 +32,7 @@ export default function UixJeddahAgtnmerSearch({
       pagenw_agtnme: trtprm.pagenw_agtnme,
       limitp_agtnme: trtprm.limitp_agtnme,
     });
-  }, []);
+  }, [trtprm]);
 
   // Replace params
   const rplprm = FncGlobalParamsEdlink();

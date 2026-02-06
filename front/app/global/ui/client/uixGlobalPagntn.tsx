@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { FncGlobalParamsEdlink } from "../../function/fncGlobalParams";
 import {
   UixGlobalIconvcNextpg,

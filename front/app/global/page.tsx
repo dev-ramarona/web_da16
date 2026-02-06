@@ -9,7 +9,7 @@ export default async function Page() {
       <div className="text-3xl">
         Wellcome <span className="font-semibold">{cookie.stfnme}</span>
       </div>
-      <div>You're only accepted on Page</div>
+      <div>You only accepted on Page</div>
       <div className="w-2/3 md:w-1/3 flexctr flex-wrap">
         {cookie.access.map((item, index) => (
           <Link

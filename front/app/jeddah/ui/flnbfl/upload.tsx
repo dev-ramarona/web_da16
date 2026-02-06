@@ -34,13 +34,12 @@ export default function UixJeddahFlnbflUpload({
 
   // File Upload csv Function
   const [alrtup, alrtupSet] = useState<string>("Upload");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       alrtupSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
       if (status.sbrapi != 0) {
-        await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
+        await ApiGlobalStatusIntrvl(alrtupSet, "action");
       } else alrtupSet("Upload");
     };
     gtstat();
@@ -61,7 +60,7 @@ export default function UixJeddahFlnbflUpload({
           alrtupSet("Wait");
           await ApiJeddahFlnbflUpload(fileup, cookie.stfnme);
           rplprm(["pnrclk_pnrdtl", "pnrclk_pnrsmr"], String(Math.random()));
-          return await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
+          return await ApiGlobalStatusIntrvl(alrtupSet, "action");
         } else alrtupSet(`Wait ${status.action}%`);
       }
     setTimeout(() => alrtupSet("Upload"), 800);

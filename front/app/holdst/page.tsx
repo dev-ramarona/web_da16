@@ -1,15 +1,9 @@
 import { Suspense } from "react";
-import { ApiGlobalCookieGetdta } from "../global/api/apiCookieParams";
 import { UixGlobalIconvcSeting } from "../global/ui/server/uixGlobalIconvc";
 import UixGlobalLoadngAnmate from "../global/ui/server/UixGlobalLoadng";
 import UixHoldstPrcessMainpg from "./ui/prcess/main";
-import { MdlHoldstErrlogDtbase } from "./model/mdlHoldstParams";
 
-export default async function Page(props: {
-  searchParams: Promise<MdlHoldstErrlogDtbase>;
-}) {
-  const cookie = await ApiGlobalCookieGetdta();
-  const qryprm = await props.searchParams;
+export default async function Page() {
   return (
     <div className="afull flex justify-start items-start flex-wrap p-1.5 md:p-6">
       <div className="w-full md:w-[20rem] min-w-full h-[15rem] md:h-[15rem] max-h-fit p-3">

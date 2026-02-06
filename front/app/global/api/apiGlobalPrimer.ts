@@ -31,7 +31,6 @@ export async function ApiGlobalStatusPrcess() {
 // Hit status api with interval time
 export async function ApiGlobalStatusIntrvl(
   statfnSet: (v: string) => void,
-  intrvlSet: (v: NodeJS.Timeout | null) => void,
   strVarble: "action" | "sbrapi",
 ) {
   const strtiv = setInterval(async () => {
@@ -42,10 +41,8 @@ export async function ApiGlobalStatusIntrvl(
     statfnSet(nowstr);
     if (nowstr === "Done") {
       clearInterval(strtiv);
-      intrvlSet(null);
       statfnSet("Process Done");
       setTimeout(() => statfnSet("Done"), 1000);
     }
   }, 3000);
-  intrvlSet(strtiv);
 }

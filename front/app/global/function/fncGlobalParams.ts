@@ -12,10 +12,11 @@ export function FncGlobalParamsEdlink() {
     const fltprm = new URLSearchParams(searchParams);
     if (Array.isArray(qry) && Array.isArray(prm)) {
       qry.forEach((q, n) =>
-        prm[n] == "" ? fltprm.delete(q) : fltprm.set(q, prm[n])
+        prm[n] == "" ? fltprm.delete(q) : fltprm.set(q, prm[n]),
       );
     } else if (!Array.isArray(qry) && !Array.isArray(prm)) {
-      prm == "" ? fltprm.delete(qry) : fltprm.set(qry, prm);
+      if (prm === "") fltprm.delete(qry);
+      else fltprm.set(qry, prm);
     } else if (Array.isArray(qry) && !Array.isArray(prm))
       qry.forEach((q) => (prm == "" ? fltprm.delete(q) : fltprm.set(q, prm)));
 

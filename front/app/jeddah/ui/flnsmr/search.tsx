@@ -59,7 +59,8 @@ export default function UixJeddahFlnsmrSearch({
   const dwnapi = async () => {
     dwnrspSet("Wait");
     const rspdwn = await ApiJeddahFlnsmrDownld(params);
-    rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
+    if (rspdwn) dwnrspSet("Success");
+    else dwnrspSet("Failed");
     setTimeout(() => dwnrspSet("Download"), 500);
   };
   return (

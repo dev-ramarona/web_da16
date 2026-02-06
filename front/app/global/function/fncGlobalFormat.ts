@@ -13,9 +13,9 @@ export function FncGlobalFormatDatefm(inputd: string): string {
 
   // Buat Date object
   const datenw = new Date(
-    `${yearfl}-${monthn}-${daynow}T${hournw ?? "00"}:${minute ?? "00"}`
+    `${yearfl}-${monthn}-${daynow}T${hournw ?? "00"}:${minute ?? "00"}`,
   );
-  var optons: Intl.DateTimeFormatOptions = {
+  let optons: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "short",
     year: "2-digit",
@@ -69,15 +69,15 @@ export function FncGlobalFormatPercnt(percent: string, prvprc: string) {
     else if (percent.length == 1) return "";
     return percent.substring(0, percent.length - 1) + "%";
   }
-  let raw = percent.replace(/[^0-9]/g, "");
+  const raw = percent.replace(/[^0-9]/g, "");
   return raw + "%";
 }
 
 // Function change format routef to 3-3 characters
 export function FncGlobalFormatCpnfmt(cpnnbr: string) {
   if (cpnnbr === "") return cpnnbr;
-  let raw = cpnnbr.toUpperCase().replace(/[^A-Z]/g, "");
-  let nbr = parseInt(raw);
+  const raw = cpnnbr.toUpperCase().replace(/[^A-Z]/g, "");
+  const nbr = parseInt(raw);
   if (isNaN(nbr)) return "";
   if (nbr < 10) {
     return `C0${nbr}`;
@@ -98,7 +98,7 @@ export function FncGlobalFormatSorthl(params: string) {
 // Function change format routef to 3-3 characters
 export function FncGlobalFormatFilter(
   params: string,
-  arrays: mdlGlobalAlluserFilter[]
+  arrays: mdlGlobalAlluserFilter[],
 ) {
   const raw = params.trim().toUpperCase();
   if (raw === "") return "";

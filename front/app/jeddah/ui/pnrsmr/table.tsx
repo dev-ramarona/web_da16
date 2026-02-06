@@ -64,7 +64,7 @@ export default function UixJeddahPnrsmrTablex({
     e: React.ChangeEvent<HTMLInputElement>,
     pnrsmr: MdlJeddahPnrsmrDtbase
   ) => {
-    let val = e.currentTarget.value;
+    const val = e.currentTarget.value;
     const valuef = FncGlobalFormatFilter(val, [
       { keywrd: "RTL", output: "Retail" },
       { keywrd: "SRS", output: "Series" },

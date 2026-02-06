@@ -1,20 +1,14 @@
 "use client";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
 import { useEffect, useState } from "react";
-import {
-  MdlJeddahInputxAllprm,
-} from "../../model/mdlJeddahMainpr";
 import { ApiGlobalStatusIntrvl, ApiGlobalStatusPrcess } from "@/app/global/api/apiGlobalPrimer";
 import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
 import { FncGlobalParamsEdlink } from "@/app/global/function/fncGlobalParams";
-import { ApiJeddahPnrsmrDownld } from "../../api/apiJeddahPnrsmr";
 import { ApiJeddahRtlsrsTmplte, ApiJeddahRtlsrsUpload } from "../../api/apiJeddahRtlsrs";
 
 export default function UixJeddahPnrsmrUpldwn({
-  trtprm,
   cookie,
 }: {
-  trtprm: MdlJeddahInputxAllprm;
   cookie: mdlGlobalAllusrCookie;
 }) {
   // File Upload csv Variable
@@ -33,13 +27,12 @@ export default function UixJeddahPnrsmrUpldwn({
 
   // File Upload csv Function
   const [alrtup, alrtupSet] = useState<string>("Upload");
-  const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       alrtupSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);
       if (status.sbrapi != 0) {
-        await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
+        await ApiGlobalStatusIntrvl(alrtupSet, "action");
       } else alrtupSet("Upload");
     };
     gtstat();
@@ -59,7 +52,7 @@ export default function UixJeddahPnrsmrUpldwn({
           alrtupSet("Wait");
           await ApiJeddahRtlsrsUpload(fileup, cookie.stfnme);
           rplprm(["pnrclk_pnrdtl", "pnrclk_pnrsmr"], String(Math.random()));
-          return await ApiGlobalStatusIntrvl(alrtupSet, intrvlSet, "action");
+          return await ApiGlobalStatusIntrvl(alrtupSet, "action");
         } else alrtupSet(`Wait ${status.action}%`);
       }
     setTimeout(() => alrtupSet("Upload"), 800);
@@ -71,7 +64,7 @@ export default function UixJeddahPnrsmrUpldwn({
   const dwnapi = async () => {
     dwnrspSet("Wait");
     const rspdwn = await ApiJeddahRtlsrsTmplte();
-    rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
+    if (rspdwn) { dwnrspSet("Success") } else dwnrspSet("Failed");
     setTimeout(() => dwnrspSet("Download PNR Null Retail/Series"), 500);
   };
   return (

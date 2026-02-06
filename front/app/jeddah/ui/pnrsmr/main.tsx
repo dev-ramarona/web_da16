@@ -41,7 +41,7 @@ export default async function UixJeddahPnrsmrMainpg({
         pgestr="pagenw_pnrsmr"
         totdta={totdta}
       />
-      <UixJeddahPnrsmrUpldwn trtprm={trtprm} cookie={cookie} />
+      <UixJeddahPnrsmrUpldwn cookie={cookie} />
     </>
   );
 }

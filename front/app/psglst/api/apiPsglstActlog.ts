@@ -3,9 +3,9 @@ import { MdlPsglstActlogDtbase } from "../model/mdlPsglstParams";
 
 // Function get jeddah database log action
 export async function ApiPsglstActlogDtbase() {
-  var actlog: MdlPsglstActlogDtbase[] = [];
-  var datefl: string[] = [];
-  var fnlrsl = { actlog: actlog, datefl: datefl };
+  const actlog: MdlPsglstActlogDtbase[] = [];
+  const datefl: string[] = [];
+  let fnlrsl = { actlog: actlog, datefl: datefl };
   try {
     const rspnse = await ApiGlobalAxiospParams.get("/psglst/actlog/getall");
     if (rspnse.status === 200) {

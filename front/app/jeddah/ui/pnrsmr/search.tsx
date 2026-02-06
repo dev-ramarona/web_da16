@@ -41,7 +41,7 @@ export default function UixJeddahPnrsmrSearch({
       }));
     }, 500);
     return () => clearTimeout(handler);
-  }, [trtprm.pnrclk_pnrsmr]);
+  }, [trtprm]);
 
   // Replace params
   const rplprm = FncGlobalParamsEdlink();
@@ -72,7 +72,8 @@ export default function UixJeddahPnrsmrSearch({
   const dwnapi = async () => {
     dwnrspSet("Wait");
     const rspdwn = await ApiJeddahPnrsmrDownld(params, "downld");
-    rspdwn ? dwnrspSet("Success") : dwnrspSet("Failed");
+    if (rspdwn) dwnrspSet("Success")
+    else dwnrspSet("Failed");
     setTimeout(() => dwnrspSet("Download"), 500);
   };
 
