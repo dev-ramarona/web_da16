@@ -4,20 +4,21 @@ import { UixGlobalIconvcSeting } from "../global/ui/server/uixGlobalIconvc";
 import UixGlobalLoadngAnmate from "../global/ui/server/UixGlobalLoadng";
 import UixPsglstActlogMainpg from "../psglst/ui/actlog/main";
 import { ApiPsglstActlogDtbase } from "../psglst/api/apiPsglstActlog";
-import { MdlPsglstActlogDtbase, MdlPsglstSrcprmAllprm } from "../psglst/model/mdlPsglstParams";
+import { MdlPsglstActlogDtbase, MdlPsglstGlobalSrcprm } from "../psglst/model/mdlPsglstParams";
 import UixPsglstErrlogMainpg from "./ui/errlog/main";
-import { FncPsglstDetailParams } from "../psglst/function/fncPsglstParams";
+import { FncPsglstErrlogSrcprm, FncPsglstPsgdtlSrcprm } from "../psglst/function/fncPsglstParams";
 
 
 export default async function Page(props: {
-  searchParams: Promise<MdlPsglstSrcprmAllprm>;
+  searchParams: Promise<MdlPsglstGlobalSrcprm>;
 }) {
   const cookie = await ApiGlobalCookieGetdta();
   const qryprm = await props.searchParams;
   const actobj = await ApiPsglstActlogDtbase();
   const actlog: MdlPsglstActlogDtbase[] = actobj.actlog;
   const actdte: string[] = actobj.datefl;
-  const trtprm = FncPsglstDetailParams(qryprm, actdte);
+  const prmErrlog = FncPsglstErrlogSrcprm(qryprm);
+  const prmPsgdtl = FncPsglstPsgdtlSrcprm(qryprm, actdte);
   return (
     <div className="afull flex justify-start items-start flex-wrap p-1.5 md:p-6">
       <div className="w-full md:w-[10rem] min-w-1/5 h-[15rem] md:h-[20rem] max-h-fit p-3">
@@ -38,7 +39,7 @@ export default async function Page(props: {
             <UixGlobalIconvcSeting color="gray" size={1.3} bold={3} />
           </div>
           <Suspense fallback={<UixGlobalLoadngAnmate />}>
-            <UixPsglstErrlogMainpg trtprm={trtprm} />
+            <UixPsglstErrlogMainpg prmErrlog={prmErrlog} />
           </Suspense>
         </div>
       </div>
