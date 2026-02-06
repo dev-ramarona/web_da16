@@ -1,106 +1,83 @@
-import { ApiGlobalAxiospParams } from "@/app/global/api/apiGlobalPrimer";
 import {
   MdlPsglstPsgdtlFrntnd,
-  MdlPsglstPsgdtlSearch,
+  MdlPsglstPsgdtlSrcprm,
 } from "../model/mdlPsglstParams";
 
 // Function get psglst database
-export async function ApiPsglstPsgdtlGetall(params: MdlPsglstPsgdtlSearch) {
-  var arrdta: MdlPsglstPsgdtlFrntnd[] = [];
-  var fnlrsl = { arrdta: arrdta, totdta: 0 };
+export async function ApiPsglstPsgdtlGetall(prmPsgdtl: MdlPsglstPsgdtlSrcprm) {
+  const tag = [
+    "psgdtl",
+    prmPsgdtl.mnthfl_psgdtl,
+    prmPsgdtl.datefl_psgdtl,
+    prmPsgdtl.airlfl_psgdtl,
+    prmPsgdtl.flnbfl_psgdtl,
+    prmPsgdtl.depart_psgdtl,
+    prmPsgdtl.routfl_psgdtl,
+    prmPsgdtl.pnrcde_psgdtl,
+    prmPsgdtl.tktnfl_psgdtl,
+    prmPsgdtl.isitfl_psgdtl,
+    prmPsgdtl.isittx_psgdtl,
+    prmPsgdtl.isitir_psgdtl,
+    prmPsgdtl.nclear_psgdtl,
+    prmPsgdtl.pagenw_psgdtl,
+  ]
+    .filter(Boolean)
+    .join(":");
   try {
-    const rspnse = await ApiGlobalAxiospParams.post(
-      "/psglst/psgdtl/getall",
-      params
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/getall`,
+      {
+        method: "POST",
+        body: JSON.stringify(prmPsgdtl),
+        headers: { "Content-Type": "application/json" },
+        next: { revalidate: 30, tags: [tag] },
+      },
     );
-    if (rspnse.status === 200) {
-      fnlrsl = await rspnse.data;
-    }
-  } catch (error) {
-    console.log(error);
+    if (!res.ok) throw new Error("Failed fetch psgdtl");
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return { arrdta: [], totdta: 0 };
   }
-  return fnlrsl;
 }
 
 // Function get psglst database
-export async function ApiPsglstPsgdtlUpdate(params: MdlPsglstPsgdtlFrntnd) {
-  var fnlrsl: string = "";
-  if (params.tktnvc == "") {
-    return "tktnvc empty";
-  }
-  if (params.tktnvc.length !== 13) {
-    return "tktnvc invalid";
-  }
-  if (params.airlvc == "") {
-    return "airlvc empty";
-  }
-  if (params.flnbvc == "") {
-    return "flnbvc empty";
-  }
-  if (params.cpnbvc == 0) {
-    return "cpnbvc empty";
-  }
-  if (params.routvc == "") {
-    return "routvc empty";
-  }
-  if (params.statvc == "") {
-    return "statvc empty";
-  }
+export async function ApiPsglstPsgdtlUpdate(
+  params: MdlPsglstPsgdtlFrntnd,
+): Promise<string> {
+  // Validation
+  if (params.tktnvc === "") return "tktnvc empty";
+  if (params.tktnvc.length !== 13) return "tktnvc invalid";
+  if (params.airlvc === "") return "airlvc empty";
+  if (params.flnbvc === "") return "flnbvc empty";
+  if (params.cpnbvc === 0) return "cpnbvc empty";
+  if (params.routvc === "") return "routvc empty";
+  if (params.statvc === "") return "statvc empty";
   if (
-    params.slsrpt == "NOT CLEAR" &&
-    (params.curncy == "" || params.ntafvc == 0)
-  )
+    params.slsrpt === "NOT CLEAR" &&
+    (params.curncy === "" || params.ntafvc === 0)
+  ) {
     return "curncy empty";
-  try {
-    const rspnse = await ApiGlobalAxiospParams.post(
-      "/psglst/psgdtl/update",
-      params
-    );
-    if (rspnse.status === 200) {
-      fnlrsl = await rspnse.data;
-    }
-  } catch (error) {
-    console.log(error);
   }
-  return fnlrsl;
-}
 
-// Function get psglst summary PNR
-export async function ApiPsglstPnrsmrDownld(params: MdlPsglstPsgdtlSearch) {
+  // Call API
   try {
-    const rspnse = await ApiGlobalAxiospParams.post(
-      `/psglst/psgdtl/getall/downld`,
-      params,
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/psgdtl/update`,
       {
-        timeout: 70000,
-        responseType: "blob",
-      }
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+        cache: "no-store",
+      },
     );
-
-    // Buat Blob URL untuk file besar
-    const blobfl = new Blob([rspnse.data], { type: "text/csv" });
-    const dwnurl = window.URL.createObjectURL(blobfl);
-
-    // Ambil nama file dari header
-    const rawnme = rspnse.headers["content-disposition"];
-    let flname = "download.csv";
-    if (rawnme && rawnme.includes("filename="))
-      flname = rawnme.split("filename=")[1].replace(/['"]/g, "");
-
-    // Trigger unduhan file
-    const a = document.createElement("a");
-    a.href = dwnurl;
-    a.download = flname;
-    document.body.appendChild(a);
-    a.click();
-
-    // Bersihkan URL blob
-    window.URL.revokeObjectURL(dwnurl);
-    document.body.removeChild(a);
-
-    return true;
+    if (!res.ok) {
+      throw new Error("Failed update psgdtl");
+    }
+    const data = await res.json();
+    return await data;
   } catch (error) {
-    console.error("Error downloading CSV file:", error);
+    console.error(error);
+    return "update failed";
   }
-  return false;
 }

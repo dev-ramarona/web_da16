@@ -148,7 +148,7 @@ func FncPsglstErrlogSycmap(intDatefl int32) *sync.Map {
 
 // Get Sync map data farebase
 func FncPsglstErrlogManage(errlog mdlPsglst.MdlPsglstErrlogDtbase,
-	isterr bool, sycErrlog *sync.Map) {
+	isterr bool, sycErrlog *sync.Map, nowErignr, nowPrmkey *string) {
 
 	// Set primary key
 	var datefl = strconv.Itoa(int(errlog.Datefl))
@@ -173,6 +173,7 @@ func FncPsglstErrlogManage(errlog mdlPsglst.MdlPsglstErrlogDtbase,
 	errlog.Erstat = "Pending"
 	if errsyc, ist := sycErrlog.Load(errlog.Prmkey); ist && !isterr {
 		if _, mtc := errsyc.(mdlPsglst.MdlPsglstErrlogDtbase); mtc {
+			*nowPrmkey = ""
 			errlog.Erstat = "Clear"
 			istclr = true
 			sycErrlog.Delete(errlog.Prmkey)
@@ -180,7 +181,8 @@ func FncPsglstErrlogManage(errlog mdlPsglst.MdlPsglstErrlogDtbase,
 	}
 
 	// Cek if data ignore error
-	if errlog.Erignr == errlog.Prmkey {
+	if *nowErignr == errlog.Prmkey {
+		*nowErignr, *nowPrmkey = "", ""
 		errlog.Erstat = "Ignore"
 		istclr = true
 		sycErrlog.Delete(errlog.Prmkey)

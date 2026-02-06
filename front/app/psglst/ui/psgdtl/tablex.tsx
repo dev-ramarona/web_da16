@@ -69,7 +69,6 @@ export default function UixPsglstDetailTablex({
     }, 1000);
   };
 
-
   return (
     <>
       <div className="afull max-h-fit overflow-auto rounded-lg ring-2 ring-sky-800">

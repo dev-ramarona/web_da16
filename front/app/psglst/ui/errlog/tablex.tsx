@@ -35,7 +35,10 @@ export default function UixPsglstErrlogTablex({
       }
       statfnSet("Wait");
       onpkeySet(params.prmkey);
-      ApiPsglstPrcessManual(nowParams);
+      const rspPrcess = await ApiPsglstPrcessManual(nowParams);
+      if (rspPrcess == "success") {
+        statfnSet("Process Done");
+      }
       await ApiGlobalStatusIntrvl(statfnSet, intrvlSet, "sbrapi");
     } else statfnSet(`Wait ${status.sbrapi}%`);
   };
@@ -43,7 +46,7 @@ export default function UixPsglstErrlogTablex({
   // refresh page
   useEffect(() => {
     if (statfn == "Process Done") setTimeout(() => {
-      rplprm(["update_psgdtl"], String(Math.random()));
+      rplprm(["update_global"], String(Math.random()));
     }, 1000);
   }, [statfn])
 

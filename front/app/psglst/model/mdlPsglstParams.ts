@@ -1,6 +1,6 @@
 // Global
 export interface MdlPsglstGlobalSrcprm {
-  update_psgdtl: string;
+  update_global: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
   airlfl_psgdtl: string;
@@ -21,7 +21,7 @@ export interface MdlPsglstGlobalSrcprm {
   erdvsn_errlog: string;
 }
 export interface MdlPsglstPsgdtlSrcprm {
-  update_psgdtl: string;
+  update_global: string;
   mnthfl_psgdtl: string;
   datefl_psgdtl: string;
   airlfl_psgdtl: string;
@@ -39,6 +39,7 @@ export interface MdlPsglstPsgdtlSrcprm {
   limitp_psgdtl: number;
 }
 export interface MdlPsglstErrlogSrcprm {
+  update_global: string;
   pagenw_errlog: number;
   limitp_errlog: number;
   erdvsn_errlog: string;
@@ -193,24 +194,6 @@ export interface MdlPsglstPsgdtlFrntnd {
 }
 
 // Search param
-export interface MdlPsglstPsgdtlSearch {
-  update_psgdtl: string;
-  mnthfl_psgdtl: string;
-  datefl_psgdtl: string;
-  airlfl_psgdtl: string;
-  flnbfl_psgdtl: string;
-  depart_psgdtl: string;
-  routfl_psgdtl: string;
-  pnrcde_psgdtl: string;
-  tktnfl_psgdtl: string;
-  isitfl_psgdtl: string;
-  isittx_psgdtl: string;
-  isitir_psgdtl: string;
-  nclear_psgdtl: string;
-  format_psgdtl: string;
-  pagenw_psgdtl: number;
-  limitp_psgdtl: number;
-}
 export interface MdlPsglstAcpedtDtbase {
   params: string;
   length: number;
@@ -239,6 +222,7 @@ export interface MdlPsglstErrlogDtbase {
   airlfl: string;
   depart: string;
   flnbfl: string;
+  Paxdif: string;
   flstat: string;
   flhour: number;
   routfl: string;

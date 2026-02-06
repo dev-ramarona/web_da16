@@ -23,7 +23,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	idcFrbase, idcFrtaxs, sycErrlog *sync.Map,
 	slcHfbalv []mdlPsglst.MdlPsglstHfbalvDtbase,
 	mapCurrcv map[string]mdlPsglst.MdlPsglstCurrcvDtbase,
-	mapClslvl map[string]mdlPsglst.MdlPsglstClsslvDtbase, nowErignr string) (
+	mapClslvl map[string]mdlPsglst.MdlPsglstClsslvDtbase, nowErignr, nowPrmkey string) (
 	[]mongo.WriteModel, []mongo.WriteModel, []mongo.WriteModel,
 	[]mongo.WriteModel, []mongo.WriteModel, []mongo.WriteModel) {
 	sycWgroup, sycClrpsg, sycNulpsg := &sync.WaitGroup{}, &sync.Map{}, &sync.Map{}
@@ -530,7 +530,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 		Datefl: int32(objParams.Datefl), Airlfl: objParams.Airlfl,
 		Flnbfl: objParams.Flnbfl, Routfl: objParams.Routfl, Worker: 1, Erignr: nowErignr,
 		Paxdif: fmt.Sprintf("%d/%d", totClrpsg, totPsgdtl),
-	}, totClrpsg != totPsgdtl, sycErrlog)
+	}, totClrpsg != totPsgdtl, sycErrlog, &nowErignr, &nowPrmkey)
 
 	// Return final data
 	mgoPsgsmr = append(mgoPsgsmr, mongo.NewUpdateOneModel().

@@ -20,8 +20,8 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
     ersrce: "", erdtil: "", erdvsn: "",
     erignr: "", dateup: 0, timeup: 0,
     datefl: 0, airlfl: "", depart: "",
-    flnbfl: "", flstat: "", flhour: 0,
-    routfl: "", updtby: "", worker: 1,
+    flnbfl: "", Paxdif: "", flstat: "",
+    flhour: 0, routfl: "", updtby: "", worker: 1,
   }
   const [nwhour, nwhourSet] = useState((Number(new Date().getHours().toString().padStart(2, '0'))))
   const [params, paramsSet] = useState<MdlPsglstErrlogDtbase>(dfault)
@@ -29,7 +29,6 @@ export default function UixPsglstPrcessManual({ cookie }: { cookie: mdlGlobalAll
   const [intrvl, intrvlSet] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
     console.log(cookie);
-
     const gtstat = async () => {
       const status = await ApiGlobalStatusPrcess();
       statfnSet(status.sbrapi == 0 ? "Done" : `Wait ${status.sbrapi}%`);

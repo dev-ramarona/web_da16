@@ -7,7 +7,7 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { MdlPsglstPsgdtlSearch, MdlPsglstPsgdtlSrcprm } from "../../model/mdlPsglstParams";
+import { MdlPsglstPsgdtlSrcprm } from "../../model/mdlPsglstParams";
 import { UixGlobalIconvcRfresh } from "@/app/global/ui/server/uixGlobalIconvc";
 
 export default function UixPsglstDetailSearch({
@@ -17,8 +17,8 @@ export default function UixPsglstDetailSearch({
   prmPsgdtl: MdlPsglstPsgdtlSrcprm;
   datefl: string[];
 }) {
-  const [params, paramsSet] = useState<MdlPsglstPsgdtlSearch>({
-    update_psgdtl: prmPsgdtl.update_psgdtl || "",
+  const [params, paramsSet] = useState<MdlPsglstPsgdtlSrcprm>({
+    update_global: prmPsgdtl.update_global || "",
     mnthfl_psgdtl: prmPsgdtl.mnthfl_psgdtl || "",
     datefl_psgdtl: prmPsgdtl.datefl_psgdtl || "",
     airlfl_psgdtl: prmPsgdtl.airlfl_psgdtl || "",
@@ -41,7 +41,7 @@ export default function UixPsglstDetailSearch({
   useEffect(() => {
     chngedSet(false);
     paramsSet({
-      update_psgdtl: prmPsgdtl.update_psgdtl || "",
+      update_global: prmPsgdtl.update_global || "",
       mnthfl_psgdtl: prmPsgdtl.mnthfl_psgdtl || "",
       datefl_psgdtl: prmPsgdtl.datefl_psgdtl || "",
       airlfl_psgdtl: prmPsgdtl.airlfl_psgdtl || "",
@@ -90,6 +90,7 @@ export default function UixPsglstDetailSearch({
 
   // Reset function
   const resetx = () => {
+    chngedSet(true);
     rplprm(
       [
         "prmkey_psgdtl",

@@ -9,7 +9,7 @@ export function FncPsglstPsgdtlSrcprm(
   actdte: string[],
 ) {
   return {
-    update_psgdtl: params.update_psgdtl || "",
+    update_global: params.update_global || "",
     mnthfl_psgdtl: params.mnthfl_psgdtl || "",
     datefl_psgdtl: params.datefl_psgdtl || actdte[actdte.length - 1],
     airlfl_psgdtl: params.airlfl_psgdtl || "",
@@ -31,6 +31,7 @@ export function FncPsglstPsgdtlSrcprm(
 // Treatment function params
 export function FncPsglstErrlogSrcprm(params: MdlPsglstErrlogSrcprm) {
   return {
+    update_global: params.update_global || "",
     erdvsn_errlog: params.erdvsn_errlog || "",
     pagenw_errlog: Number(params.pagenw_errlog) || 1,
     limitp_errlog: Number(params.limitp_errlog) || 5,

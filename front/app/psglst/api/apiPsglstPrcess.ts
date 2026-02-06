@@ -1,17 +1,25 @@
-
-
-import { ApiGlobalAxiospParams } from "@/app/global/api/apiGlobalPrimer";
 import { MdlPsglstErrlogDtbase } from "../model/mdlPsglstParams";
 
 export async function ApiPsglstPrcessManual(params: MdlPsglstErrlogDtbase) {
   try {
-    const rspnse = await ApiGlobalAxiospParams.post("/psglst/prcess", params);
-    if (rspnse.status === 200) {
-      const fnlobj = await rspnse.data;
-      console.log(fnlobj);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/prcess`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+        cache: "no-store",
+      },
+    );
+    if (!res.ok) {
+      throw new Error("Failed update psgdtl");
     }
+    const data = await res.json();
+    console.log(data);
+
+    return await data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return "update failed";
   }
 }
-

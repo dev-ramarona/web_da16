@@ -1,23 +1,28 @@
-import { ApiGlobalAxiospParams } from "@/app/global/api/apiGlobalPrimer";
-import {
-  MdlPsglstErrlogDtbase,
-  MdlPsglstErrlogSrcprm,
-} from "../model/mdlPsglstParams";
+import { MdlPsglstErrlogSrcprm } from "../model/mdlPsglstParams";
 
 // Function get jeddah database Errlog
 export async function ApiPsglstErrlogDtbase(prmErrlog: MdlPsglstErrlogSrcprm) {
-  var arrdta: MdlPsglstErrlogDtbase[] = [];
-  var fnlrsl = { arrdta: arrdta, totdta: 0 };
   try {
-    const rspnse = await ApiGlobalAxiospParams.post(
-      "/psglst/errlog/getall",
-      prmErrlog,
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_AXIOSB}/psglst/errlog/getall`,
+      {
+        method: "POST",
+        body: JSON.stringify(prmErrlog),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        next: {
+          revalidate: 30,
+          tags: [
+            `errlog-${prmErrlog.pagenw_errlog}-${prmErrlog.erdvsn_errlog}-${prmErrlog.update_global}`,
+          ],
+        },
+      },
     );
-    if (rspnse.status === 200) {
-      fnlrsl = await rspnse.data;
-    }
-  } catch (error) {
-    console.log(error);
+    if (!res.ok) throw new Error("Failed fetch errlog");
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return { arrdta: [], totdta: 0 };
   }
-  return fnlrsl;
 }

@@ -29,10 +29,11 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 
 	// Bind JSON Body input to variable
 	inpErrlog := mdlPsglst.MdlPsglstErrlogDtbase{} //save
-	nowErignr := inpErrlog.Erignr
 	if err := c.BindJSON(&inpErrlog); err != nil {
 		panic(err)
 	}
+	nowErignr := &inpErrlog.Erignr
+	nowPrmkey := &inpErrlog.Prmkey
 
 	// Declare date format
 	strTimenw := time.Now().Format("0601021504")
@@ -95,8 +96,8 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 		FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
 			Erpart: "sssion", Ersrce: "sbrapi", Erdvsn: "mnfest",
 			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-			Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5, Erignr: nowErignr,
-		}, lgcRspssn, sycErrlog)
+			Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5,
+		}, lgcRspssn, sycErrlog, nowErignr, nowPrmkey)
 		if lgcRspssn {
 			continue
 		}
@@ -118,7 +119,7 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 						sycFlhour, sycFrbase, sycFrtaxs, sycErrlog, sycFlnbfl, sycChrter,
 						sycCurrcv, sycPnrcde, sycMilege,
 						idcFlhour, idcFrbase, idcFrtaxs, idcFlnbfl,
-						strTimenw, nowErignr)
+						strTimenw, nowErignr, nowPrmkey)
 					continue
 				}
 				fmt.Println("Failed Token-", i)
@@ -141,9 +142,9 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
 				Erpart: "fllstl", Ersrce: "sbrapi", Erdvsn: "mnfest",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-				Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5, Erignr: nowErignr,
+				Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5,
 				Depart: depart,
-			}, err != nil, sycErrlog)
+			}, err != nil, sycErrlog, nowErignr, nowPrmkey)
 			if err != nil {
 				continue
 			}
@@ -189,6 +190,11 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 	if rsupdt != nil {
 		panic("Error Insert/Update to DB:" + rsupdt.Error())
 	}
+	if *nowErignr != "" && *nowPrmkey != "" {
+		c.JSON(500, gin.H{"status": "Failed"})
+		return
+	}
+	c.JSON(200, gin.H{"status": "Done"})
 }
 
 // Running process psglst
@@ -201,7 +207,7 @@ func FncPsglstPrcessWorker(
 	sycFlhour, sycFrbase, sycFrtaxs, sycErrlog, sycFlnbfl,
 	sycChrter, sycCurrcv, sycPnrcde, sycMilege,
 	idcFlhour, idcFrbase, idcFrtaxs, idcFlnbfl *sync.Map,
-	strTimenw, nowErignr string) {
+	strTimenw string, nowErignr, nowPrmkey *string) {
 
 	// Declare global variable
 	defer swg.Done()
@@ -258,8 +264,8 @@ func FncPsglstPrcessWorker(
 					Erpart: "fldtil", Ersrce: "sbrapi", Erdvsn: "slsrev",
 					Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 					Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
-					Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1, Erignr: nowErignr,
-				}, err != nil || fllist.Routmx == "", sycErrlog)
+					Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
+				}, err != nil || fllist.Routmx == "", sycErrlog, nowErignr, nowPrmkey)
 			}
 		}()
 
@@ -309,8 +315,8 @@ func FncPsglstPrcessWorker(
 				Erpart: "flhour", Ersrce: "sbrapi", Erdvsn: "slsrev",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
-				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1, Erignr: nowErignr,
-			}, nulFlhour, sycErrlog)
+				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
+			}, nulFlhour, sycErrlog, nowErignr, nowPrmkey)
 		}
 
 		// Get fare component
@@ -373,9 +379,9 @@ func FncPsglstPrcessWorker(
 		FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
 			Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
 			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
-			Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 5, Erignr: nowErignr,
-			Depart: dbsDepart, Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl,
-		}, fllist.Flstat != "PDC" && fllist.Flstat != "CANCEL", sycErrlog)
+			Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 1,
+			Depart: dbsDepart, Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Flstat: fllist.Flstat,
+		}, fllist.Flstat != "PDC" && fllist.Flstat != "CANCEL", sycErrlog, nowErignr, nowPrmkey)
 
 		// Handle PDC flight
 		if fllist.Flstat == "PDC" {
@@ -394,14 +400,14 @@ func FncPsglstPrcessWorker(
 				Erpart: "psglst", Ersrce: "dtbase", Erdvsn: "mnfest",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
-				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1, Erignr: nowErignr,
-			}, err != nil, sycErrlog)
+				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
+			}, err != nil, sycErrlog, nowErignr, nowPrmkey)
 			tmpPsgdtl, tmpPsgsmr, tmpFrbase, tmpFrtaxs, tmpFlhour, tmpMilege :=
 				FncPsglstPsglstPrcess(rspPsglst,
 					nowObjtkn, objParams,
 					sycPnrcde, sycChrter, sycFrbase, sycFrtaxs, sycFlhour, sycMilege,
 					idcFrbase, idcFrtaxs, sycErrlog,
-					slcHfbalv, mapCurrcv, mapClslvl, nowErignr)
+					slcHfbalv, mapCurrcv, mapClslvl, *nowErignr, *nowPrmkey)
 			mgoPsgsmr = append(mgoPsgsmr, tmpPsgsmr...)
 			mgoPsgdtl = append(mgoPsgdtl, tmpPsgdtl...)
 			mgoMilege = append(mgoMilege, tmpMilege...)
