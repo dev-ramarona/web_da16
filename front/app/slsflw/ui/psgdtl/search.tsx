@@ -7,10 +7,10 @@ import {
   FncGlobalFormatRoutfl,
 } from "@/app/global/function/fncGlobalFormat";
 import UixGlobalInputxFormdt from "@/app/global/ui/client/uixGlobalInputx";
-import { MdlPsglstPsgdtlSrcprm } from "../../model/mdlPsglstParams";
 import { UixGlobalIconvcRfresh } from "@/app/global/ui/server/uixGlobalIconvc";
+import { MdlPsglstPsgdtlSrcprm } from "@/app/psglst/model/mdlPsglstParams";
 
-export default function UixPsglstDetailSearch({
+export default function UixSlsflwDetailSearch({
   prmPsgdtl,
   datefl,
 }: {
@@ -70,7 +70,7 @@ export default function UixPsglstDetailSearch({
       valuef = FncGlobalFormatFilter(valuef,
         [{ keywrd: "fl", output: "Flown" }, { keywrd: "no", output: "Not flown" }]);
     else if (namefl == "nclear_psgdtl") valuef = FncGlobalFormatFilter(valuef,
-      [{ keywrd: "", output: "MNFEST" }, { keywrd: "a", output: "ALL" }]);
+      [{ keywrd: "", output: "SLSRPT" }, { keywrd: "a", output: "ALL" }]);
     else if (namefl == "format_psgdtl") valuef = FncGlobalFormatFilter(valuef,
       [{ keywrd: "d", output: "DFAULT" },
       { keywrd: "e", output: "EBTFMT" },

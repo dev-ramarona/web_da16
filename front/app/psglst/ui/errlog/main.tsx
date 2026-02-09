@@ -6,7 +6,10 @@ import UixPsglstErrlogTablex from "./tablex";
 
 
 export default async function UixPsglstErrlogMainpg({ prmErrlog }: { prmErrlog: MdlPsglstErrlogSrcprm }) {
-  const rslobj = await ApiPsglstErrlogDtbase(prmErrlog);
+  const rslobj = await ApiPsglstErrlogDtbase({
+    ...prmErrlog, erdvsn_errlog:
+      (prmErrlog.erdvsn_errlog == "") ? "SLSRPT" : prmErrlog.erdvsn_errlog
+  });
   const errlog: MdlPsglstErrlogDtbase[] = rslobj.arrdta
   const totdta: number = rslobj.totdta
   return (

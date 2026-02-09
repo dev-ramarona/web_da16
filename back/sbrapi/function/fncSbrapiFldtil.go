@@ -72,7 +72,7 @@ func FncSbrapiFldtilTrtmnt(rawxml mdlSbrapi.MdlSbrapiFldtilRspacs,
 	// Get aircfraft config and secok
 	nowFlinfo := rawxml.ItineraryResponseList.ItineraryInfoResponse
 	fllist.Aircnf = nowFlinfo.AircraftConfigNumber
-	fllist.Airset = nowFlinfo.SeatConfig
+	fllist.Seatcn = nowFlinfo.SeatConfig
 	for _, val := range nowFlinfo.FreeTextInfoList.FreeTextInfo {
 		nowTxtsck := val.TextLine.Text
 		if strings.Contains(nowTxtsck, "SECOK") {

@@ -127,7 +127,7 @@ func FncSbrapiFllistTrtmnt(rawxml mdlSbrapi.MdlSbrapiFllistRspfls,
 			Arrivl: nowArrivl,
 			Airtyp: fllist.AircraftType,
 			Aircnf: "fldtil",
-			Airset: "fldtil",
+			Seatcn: "fldtil",
 		})
 	}
 

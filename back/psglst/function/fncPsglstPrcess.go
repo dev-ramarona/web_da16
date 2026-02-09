@@ -94,7 +94,7 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 		slcRspssn, err := fncSbrapi.FncSbrapiCrtssnMultpl(airlfl, int(totWorker))
 		lgcRspssn := err != nil || slcRspssn[0].Bsttkn == "" || len(slcRspssn) < 1
 		FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-			Erpart: "sssion", Ersrce: "sbrapi", Erdvsn: "mnfest",
+			Erpart: "sssion", Ersrce: "sbrapi", Erdvsn: "MNFEST",
 			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 			Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5,
 		}, lgcRspssn, sycErrlog, nowErignr, nowPrmkey)
@@ -140,7 +140,7 @@ func FncPsglstPrcessMainpg(c *gin.Context) {
 				mdlSbrapi.MdlSbrapiMsghdrApndix{Datefl: int32(intDatefl),
 					Airlfl: airlfl, Depart: depart})
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-				Erpart: "fllstl", Ersrce: "sbrapi", Erdvsn: "mnfest",
+				Erpart: "fllstl", Ersrce: "sbrapi", Erdvsn: "MNFEST",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: airlfl, Worker: 5,
 				Depart: depart,
@@ -261,7 +261,7 @@ func FncPsglstPrcessWorker(
 			err := fncSbrapi.FncSbrapiFldtilMainob(nowObjtkn, objParams, &fllist)
 			if fllist.Flstat == "PDC" {
 				FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-					Erpart: "fldtil", Ersrce: "sbrapi", Erdvsn: "slsrev",
+					Erpart: "fldtil", Ersrce: "sbrapi", Erdvsn: "SLSRPT",
 					Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 					Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
 					Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
@@ -312,7 +312,7 @@ func FncPsglstPrcessWorker(
 		// If doesn't get flight hour API
 		if fllist.Flstat == "PDC" {
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-				Erpart: "flhour", Ersrce: "sbrapi", Erdvsn: "slsrev",
+				Erpart: "flhour", Ersrce: "sbrapi", Erdvsn: "SLSRPT",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
 				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
@@ -377,7 +377,7 @@ func FncPsglstPrcessWorker(
 			SetUpdate(bson.M{"$set": fllist}).
 			SetUpsert(true))
 		FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-			Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "mnfest",
+			Erpart: "fllist", Ersrce: "sbrapi", Erdvsn: "MNFEST",
 			Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 			Datefl: int32(intDatefl), Airlfl: dbsAirlfl, Worker: 1,
 			Depart: dbsDepart, Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Flstat: fllist.Flstat,
@@ -397,13 +397,13 @@ func FncPsglstPrcessWorker(
 			// Get passangger list
 			rspPsglst, err := fncSbrapi.FncSbrapiPsglstMainob(nowObjtkn, objParams, mapCurrcv, fllist, mapClslvl)
 			FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-				Erpart: "psglst", Ersrce: "dtbase", Erdvsn: "mnfest",
+				Erpart: "psglst", Ersrce: "dtbase", Erdvsn: "MNFEST",
 				Dateup: int32(intDatenw), Timeup: int64(intTimenw),
 				Datefl: int32(intDatefl), Airlfl: dbsAirlfl,
 				Flnbfl: dbsFlnbfl, Routfl: dbsRoutfl, Worker: 1,
 			}, err != nil, sycErrlog, nowErignr, nowPrmkey)
 			tmpPsgdtl, tmpPsgsmr, tmpFrbase, tmpFrtaxs, tmpFlhour, tmpMilege :=
-				FncPsglstPsglstPrcess(rspPsglst,
+				FncPsglstPsglstPrcess(rspPsglst, fllist,
 					nowObjtkn, objParams,
 					sycPnrcde, sycChrter, sycFrbase, sycFrtaxs, sycFlhour, sycMilege,
 					idcFrbase, idcFrtaxs, sycErrlog,

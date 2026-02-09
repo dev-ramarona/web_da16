@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
+func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase, fllist mdlPsglst.MdlPsglstFllistDtbase,
 	nowObjtkn mdlSbrapi.MdlSbrapiMsghdrParams, objParams mdlSbrapi.MdlSbrapiMsghdrApndix,
 	sycPnrcde, sycChrter, sycFrbase, sycFrtaxs, sycFlhour, sycMilege,
 	idcFrbase, idcFrtaxs, sycErrlog *sync.Map,
@@ -116,11 +116,19 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 	mapWghtbt := map[string]int{}
 	mapFbavbt := map[string]int{}
 	totSmmary := mdlPsglst.MdlPsglstPsgsmrDtbase{
-		Mnthfl: objParams.Mnthfl, Datefl: objParams.Datefl,
-		Ndayfl: objParams.Ndayfl, Depart: objParams.Depart,
-		Airlfl: objParams.Airlfl, Flnbfl: objParams.Flnbfl,
 		Prmkey: objParams.Airlfl + objParams.Flnbfl + objParams.Depart +
 			strconv.Itoa(int(objParams.Datefl)),
+		Airlfl: objParams.Airlfl,
+		Depart: objParams.Depart,
+		Flnbfl: objParams.Flnbfl,
+		Routfl: objParams.Routfl,
+		Ndayfl: objParams.Ndayfl,
+		Datefl: objParams.Datefl,
+		Mnthfl: objParams.Mnthfl,
+		Flstat: fllist.Flstat,
+		Seatcn: fllist.Seatcn,
+		Airtyp: fllist.Airtyp,
+		Flhour: fllist.Flhour,
 	}
 
 	// Semi final loop and push to final
@@ -525,7 +533,7 @@ func FncPsglstPsglstPrcess(rspPsglst []mdlPsglst.MdlPsglstPsgdtlDtbase,
 
 	// Cek different data
 	FncPsglstErrlogManage(mdlPsglst.MdlPsglstErrlogDtbase{
-		Erpart: "psgdtl", Ersrce: "sbrapi", Erdvsn: "mnfest",
+		Erpart: "psgdtl", Ersrce: "sbrapi", Erdvsn: "MNFEST",
 		Dateup: int32(objParams.Dateup), Timeup: int64(objParams.Timeup),
 		Datefl: int32(objParams.Datefl), Airlfl: objParams.Airlfl,
 		Flnbfl: objParams.Flnbfl, Routfl: objParams.Routfl, Worker: 1, Erignr: nowErignr,

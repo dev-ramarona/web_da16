@@ -57,6 +57,8 @@ type MdlPsglstPsgdtlDtbase struct {
 	Airlfl string  `json:"airlfl" bson:"airlfl,omitempty"`
 	Airlvc string  `json:"airlvc" bson:"airlvc,omitempty"`
 	Airtyp string  `json:"airtyp" bson:"airtyp,omitempty"`
+	Seatcn string  `json:"seatcn" bson:"seatcn,omitempty"`
+	Flhour float64 `json:"flhour" bson:"flhour,omitempty"`
 	Flnbfl string  `json:"flnbfl" bson:"flnbfl,omitempty"`
 	Flnbvc string  `json:"flnbvc" bson:"flnbvc,omitempty"`
 	Flgate string  `json:"flgate" bson:"flgate,omitempty"`

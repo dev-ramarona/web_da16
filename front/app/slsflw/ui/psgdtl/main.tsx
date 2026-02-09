@@ -1,16 +1,12 @@
 import UixGlobalPagntnMainpg from "@/app/global/ui/client/uixGlobalPagntn";
-import { ApiPsglstAcpedtDtbase } from "../../api/apiPsglstAcpedt";
-import { ApiPsglstPsgdtlGetall } from "../../api/apiPsglstPsgdtl";
-import {
-  MdlPsglstAcpedtDtbase,
-  MdlPsglstPsgdtlFrntnd,
-  MdlPsglstPsgdtlSrcprm,
-} from "../../model/mdlPsglstParams";
-import UixPsglstDetailSearch from "./search";
-import UixPsglstDetailTablex from "./tablex";
 import { mdlGlobalAllusrCookie } from "@/app/global/model/mdlGlobalPrimer";
+import { MdlPsglstAcpedtDtbase, MdlPsglstPsgdtlFrntnd, MdlPsglstPsgdtlSrcprm } from "@/app/psglst/model/mdlPsglstParams";
+import { ApiPsglstPsgdtlGetall } from "@/app/psglst/api/apiPsglstPsgdtl";
+import { ApiPsglstAcpedtDtbase } from "@/app/psglst/api/apiPsglstAcpedt";
+import UixSlsflwDetailSearch from "./search";
+import UixSlsflwDetailTablex from "./tablex";
 
-export default async function UixPsglstDetailMainpg({
+export default async function UixSlsflwDetailMainpg({
   prmPsgdtl,
   datefl,
   cookie,
@@ -21,16 +17,16 @@ export default async function UixPsglstDetailMainpg({
 }) {
   const psgdtl = await ApiPsglstPsgdtlGetall({
     ...prmPsgdtl, nclear_psgdtl:
-      (prmPsgdtl.nclear_psgdtl == "") ? "MNFEST" : prmPsgdtl.nclear_psgdtl
+      (prmPsgdtl.nclear_psgdtl == "") ? "SLSRPT" : prmPsgdtl.nclear_psgdtl
   });
   const arrdta: MdlPsglstPsgdtlFrntnd[] = psgdtl.arrdta;
   const totdta: number = psgdtl.totdta;
   const acpedt: MdlPsglstAcpedtDtbase[] = await ApiPsglstAcpedtDtbase();
   return (
     <>
-      <UixPsglstDetailSearch prmPsgdtl={prmPsgdtl} datefl={datefl} />
+      <UixSlsflwDetailSearch prmPsgdtl={prmPsgdtl} datefl={datefl} />
       {arrdta.length > 0 ? (
-        <UixPsglstDetailTablex detail={arrdta} acpedt={acpedt} cookie={cookie} />
+        <UixSlsflwDetailTablex detail={arrdta} acpedt={acpedt} cookie={cookie} />
       ) : (
         <div className="w-full h-fit flexctr text-base font-semibold text-sky-800">
           No database Log Action

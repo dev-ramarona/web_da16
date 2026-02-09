@@ -47,7 +47,7 @@ export default async function Page(props: {
       <div className="w-full md:w-[20rem] min-w-full h-[45rem] md:h-[40rem] max-h-fit p-3">
         <div className="afull max-h-fit rounded-xl py-1.5 px-3 flexstr flex-col shadow-md">
           <div className="w-full text-slate-800 font-semibold text-base py-1.5 flexstr">
-            Setup Parameter
+            Passangger detail
             <UixGlobalIconvcSeting color="gray" size={1.3} bold={3} />
           </div>
           <Suspense fallback={<UixGlobalLoadngAnmate />}>

@@ -9,6 +9,10 @@ type MdlPsglstPsgsmrDtbase struct {
 	Ndayfl string  `json:"ndayfl,omitempty" bson:"ndayfl,omitempty"`
 	Datefl int32   `json:"datefl,omitempty" bson:"datefl,omitempty"`
 	Mnthfl int32   `json:"mnthfl,omitempty" bson:"mnthfl,omitempty"`
+	Flstat string  `json:"flstat,omitempty" bson:"flstat,omitempty"`
+	Seatcn string  `json:"seatcn,omitempty" bson:"seatcn,omitempty"`
+	Airtyp string  `json:"airtyp,omitempty" bson:"airtyp,omitempty"`
+	Flhour float64 `json:"flhour,omitempty" bson:"flhour,omitempty"`
 	Totnta float64 `json:"totnta,omitempty" bson:"totnta,omitempty"`
 	Tottyq float64 `json:"tottyq,omitempty" bson:"tottyq,omitempty"`
 	Totpax int64   `json:"totpax,omitempty" bson:"totpax,omitempty"`
@@ -154,7 +158,7 @@ type MdlPsglstFllistDtbase struct {
 	Arrivl string  `json:"arrivl,omitempty" bson:"arrivl,omitempty"`
 	Airtyp string  `json:"airtyp,omitempty" bson:"airtyp,omitempty"`
 	Aircnf string  `json:"aircnf,omitempty" bson:"aircnf,omitempty"`
-	Airset string  `json:"airset,omitempty" bson:"airset,omitempty"`
+	Seatcn string  `json:"seatcn,omitempty" bson:"seatcn,omitempty"`
 	Autrzc int32   `json:"autrzc,omitempty" bson:"autrzc,omitempty"`
 	Autrzy int32   `json:"autrzy,omitempty" bson:"autrzy,omitempty"`
 	Bookdc int32   `json:"bookdc,omitempty" bson:"bookdc,omitempty"`
